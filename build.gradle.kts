@@ -84,7 +84,12 @@ subprojects {
          * Copy the generated plugin jar of the project to the server plugins folder
          */
         register("copy-to-server") {
+            onlyIf {
+                !File(server.plugins, shadowJar.get().archiveFileName.get()).isFile
+            }
+
             dependsOn("build")
+
 
             doLast {
                 val pluginJar = project.buildDir.absolutePath + "/libs/" + shadowJar.get().archiveFileName.get()
@@ -93,9 +98,6 @@ subprojects {
                 copy {
                     from(pluginJar)
                     into(server.plugins)
-                    rename {
-                        "${project.name}.jar"
-                    }
                 }
             }
         }
@@ -103,11 +105,10 @@ subprojects {
         /**
          * Run the server with the plugin on it
          */
-        register("run") {
+        register("prepare") {
             dependsOn(":build-server")
             dependsOn(":clean-plugins")
             dependsOn("copy-to-server")
-            dependsOn(":run")
         }
 
     }
@@ -263,6 +264,10 @@ tasks {
      * Run the server
      */
     register("run") {
+        for (project in subprojects) {
+            mustRunAfter(":${project.name}:prepare")
+        }
+
         doLast {
             printIntro()
             logger.lifecycle("> Starting the server...")

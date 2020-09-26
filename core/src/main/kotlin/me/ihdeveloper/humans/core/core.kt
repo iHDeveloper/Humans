@@ -7,7 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin
  *
  * It can be initialized and disposed. It contains a special logger.
  */
-abstract class System(name: String) {
+abstract class System(val name: String) {
     protected val logger = GameLogger(name)
 
     /**

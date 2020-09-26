@@ -1,12 +1,16 @@
 package me.ihdeveloper.humans.core
 
+import me.ihdeveloper.humans.core.system.CustomEntitySystem
 import org.bukkit.plugin.java.JavaPlugin
 
 /** An instance of game core */
 val core = GameCore()
 
+/** An instance of game core plugin */
+var corePlugin: JavaPlugin? = null
+
 /** Utilities */
-private val logger = GameLogger("${COLOR_CYAN}Core")
+private val logger = GameLogger("Core")
 
 /**
  * A main class to handle the bukkit plugin
@@ -16,6 +20,7 @@ private val logger = GameLogger("${COLOR_CYAN}Core")
 class Main : JavaPlugin() {
 
     override fun onEnable() {
+        corePlugin = this
         logger.info("Core is ready to use!")
     }
 
@@ -29,21 +34,32 @@ class Main : JavaPlugin() {
  */
 class GameCore {
     /** Represents the core systems of the game */
-    private val systems = arrayOf<System>()
+    private val systems = arrayOf<System>(CustomEntitySystem())
 
     /**
      * Initialize the core of the game
      */
     fun init(plugin: JavaPlugin) {
-        logger.info("Initializing the systems...")
-        systems.forEach { it.init(plugin) }
+        if (plugin === corePlugin) {
+            logger.warn("----------------------------------------------")
+            logger.warn("  THE CORE IS BEING INITIALIZED USING ITSELF  ")
+            logger.warn("   DON'T USE THIS IN PRODUCTION ENVIRONMENT!  ")
+            logger.warn("----------------------------------------------")
+        }
+
+        systems.forEach {
+            logger.info("Initializing ${it.name.toLowerCase()} system...")
+            it.init(plugin)
+        }
     }
 
     /**
      * Dispose the core of the game
      */
     fun dispose() {
-        logger.info("Disposing the systems...")
-        systems.forEach { it.dispose() }
+        systems.forEach {
+            logger.info("Disposing ${it.name.toLowerCase()} system...")
+            it.dispose()
+        }
     }
 }
