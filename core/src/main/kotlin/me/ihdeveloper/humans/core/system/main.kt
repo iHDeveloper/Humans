@@ -2,10 +2,13 @@ package me.ihdeveloper.humans.core.system
 
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
+import me.ihdeveloper.humans.core.entity.CustomSkeleton
 import me.ihdeveloper.humans.core.entity.Hologram
+import me.ihdeveloper.humans.core.entity.PrisonGuard
 import me.ihdeveloper.humans.core.overrideEntity
 import me.ihdeveloper.humans.core.registerEntity
 import net.minecraft.server.v1_8_R3.EntityArmorStand
+import net.minecraft.server.v1_8_R3.EntitySkeleton
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -19,11 +22,13 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
 
         /** Override base entities with custom ones */
         overrideEntity(EntityArmorStand::class, CustomArmorStand::class, logger)
+        overrideEntity(EntitySkeleton::class, CustomSkeleton::class, logger)
 
         logger.info("Registering entities...")
 
         /** Register custom entities */
         registerEntity(Hologram::class, CustomArmorStand::class, logger)
+        registerEntity(PrisonGuard::class, CustomSkeleton::class, logger)
     }
 
     override fun dispose() {}

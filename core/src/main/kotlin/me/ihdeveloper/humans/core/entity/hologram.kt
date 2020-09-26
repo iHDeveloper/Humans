@@ -12,7 +12,7 @@ import org.bukkit.Location
  */
 class Hologram (
         location: Location,
-        private val text: String
+        var text: String
 ) : CustomArmorStand(location) {
 
     /** Prevent the player from putting any item to the hologram */
@@ -65,16 +65,20 @@ class Hologram (
  * @param type The type of the npc (e.g. Prison Guard, Prisoner)
  * @param state The state of the npc (e.g. Click, Coming soon)
  */
-fun spawnNPCHologram(location: Location, name: String, type: String, state: String) {
+fun spawnNPCHologram(location: Location, name: String, type: String, state: String): Array<Hologram> {
     location.clone().apply {
         y += y + 1.0
 
-        spawnEntity(Hologram(this, state), false)
+        val stateHologram = Hologram(this, state)
+        spawnEntity(stateHologram, false)
 
         y += 0.50
-        spawnEntity(Hologram(this, type), false)
+        val typeHologram = Hologram(this, type)
+        spawnEntity(typeHologram, false)
 
         y += 0.25
-        spawnEntity(Hologram(this, name), false)
+        val nameHologram = Hologram(this, name)
+        spawnEntity(nameHologram, false)
+        return arrayOf(nameHologram, typeHologram, stateHologram)
     }
 }
