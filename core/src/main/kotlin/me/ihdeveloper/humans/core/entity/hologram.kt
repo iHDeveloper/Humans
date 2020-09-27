@@ -15,6 +15,14 @@ class Hologram (
         var text: String
 ) : CustomArmorStand(location) {
 
+    init {
+        customNameVisible = true
+        customName = text
+        isInvisible = true
+        isSmall = true
+        setGravity(false)
+    }
+
     /** Prevent the player from putting any item to the hologram */
     override fun d(i: Int, itemstack: ItemStack?): Boolean {
         return false
@@ -33,26 +41,6 @@ class Hologram (
     /** Prevent the hologram from getting damaged */
     override fun damageEntity(damagesource: DamageSource?, f: Float): Boolean {
         return false
-    }
-
-    override fun isInvisible(): Boolean {
-        return true
-    }
-
-    override fun isBaby(): Boolean {
-        return false
-    }
-
-    override fun hasGravity(): Boolean {
-        return false
-    }
-
-    override fun getCustomNameVisible(): Boolean {
-        return true
-    }
-
-    override fun getCustomName(): String {
-        return text
     }
 }
 
