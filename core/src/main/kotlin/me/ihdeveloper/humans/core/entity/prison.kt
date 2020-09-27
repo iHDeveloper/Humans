@@ -18,6 +18,7 @@ class PrisonGuard(location: Location)
         setEquipment(0, ItemStack(Items.BOW))
 
         nameHologram.text = "§cPrison Guard"
+        spawnHologram()
     }
 
     /**

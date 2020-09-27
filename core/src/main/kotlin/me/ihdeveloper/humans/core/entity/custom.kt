@@ -1,6 +1,7 @@
 package me.ihdeveloper.humans.core.entity
 
 import me.ihdeveloper.humans.core.setPrivateField
+import me.ihdeveloper.humans.core.spawnEntity
 import me.ihdeveloper.humans.core.toMinecraftWorld
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntitySkeleton
@@ -29,9 +30,19 @@ open class CustomSkeleton(
         setLocation(location.x, location.y, location.z, location.yaw, location.pitch)
     }
 
+    /**
+     * Clears [PathfinderGoalSelector] using Reflection
+     */
     fun clearPathfinderSelector(selector: PathfinderGoalSelector) {
         setPrivateField(selector, "b", UnsafeList<PathfinderGoalSelector>())
         setPrivateField(selector, "c", UnsafeList<PathfinderGoalSelector>())
+    }
+
+    /**
+     * Spawns the name hologram
+     */
+    fun spawnHologram() {
+        spawnEntity(nameHologram, false, null)
     }
 
     /**
