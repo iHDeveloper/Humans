@@ -1,5 +1,6 @@
 package me.ihdeveloper.humans.core
 
+import me.ihdeveloper.humans.core.system.CommandSystem
 import me.ihdeveloper.humans.core.system.CustomEntitySystem
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -34,7 +35,10 @@ class Main : JavaPlugin() {
  */
 class GameCore {
     /** Represents the core systems of the game */
-    private val systems = arrayOf<System>(CustomEntitySystem())
+    private val systems = arrayOf<System>(
+            CommandSystem(),
+            CustomEntitySystem()
+    )
 
     /**
      * Initialize the core of the game

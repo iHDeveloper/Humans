@@ -1,6 +1,7 @@
 package me.ihdeveloper.humans.core.system
 
 import me.ihdeveloper.humans.core.System
+import me.ihdeveloper.humans.core.command.SummonCommand
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
 import me.ihdeveloper.humans.core.entity.CustomSkeleton
 import me.ihdeveloper.humans.core.entity.Hologram
@@ -32,5 +33,18 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
     }
 
     override fun dispose() {}
+}
 
+class CommandSystem : System("Core/Command") {
+    private val commands = arrayOf(SummonCommand())
+
+    override fun init(plugin: JavaPlugin) {
+        logger.info("Registering command executors...")
+        commands.forEach {
+            logger.debug("Registering command executor for /${it.name}...")
+            plugin.getCommand(it.name).executor = it
+        }
+    }
+
+    override fun dispose() {}
 }

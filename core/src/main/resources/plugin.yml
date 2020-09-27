@@ -2,3 +2,10 @@ name: Humans-Core
 version: 0.0
 main: me.ihdeveloper.humans.core.Main
 author: iHDeveloper
+
+commands:
+  summon:
+    usage: "summon [type]"
+    description: "Summons a custom entity of the game"
+    permission: "humans"
+    permission-message: "You don't have the permission to do this!"
