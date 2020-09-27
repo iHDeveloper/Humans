@@ -1,5 +1,6 @@
 rootProject.name = "Humans"
 
 include(
-    "core"
+    "core",
+    "hub"
 )

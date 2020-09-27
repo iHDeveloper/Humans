@@ -62,8 +62,8 @@ fun registerEntity(customClass: KClass<out Entity>, overrideClass: KClass<out En
 fun spawnEntity(entity: Entity): org.bukkit.entity.Entity = spawnEntity(entity, true)
 fun spawnEntity(entity: Entity, removeWhenFarAway: Boolean): org.bukkit.entity.Entity {
     entity.world.addEntity(entity, CreatureSpawnEvent.SpawnReason.CUSTOM)
-    if (removeWhenFarAway)
-        (entity as CraftLivingEntity).removeWhenFarAway = false
+    if (removeWhenFarAway && entity is CraftLivingEntity)
+        entity.removeWhenFarAway = false
     return entity.bukkitEntity
 }
 

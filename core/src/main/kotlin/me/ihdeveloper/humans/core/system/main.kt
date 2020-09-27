@@ -2,6 +2,7 @@ package me.ihdeveloper.humans.core.system
 
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.command.SummonCommand
+import me.ihdeveloper.humans.core.corePlugin
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
 import me.ihdeveloper.humans.core.entity.CustomSkeleton
 import me.ihdeveloper.humans.core.entity.Hologram
@@ -42,7 +43,12 @@ class CommandSystem : System("Core/Command") {
         logger.info("Registering command executors...")
         commands.forEach {
             logger.debug("Registering command executor for /${it.name}...")
-            plugin.getCommand(it.name).executor = it
+
+            when {
+                plugin.getCommand(it.name) != null -> plugin.getCommand(it.name).executor = it
+                corePlugin!!.getCommand(it.name) != null -> corePlugin!!.getCommand(it.name).executor = it
+                else -> logger.error("Failed to register command /${it.name}! It's not found in the plugin.yml!")
+            }
         }
     }
 

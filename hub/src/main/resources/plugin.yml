@@ -1,0 +1,6 @@
+name: Humans-Hub
+version: 0.0
+main: me.ihdeveloper.humans.hub.Main
+author: iHDeveloper
+depend:
+  - Humans-Core

@@ -1,6 +1,7 @@
 import de.undercouch.gradle.tasks.download.Download
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
@@ -47,6 +48,15 @@ subprojects {
 
         // Include the server jar source
         compileOnly(files(buildTools.serverJar.absolutePath))
+
+        if (project.name != "core")
+            compileOnly(project(":core"))
+    }
+
+    tasks.withType<KotlinCompile>().configureEach {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
     }
 
     tasks {
@@ -131,7 +141,7 @@ tasks {
     register("clean-plugins") {
         doLast {
             for (file in server.plugins.listFiles()!!) {
-                if (!file.name.endsWith(".jar"))
+                if (!file.name.startsWith(rootProject.name.toLowerCase()) || !file.name.endsWith(".jar"))
                     continue
                 file.delete()
             }
