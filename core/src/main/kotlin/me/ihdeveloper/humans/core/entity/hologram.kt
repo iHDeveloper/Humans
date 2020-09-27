@@ -12,12 +12,17 @@ import org.bukkit.Location
  */
 class Hologram (
         location: Location,
-        var text: String
+        text: String
 ) : CustomArmorStand(location) {
+
+    var text = text
+        set (value) {
+            customName = value
+            field = value
+        }
 
     init {
         customNameVisible = true
-        customName = text
         isInvisible = true
         isSmall = true
         setGravity(false)

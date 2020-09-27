@@ -15,7 +15,9 @@ class PrisonGuard(location: Location)
         clearPathfinderSelector(goalSelector)
         clearPathfinderSelector(targetSelector)
 
-        setEquipment(0, ItemStack(Items.BOW))
+        setEquipment(0, ItemStack(Items.IRON_SWORD))
+        setEquipment(2, ItemStack(Items.LEATHER_CHESTPLATE))
+        setEquipment(3, ItemStack(Items.LEATHER_LEGGINGS))
 
         nameHologram.text = "§cPrison Guard"
         spawnHologram()

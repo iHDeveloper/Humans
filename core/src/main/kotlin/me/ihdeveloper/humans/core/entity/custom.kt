@@ -13,13 +13,22 @@ import org.bukkit.craftbukkit.v1_8_R3.util.UnsafeList
  * An custom entity for armor stand
  */
 open class CustomArmorStand(location: Location)
-    : EntityArmorStand(toMinecraftWorld(location.world), location.x, location.y, location.z)
+    : EntityArmorStand(toMinecraftWorld(location.world), location.x, location.y, location.z) {
+
+    /**
+     * Fix: Gravity flag value is reversed
+     */
+    override fun setGravity(flag: Boolean) {
+        super.setGravity(!flag)
+    }
+
+}
 
 open class CustomSkeleton(
         private val location: Location
 ) : EntitySkeleton(toMinecraftWorld(location.world)) {
 
-    protected val nameHologram = Hologram(location.clone().apply {y += 1.25}, "§cSkeleton")
+    protected val nameHologram = Hologram(location.clone().apply {y += 1}, "§cSkeleton")
 
     /**
      * Updates the location of the entity in the world
