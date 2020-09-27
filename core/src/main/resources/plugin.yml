@@ -5,7 +5,7 @@ author: iHDeveloper
 
 commands:
   summon:
-    usage: "summon [type]"
+    usage: "summon <type>"
     description: "Summons a custom entity of the game"
     permission: "humans"
     permission-message: "You don't have the permission to do this!"

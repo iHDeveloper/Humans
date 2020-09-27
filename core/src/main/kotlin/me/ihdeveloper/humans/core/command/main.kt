@@ -1,6 +1,7 @@
 package me.ihdeveloper.humans.core.command
 
 import me.ihdeveloper.humans.core.Command
+import me.ihdeveloper.humans.core.GameLogger
 import me.ihdeveloper.humans.core.entity.Hologram
 import me.ihdeveloper.humans.core.entity.PrisonGuard
 import me.ihdeveloper.humans.core.spawnEntity
@@ -10,6 +11,7 @@ import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 
 class SummonCommand : Command("summon") {
+    private val logger = GameLogger("Core/Command/Summon")
 
     override fun execute(sender: CommandSender?, cmd: org.bukkit.command.Command?, label: String?, args: Array<out String>?): Boolean {
         if (sender is ConsoleCommandSender) {
@@ -43,7 +45,12 @@ class SummonCommand : Command("summon") {
             return true
         }
 
-        spawnEntity(entity, false)
+        val result = spawnEntity(entity, false, logger)
+        if (result) {
+            player.sendMessage("§aSuccess! §eSpawned an entity with type §b$type")
+        } else {
+            player.sendMessage("§cFailed! §eUnable to spawn entity with type §b$type")
+        }
         return true
     }
 

@@ -70,15 +70,15 @@ fun spawnNPCHologram(location: Location, name: String, type: String, state: Stri
         y += y + 1.0
 
         val stateHologram = Hologram(this, state)
-        spawnEntity(stateHologram, false)
+        spawnEntity(stateHologram, false, null)
 
         y += 0.50
         val typeHologram = Hologram(this, type)
-        spawnEntity(typeHologram, false)
+        spawnEntity(typeHologram, false, null)
 
         y += 0.25
         val nameHologram = Hologram(this, name)
-        spawnEntity(nameHologram, false)
+        spawnEntity(nameHologram, false, null)
         return arrayOf(nameHologram, typeHologram, stateHologram)
     }
 }
