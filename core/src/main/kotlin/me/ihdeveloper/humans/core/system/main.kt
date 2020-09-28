@@ -19,10 +19,12 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockEvent
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.event.player.*
+import org.bukkit.event.server.ServerListPingEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
 import org.bukkit.plugin.java.JavaPlugin
@@ -216,6 +218,45 @@ class PlayerSystem : System("Core/Player"), Listener {
     override fun dispose() {}
 
     /**
+     * Sends a welcome message to the players.
+     *
+     * Prevent from the broadcasting the join message
+     */
+    @EventHandler
+    fun onJoin(event: PlayerJoinEvent) {
+        event.player.run {
+            // TODO send a special message for new players!
+            sendMessage("§eWelcome back, §7Human§e!")
+            sendMessage("")
+            sendMessage("")
+
+            for (player in Bukkit.getOnlinePlayers()) {
+                if (!player.isOp)
+                    continue
+
+                player.sendMessage("§8[§e@§8] §a+ §9${player.displayName}")
+            }
+        }
+
+        event.joinMessage = null
+    }
+
+    /**
+     * Prevent broadcasting the quit message
+     */
+    @EventHandler
+    fun onQuit(event: PlayerQuitEvent) {
+        for (player in Bukkit.getOnlinePlayers()) {
+            if (!player.isOp)
+                continue
+
+            player.sendMessage("§8[§e@§8] §c- §9${player.displayName}")
+        }
+
+        event.quitMessage = null
+    }
+
+    /**
      * Prevent PVP between players in the game
      */
     @EventHandler
@@ -243,4 +284,35 @@ class PlayerSystem : System("Core/Player"), Listener {
         event.isCancelled = true
     }
 
+    /**
+     * Prevent the player from getting hunger
+     */
+    @EventHandler
+    fun onFoodLevel(event: FoodLevelChangeEvent) {
+        event.foodLevel = 20
+    }
+
+}
+
+const val SERVER_MOTD = """
+    §e§lHUMANS §8§l- §7§lv0.0-ALPHA
+"""
+
+/**
+ * A system for handling login and ping events
+ */
+class LoginSystem : System("Core/Login"), Listener {
+
+    override fun init(plugin: JavaPlugin) {
+        Bukkit.getPluginManager().registerEvents(this, plugin)
+    }
+
+    override fun dispose() {}
+
+    // TODO Handle login event for loading profiles
+
+    @EventHandler
+    fun onPing(event: ServerListPingEvent) {
+        event.motd = SERVER_MOTD
+    }
 }

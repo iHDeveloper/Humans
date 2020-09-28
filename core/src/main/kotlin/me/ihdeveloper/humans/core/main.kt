@@ -35,6 +35,7 @@ class Main : JavaPlugin() {
 class GameCore {
     /** Represents the core systems of the game */
     private val systems = arrayOf(
+        LoginSystem(),
         BlockSystem(),
         CommandSystem(),
         MenuSystem(),
