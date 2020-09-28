@@ -10,18 +10,19 @@ import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntitySkeleton
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockEvent
+import org.bukkit.event.entity.CreatureSpawnEvent
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.inventory.InventoryMoveItemEvent
-import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.*
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
 import org.bukkit.plugin.java.JavaPlugin
@@ -32,6 +33,8 @@ import org.bukkit.plugin.java.JavaPlugin
 class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
 
     override fun init(plugin: JavaPlugin) {
+        Bukkit.getPluginManager().registerEvents(this, plugin)
+
         logger.info("Overriding entities...")
 
         /** Override base entities with custom ones */
@@ -46,8 +49,22 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
     }
 
     override fun dispose() {}
+
+    /**
+     * Prevent the game from spawning entities naturally
+     */
+    @EventHandler
+    fun onSpawn(event: CreatureSpawnEvent) {
+        if (event.spawnReason === CreatureSpawnEvent.SpawnReason.CUSTOM)
+            return
+
+        event.isCancelled = true
+    }
 }
 
+/**
+ * A system for registering commands
+ */
 class CommandSystem : System("Core/Command") {
     private val commands = arrayOf(SummonCommand())
 
@@ -67,6 +84,9 @@ class CommandSystem : System("Core/Command") {
     override fun dispose() {}
 }
 
+/**
+ * A system for managing the block events in the game
+ */
 class BlockSystem : System("Core/Block"), Listener {
 
     override fun init(plugin: JavaPlugin) {
@@ -88,7 +108,24 @@ class BlockSystem : System("Core/Block"), Listener {
     }
 }
 
-val GAME_MENU = ItemStack(Material.NETHER_STAR, 1)
+/**
+ * An item for the game menu
+ */
+val GAME_MENU = ItemStack(Material.NETHER_STAR, 1).apply {
+    itemMeta.apply {
+        displayName = "§eGame Menu §7(Right click)"
+        lore = arrayListOf(
+            "§7View your profile in the game!",
+            "§7Track your skills, collections, etc...",
+            "",
+            "§6Click to open!"
+        )
+    }
+}
+
+/**
+ * A system for managing the game menu
+ */
 class MenuSystem : System("Core/Menu"), Listener {
 
     override fun init(plugin: JavaPlugin) {
@@ -165,4 +202,45 @@ class MenuSystem : System("Core/Menu"), Listener {
         player.sendMessage("§cCurrently the game menu is disabled!")
         player.sendMessage("§cIt's under heavy development.")
     }
+}
+
+/**
+ * A system for managing the player events
+ */
+class PlayerSystem : System("Core/Player"), Listener {
+
+    override fun init(plugin: JavaPlugin) {
+        Bukkit.getPluginManager().registerEvents(this, plugin)
+    }
+
+    override fun dispose() {}
+
+    /**
+     * Prevent PVP between players in the game
+     */
+    @EventHandler
+    fun onPvP(event: EntityDamageByEntityEvent) {
+        if (event.entityType !== EntityType.PLAYER)
+            return
+        if (event.damager.type !== EntityType.PLAYER)
+            return
+        event.isCancelled = true
+    }
+
+    /**
+     * Prevent the player from picking up items
+     */
+    @EventHandler
+    fun onPickup(event: PlayerPickupItemEvent) {
+        event.isCancelled = true
+    }
+
+    /**
+     * Prevent the player from dropping items
+     */
+    @EventHandler
+    fun onDrop(event: PlayerDropItemEvent) {
+        event.isCancelled = true
+    }
+
 }

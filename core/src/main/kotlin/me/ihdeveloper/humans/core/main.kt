@@ -1,9 +1,6 @@
 package me.ihdeveloper.humans.core
 
-import me.ihdeveloper.humans.core.system.BlockSystem
-import me.ihdeveloper.humans.core.system.CommandSystem
-import me.ihdeveloper.humans.core.system.CustomEntitySystem
-import me.ihdeveloper.humans.core.system.MenuSystem
+import me.ihdeveloper.humans.core.system.*
 import org.bukkit.plugin.java.JavaPlugin
 
 /** An instance of game core */
@@ -37,11 +34,12 @@ class Main : JavaPlugin() {
  */
 class GameCore {
     /** Represents the core systems of the game */
-    private val systems = arrayOf<System>(
+    private val systems = arrayOf(
         BlockSystem(),
         CommandSystem(),
         MenuSystem(),
-        CustomEntitySystem()
+        CustomEntitySystem(),
+        PlayerSystem()
     )
 
     /**
