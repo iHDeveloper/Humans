@@ -6,9 +6,12 @@ import me.ihdeveloper.humans.core.entity.CustomArmorStand
 import me.ihdeveloper.humans.core.entity.CustomSkeleton
 import me.ihdeveloper.humans.core.entity.Hologram
 import me.ihdeveloper.humans.core.entity.PrisonGuard
+import me.ihdeveloper.humans.core.entity.fromEntityType
+import net.minecraft.server.v1_8_R3.Entity
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntitySkeleton
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
@@ -21,7 +24,6 @@ import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.event.player.*
 import org.bukkit.event.server.ServerListPingEvent
@@ -33,6 +35,26 @@ import org.bukkit.plugin.java.JavaPlugin
  * A system for registering the entities of the game core
  */
 class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
+    data class EntityInfo(
+        val type: String,
+        val location: Location
+    ) {
+        companion object {
+            fun deserialize(data: Map<String, Any>) = EntityInfo(
+                data["type"] as String,
+                data["location"] as Location
+            )
+        }
+
+        fun serialize(): Map<String, Any> {
+            return mapOf(
+                "type" to type,
+                "location" to location
+            )
+        }
+    }
+
+    private val config = Configuration("entities")
 
     override fun init(plugin: JavaPlugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin)
@@ -48,14 +70,51 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
         /** Register custom entities */
         registerEntity(Hologram::class, CustomArmorStand::class, logger)
         registerEntity(PrisonGuard::class, CustomSkeleton::class, logger)
+
+        /** Loads the entities  */
+        config.load(logger)
+        val rawEntities = config.get<ArrayList<Map<String, Any>>>("entities", arrayListOf())
+
+        for (rawEntity in rawEntities) {
+            val info = EntityInfo.deserialize(rawEntity)
+            val type = info.type
+            val location = info.location
+            logger.debug("Loading entity with info [type=$type, world=${location.world.name}, x=${location.x}, y=${location.y}, z=${location.z}]...")
+
+            val entity = fromEntityType(type, location)
+            if (entity == null) {
+                logger.warn("Entity type not found: $type")
+                continue
+            }
+
+            spawnEntity(entity, false, logger)
+            summonedEntities.add(entity)
+            summonedEntitiesInfo.add(info)
+        }
+
     }
 
-    override fun dispose() {}
+    override fun dispose() {
+        for (summonedEntity in summonedEntities) {
+            summonedEntity.bukkitEntity.remove()
+        }
+
+        val entities = arrayListOf<Map<String, Any>>()
+        for (info in summonedEntitiesInfo) {
+            entities.add(info.serialize())
+        }
+        config.set("entities", entities)
+        config.save(logger)
+
+        summonedEntities.clear()
+        summonedEntitiesInfo.clear()
+    }
 
     /**
      * Prevent the game from spawning entities naturally
      */
     @EventHandler
+    @Suppress("UNUSED")
     fun onSpawn(event: CreatureSpawnEvent) {
         if (event.spawnReason === CreatureSpawnEvent.SpawnReason.CUSTOM)
             return
@@ -102,6 +161,7 @@ class BlockSystem : System("Core/Block"), Listener {
      * The game doesn't want to be conflicted with vanilla block system
      */
     @EventHandler
+    @Suppress("UNUSED")
     fun onEvent(event: BlockEvent) {
         if (event !is Cancellable)
             return
@@ -140,6 +200,7 @@ class MenuSystem : System("Core/Menu"), Listener {
      * Prevent the player from clicking on the menu
      */
     @EventHandler
+    @Suppress("UNUSED")
     fun onClick(event: InventoryClickEvent) {
         if (event.clickedInventory !is PlayerInventory)
             return
@@ -154,6 +215,7 @@ class MenuSystem : System("Core/Menu"), Listener {
      * Prevent the player from moving the item
      */
     @EventHandler
+    @Suppress("UNUSED")
     fun onMoveItem(event: InventoryMoveItemEvent) {
         if (event.item !== GAME_MENU)
             return
@@ -164,6 +226,7 @@ class MenuSystem : System("Core/Menu"), Listener {
      * Put the menu when the player joins the server
      */
     @EventHandler
+    @Suppress("UNUSED")
     fun onJoin(event: PlayerJoinEvent) {
         event.player.inventory.setItem(8, GAME_MENU)
     }
@@ -172,6 +235,7 @@ class MenuSystem : System("Core/Menu"), Listener {
      * Remove the menu when the player quits the server
      */
     @EventHandler
+    @Suppress("UNUSED")
     fun onQuit(event: PlayerQuitEvent) {
         event.player.inventory.setItem(8, ITEMSTACK_AIR)
     }
@@ -180,6 +244,7 @@ class MenuSystem : System("Core/Menu"), Listener {
      * Opens the menu when the player is right/left click the menu
      */
     @EventHandler
+    @Suppress("UNUSED")
     fun onInteract(event: PlayerInteractEvent) {
         val player = event.player
         val action = event.action
@@ -223,6 +288,7 @@ class PlayerSystem : System("Core/Player"), Listener {
      * Prevent from the broadcasting the join message
      */
     @EventHandler
+    @Suppress("UNUSED")
     fun onJoin(event: PlayerJoinEvent) {
         event.player.run {
             // TODO send a special message for new players!
@@ -245,6 +311,7 @@ class PlayerSystem : System("Core/Player"), Listener {
      * Prevent broadcasting the quit message
      */
     @EventHandler
+    @Suppress("UNUSED")
     fun onQuit(event: PlayerQuitEvent) {
         for (player in Bukkit.getOnlinePlayers()) {
             if (!player.isOp)
@@ -260,6 +327,7 @@ class PlayerSystem : System("Core/Player"), Listener {
      * Prevent PVP between players in the game
      */
     @EventHandler
+    @Suppress("UNUSED")
     fun onPvP(event: EntityDamageByEntityEvent) {
         if (event.entityType !== EntityType.PLAYER)
             return
@@ -272,6 +340,7 @@ class PlayerSystem : System("Core/Player"), Listener {
      * Prevent the player from picking up items
      */
     @EventHandler
+    @Suppress("UNUSED")
     fun onPickup(event: PlayerPickupItemEvent) {
         event.isCancelled = true
     }
@@ -280,6 +349,7 @@ class PlayerSystem : System("Core/Player"), Listener {
      * Prevent the player from dropping items
      */
     @EventHandler
+    @Suppress("UNUSED")
     fun onDrop(event: PlayerDropItemEvent) {
         event.isCancelled = true
     }
@@ -288,6 +358,7 @@ class PlayerSystem : System("Core/Player"), Listener {
      * Prevent the player from getting hunger
      */
     @EventHandler
+    @Suppress("UNUSED")
     fun onFoodLevel(event: FoodLevelChangeEvent) {
         event.foodLevel = 20
     }
@@ -312,6 +383,7 @@ class LoginSystem : System("Core/Login"), Listener {
     // TODO Handle login event for loading profiles
 
     @EventHandler
+    @Suppress("UNUSED")
     fun onPing(event: ServerListPingEvent) {
         event.motd = SERVER_MOTD
     }

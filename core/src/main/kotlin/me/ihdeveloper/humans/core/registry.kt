@@ -1,10 +1,18 @@
 package me.ihdeveloper.humans.core
 
+import me.ihdeveloper.humans.core.system.CustomEntitySystem
 import net.minecraft.server.v1_8_R3.Entity
 import net.minecraft.server.v1_8_R3.EntityTypes
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity
 import org.bukkit.event.entity.CreatureSpawnEvent
 import kotlin.reflect.KClass
+
+/**
+ * A list of all the summoned entities to keep track of them
+ * to remove them when the custom entity system is disposing
+ */
+val summonedEntities = arrayListOf<Entity>()
+val summonedEntitiesInfo = arrayListOf<CustomEntitySystem.EntityInfo>()
 
 private typealias NameToClass = MutableMap<String, Class<out Entity>>  // c
 private typealias ClassToName = MutableMap<Class<out Entity>, String>  // d

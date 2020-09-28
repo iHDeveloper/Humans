@@ -1,7 +1,13 @@
 package me.ihdeveloper.humans.core
 
-import me.ihdeveloper.humans.core.system.*
+import me.ihdeveloper.humans.core.system.BlockSystem
+import me.ihdeveloper.humans.core.system.CommandSystem
+import me.ihdeveloper.humans.core.system.CustomEntitySystem
+import me.ihdeveloper.humans.core.system.LoginSystem
+import me.ihdeveloper.humans.core.system.MenuSystem
+import me.ihdeveloper.humans.core.system.PlayerSystem
 import org.bukkit.plugin.java.JavaPlugin
+import java.io.File
 
 /** An instance of game core */
 val core = GameCore()
@@ -33,6 +39,8 @@ class Main : JavaPlugin() {
  * The core of the game
  */
 class GameCore {
+    val dataFolder = File("plugins/Humans")
+
     /** Represents the core systems of the game */
     private val systems = arrayOf(
         LoginSystem(),

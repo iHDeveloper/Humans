@@ -4,7 +4,11 @@ import me.ihdeveloper.humans.core.Command
 import me.ihdeveloper.humans.core.GameLogger
 import me.ihdeveloper.humans.core.entity.Hologram
 import me.ihdeveloper.humans.core.entity.PrisonGuard
+import me.ihdeveloper.humans.core.entity.fromEntityType
 import me.ihdeveloper.humans.core.spawnEntity
+import me.ihdeveloper.humans.core.summonedEntities
+import me.ihdeveloper.humans.core.summonedEntitiesInfo
+import me.ihdeveloper.humans.core.system.CustomEntitySystem
 import net.minecraft.server.v1_8_R3.Entity
 import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
@@ -34,11 +38,7 @@ class SummonCommand : Command("summon") {
 
         val entity: Entity?
 
-        entity = when(type) {
-            "prison_guard" -> PrisonGuard(location)
-            "hologram" -> Hologram(location, "Text")
-            else -> null
-        }
+        entity = fromEntityType(type, location)
 
         if (entity == null) {
             player.sendMessage("§cFailed! §eCouldn't find the entity name.")
@@ -47,6 +47,8 @@ class SummonCommand : Command("summon") {
 
         val result = spawnEntity(entity, false, logger)
         if (result) {
+            summonedEntities.add(entity)
+            summonedEntitiesInfo.add(CustomEntitySystem.EntityInfo(type, location))
             player.sendMessage("§aSuccess! §eSpawned an entity with type §b$type")
         } else {
             player.sendMessage("§cFailed! §eUnable to spawn entity with type §b$type")
