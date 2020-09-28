@@ -216,7 +216,7 @@ class BlockSystem : System("Core/Block"), Listener {
  * An item for the game menu
  */
 val GAME_MENU = ItemStack(Material.NETHER_STAR, 1).apply {
-    itemMeta.apply {
+    itemMeta = itemMeta.apply {
         displayName = "§eGame Menu §7(Right click)"
         lore = arrayListOf(
             "§7View your profile in the game!",
