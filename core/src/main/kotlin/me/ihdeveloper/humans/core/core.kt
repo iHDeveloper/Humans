@@ -40,7 +40,7 @@ abstract class Command(val name: String): CommandExecutor {
  * Reader/Writer for the game configurations
  */
 class Configuration(val name: String) {
-    private val file = File(core.dataFolder, "${name}.yml")
+    private val file = File(dataFolder, "${name}.yml")
     private val config = YamlConfiguration()
 
     /**
@@ -49,6 +49,10 @@ class Configuration(val name: String) {
     fun load() = load(null)
     fun load(logger: GameLogger?) {
         logger?.info("Loading $name configuration in ${file.name}...")
+
+        if (!file.isFile)
+            file.createNewFile()
+
         config.load(file)
     }
 

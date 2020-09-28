@@ -1,13 +1,20 @@
 package me.ihdeveloper.humans.core.system
 
-import me.ihdeveloper.humans.core.*
+import me.ihdeveloper.humans.core.Configuration
+import me.ihdeveloper.humans.core.ITEMSTACK_AIR
+import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.command.SummonCommand
+import me.ihdeveloper.humans.core.corePlugin
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
 import me.ihdeveloper.humans.core.entity.CustomSkeleton
 import me.ihdeveloper.humans.core.entity.Hologram
 import me.ihdeveloper.humans.core.entity.PrisonGuard
 import me.ihdeveloper.humans.core.entity.fromEntityType
-import net.minecraft.server.v1_8_R3.Entity
+import me.ihdeveloper.humans.core.overrideEntity
+import me.ihdeveloper.humans.core.registerEntity
+import me.ihdeveloper.humans.core.spawnEntity
+import me.ihdeveloper.humans.core.summonedEntities
+import me.ihdeveloper.humans.core.summonedEntitiesInfo
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntitySkeleton
 import org.bukkit.Bukkit
@@ -19,13 +26,33 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
+import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockBurnEvent
+import org.bukkit.event.block.BlockDamageEvent
+import org.bukkit.event.block.BlockDispenseEvent
 import org.bukkit.event.block.BlockEvent
+import org.bukkit.event.block.BlockExplodeEvent
+import org.bukkit.event.block.BlockFadeEvent
+import org.bukkit.event.block.BlockFormEvent
+import org.bukkit.event.block.BlockFromToEvent
+import org.bukkit.event.block.BlockGrowEvent
+import org.bukkit.event.block.BlockIgniteEvent
+import org.bukkit.event.block.BlockMultiPlaceEvent
+import org.bukkit.event.block.BlockPhysicsEvent
+import org.bukkit.event.block.BlockPistonEvent
+import org.bukkit.event.block.BlockPistonExtendEvent
+import org.bukkit.event.block.BlockPistonRetractEvent
+import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryMoveItemEvent
-import org.bukkit.event.player.*
+import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerPickupItemEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.server.ServerListPingEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
@@ -161,8 +188,23 @@ class BlockSystem : System("Core/Block"), Listener {
      * The game doesn't want to be conflicted with vanilla block system
      */
     @EventHandler
-    @Suppress("UNUSED")
-    fun onEvent(event: BlockEvent) {
+    @Suppress("UNUSED") fun onEvent(event: BlockBreakEvent) = onEvent(event as BlockEvent)
+    @Suppress("UNUSED") fun onEvent(event: BlockPlaceEvent) = onEvent(event as BlockEvent)
+    @Suppress("UNUSED") fun onEvent(event: BlockPistonEvent) = onEvent(event as BlockEvent)
+    @Suppress("UNUSED") fun onEvent(event: BlockPhysicsEvent) = onEvent(event as BlockEvent)
+    @Suppress("UNUSED") fun onEvent(event: BlockIgniteEvent) = onEvent(event as BlockEvent)
+    @Suppress("UNUSED") fun onEvent(event: BlockGrowEvent) = onEvent(event as BlockEvent)
+    @Suppress("UNUSED") fun onEvent(event: BlockFadeEvent) = onEvent(event as BlockEvent)
+    @Suppress("UNUSED") fun onEvent(event: BlockDispenseEvent) = onEvent(event as BlockEvent)
+    @Suppress("UNUSED") fun onEvent(event: BlockFormEvent) = onEvent(event as BlockEvent)
+    @Suppress("UNUSED") fun onEvent(event: BlockBurnEvent) = onEvent(event as BlockEvent)
+    @Suppress("UNUSED") fun onEvent(event: BlockExplodeEvent) = onEvent(event as BlockEvent)
+    @Suppress("UNUSED") fun onEvent(event: BlockDamageEvent) = onEvent(event as BlockEvent)
+    @Suppress("UNUSED") fun onEvent(event: BlockFromToEvent) = onEvent(event as BlockEvent)
+    @Suppress("UNUSED") fun onEvent(event: BlockMultiPlaceEvent) = onEvent(event as BlockEvent)
+    @Suppress("UNUSED") fun onEvent(event: BlockPistonExtendEvent) = onEvent(event as BlockEvent)
+    @Suppress("UNUSED") fun onEvent(event: BlockPistonRetractEvent) = onEvent(event as BlockEvent)
+    @Suppress("UNUSED") fun onEvent(event: BlockEvent) {
         if (event !is Cancellable)
             return
 

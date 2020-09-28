@@ -9,6 +9,9 @@ import me.ihdeveloper.humans.core.system.PlayerSystem
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
+/** Folder that contains data about the plugin */
+val dataFolder = File("plugins/Humans")
+
 /** An instance of game core */
 val core = GameCore()
 
@@ -26,6 +29,10 @@ private val logger = GameLogger("Core")
 class Main : JavaPlugin() {
 
     override fun onEnable() {
+        if (!dataFolder.isDirectory) {
+            dataFolder.mkdir()
+        }
+
         corePlugin = this
         logger.info("Core is ready to use!")
     }
@@ -39,7 +46,6 @@ class Main : JavaPlugin() {
  * The core of the game
  */
 class GameCore {
-    val dataFolder = File("plugins/Humans")
 
     /** Represents the core systems of the game */
     private val systems = arrayOf(
