@@ -11,7 +11,11 @@ import me.ihdeveloper.humans.core.overrideEntity
 import me.ihdeveloper.humans.core.registerEntity
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntitySkeleton
+import org.bukkit.Bukkit
+import org.bukkit.event.Cancellable
+import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.*
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
@@ -53,4 +57,25 @@ class CommandSystem : System("Core/Command") {
     }
 
     override fun dispose() {}
+}
+
+class BlockSystem : System("Core/Block"), Listener {
+
+    override fun init(plugin: JavaPlugin) {
+        Bukkit.getPluginManager().registerEvents(this, plugin)
+    }
+
+    override fun dispose() {}
+
+    /**
+     * Cancel any block event.
+     * The game doesn't want to be conflicted with vanilla block system
+     */
+    @EventHandler
+    fun onEvent(event: BlockEvent) {
+        if (event !is Cancellable)
+            return
+
+        event.isCancelled = true
+    }
 }
