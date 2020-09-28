@@ -2,8 +2,16 @@ package me.ihdeveloper.humans.core
 
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld
+import org.bukkit.inventory.ItemStack
+
+/**
+ * An instance of Item Stack AIR
+ * Without allocating more of them
+ */
+val ITEMSTACK_AIR = ItemStack(Material.AIR)
 
 /** Minecraft Colors */
 val COLOR_AQUA = ChatColor.AQUA

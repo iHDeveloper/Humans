@@ -3,6 +3,7 @@ package me.ihdeveloper.humans.core
 import me.ihdeveloper.humans.core.system.BlockSystem
 import me.ihdeveloper.humans.core.system.CommandSystem
 import me.ihdeveloper.humans.core.system.CustomEntitySystem
+import me.ihdeveloper.humans.core.system.MenuSystem
 import org.bukkit.plugin.java.JavaPlugin
 
 /** An instance of game core */
@@ -39,6 +40,7 @@ class GameCore {
     private val systems = arrayOf<System>(
         BlockSystem(),
         CommandSystem(),
+        MenuSystem(),
         CustomEntitySystem()
     )
 
