@@ -8,7 +8,6 @@ import me.ihdeveloper.humans.core.entity.WarpCart
 import me.ihdeveloper.humans.core.warps
 import me.ihdeveloper.humans.core.warpsInfo
 import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftMinecart
 import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
@@ -71,7 +70,6 @@ class WarpSystem : System("Core/Warp"), Listener {
                 if (!it.check(player))
                     return
 
-                logger.debug("Player[${player.name}] joined the warp gate!")
                 it.join(player)
             }
         }
@@ -98,6 +96,7 @@ class WarpSystem : System("Core/Warp"), Listener {
                 return
 
             vehicle.passenger.teleport(cart.warp.spawn)
+            vehicle.remove()
         }
     }
 

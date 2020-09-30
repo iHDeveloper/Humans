@@ -274,7 +274,7 @@ class MenuSystem : System("Core/Menu"), Listener {
     @EventHandler
     @Suppress("UNUSED")
     fun onMoveItem(event: InventoryMoveItemEvent) {
-        if (event.item !== GAME_MENU)
+        if (event.item != GAME_MENU)
             return
         event.isCancelled = true
     }
@@ -312,7 +312,7 @@ class MenuSystem : System("Core/Menu"), Listener {
                 )
             return
 
-        if (event.item !== GAME_MENU)
+        if (event.item != GAME_MENU)
             return
 
         open(player)
