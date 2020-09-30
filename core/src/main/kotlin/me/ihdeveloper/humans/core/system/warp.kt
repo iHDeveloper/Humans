@@ -69,7 +69,12 @@ class WarpSystem : System("Core/Warp"), Listener {
                     return
 
                 val result = it.check(player)
-
+                player.sendMessage("Result: $result")
+                it.run {
+                    player.sendMessage("From: x=${from.x}, y=${from.y}, z=${from.z}")
+                    player.location.block.location.run { player.sendMessage("Current: x=${x}, y=${y}, z=${z}") }
+                    player.sendMessage("To: x=${to.x}, y=${to.y}, z=${to.z}")
+                }
                 if (!result)
                     return
 

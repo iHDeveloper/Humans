@@ -74,7 +74,7 @@ fun toMinecraftWorld(bukkitWorld: World): net.minecraft.server.v1_8_R3.World {
 fun Location.between(from: Location, to: Location): Boolean {
     if (from.y > y || y > to.y)
         return false
-    if (from.x > x || x > to.x)
+    if (from.x < x || x < to.x)
         return false
     if (from.z > z || z > to.z)
         return false

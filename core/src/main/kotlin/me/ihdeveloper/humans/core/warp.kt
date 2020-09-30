@@ -52,8 +52,8 @@ class Warp(
         )
     }
 
-    private val from = center.clone().subtract(2.0, 0.0, 0.0)
-    private val to = center.clone().add(-2.0, 4.0, 0.0)
+    val from = center.clone().add(2.0, 0.0, 0.0)
+    val to = center.clone().add(-2.0, 4.0, 0.0)
     private val carts = arrayListOf<WarpCart>()
     private var holograms: Array<Hologram>? = null
 
@@ -80,7 +80,7 @@ class Warp(
     /**
      * Check if the player is in front of the gate
      */
-    fun check(player: Player) = player.location.between(from, to)
+    fun check(player: Player) = player.location.block.location.between(from, to)
 
     /**
      * Creates the mine cart entity. And rides the player on it.
