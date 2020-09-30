@@ -2,6 +2,7 @@ package me.ihdeveloper.humans.core
 
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld
@@ -65,4 +66,17 @@ class GameLogger(private val name: String) {
  */
 fun toMinecraftWorld(bukkitWorld: World): net.minecraft.server.v1_8_R3.World {
     return (bukkitWorld as CraftWorld).handle
+}
+
+/**
+ * Check if the location is between two locations
+ */
+fun Location.between(from: Location, to: Location): Boolean {
+    if (from.y > y || y > to.y)
+        return false
+    if (from.x > x || x > to.x)
+        return false
+    if (from.z > z || z > to.z)
+        return false
+    return true
 }

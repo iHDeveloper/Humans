@@ -6,11 +6,12 @@ import me.ihdeveloper.humans.core.system.CustomEntitySystem
 import me.ihdeveloper.humans.core.system.LoginSystem
 import me.ihdeveloper.humans.core.system.MenuSystem
 import me.ihdeveloper.humans.core.system.PlayerSystem
+import me.ihdeveloper.humans.core.system.WarpSystem
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
 /** Folder that contains data about the plugin */
-val dataFolder = File("plugins/Humans")
+val dataFolder = File("plugins/Humans").also { it.mkdir() }
 
 /** An instance of game core */
 val core = GameCore()
@@ -54,7 +55,8 @@ class GameCore {
         CommandSystem(),
         MenuSystem(),
         CustomEntitySystem(),
-        PlayerSystem()
+        PlayerSystem(),
+        WarpSystem()
     )
 
     /**

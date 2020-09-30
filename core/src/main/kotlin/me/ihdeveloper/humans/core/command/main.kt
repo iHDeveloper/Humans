@@ -1,9 +1,7 @@
 package me.ihdeveloper.humans.core.command
 
-import me.ihdeveloper.humans.core.Command
+import me.ihdeveloper.humans.core.AdminCommand
 import me.ihdeveloper.humans.core.GameLogger
-import me.ihdeveloper.humans.core.entity.Hologram
-import me.ihdeveloper.humans.core.entity.PrisonGuard
 import me.ihdeveloper.humans.core.entity.fromEntityType
 import me.ihdeveloper.humans.core.spawnEntity
 import me.ihdeveloper.humans.core.summonedEntities
@@ -14,7 +12,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 
-class SummonCommand : Command("summon") {
+class SummonCommand : AdminCommand("summon") {
     private val logger = GameLogger("Core/Command/Summon")
 
     override fun execute(sender: CommandSender?, cmd: org.bukkit.command.Command?, label: String?, args: Array<out String>?): Boolean {

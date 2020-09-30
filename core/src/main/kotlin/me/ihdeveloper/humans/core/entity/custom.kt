@@ -4,6 +4,7 @@ import me.ihdeveloper.humans.core.setPrivateField
 import me.ihdeveloper.humans.core.spawnEntity
 import me.ihdeveloper.humans.core.toMinecraftWorld
 import net.minecraft.server.v1_8_R3.EntityArmorStand
+import net.minecraft.server.v1_8_R3.EntityMinecartRideable
 import net.minecraft.server.v1_8_R3.EntitySkeleton
 import net.minecraft.server.v1_8_R3.PathfinderGoalSelector
 import org.bukkit.Location
@@ -63,3 +64,9 @@ open class CustomSkeleton(
     }
 
 }
+
+/**
+ * Custom entity for rideable mine cart
+ */
+open class CustomMineCart(location: Location)
+    : EntityMinecartRideable(toMinecraftWorld(location.world))

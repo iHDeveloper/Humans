@@ -37,6 +37,21 @@ abstract class Command(val name: String): CommandExecutor {
 }
 
 /**
+ * Handle the command for admin only
+ */
+abstract class AdminCommand(name: String): me.ihdeveloper.humans.core.Command(name) {
+
+    override fun onCommand(p0: CommandSender?, p1: Command?, p2: String?, p3: Array<out String>?): Boolean {
+        if (!p0!!.isOp) {
+            p0.sendMessage("§cYou don't have permission to do this!")
+            return true
+        }
+
+        return super.onCommand(p0, p1, p2, p3)
+    }
+}
+
+/**
  * Reader/Writer for the game configurations
  */
 class Configuration(val name: String) {
@@ -87,4 +102,18 @@ class Configuration(val name: String) {
         logger?.info("Saving $name configuration in ${file.name}...")
         config.save(file)
     }
+}
+
+/**
+ * Implementation for configuration serializable
+ */
+interface ConfigurationSerialize {
+    fun serialize(): Map<String, Any>
+}
+
+/**
+ * Implementation for configuration deserializable
+ */
+interface ConfigurationDeserialize<T> {
+    fun deserialize(data: Map<String, Any>): T
 }

@@ -1,14 +1,21 @@
 package me.ihdeveloper.humans.core.system
 
 import me.ihdeveloper.humans.core.Configuration
+import me.ihdeveloper.humans.core.ConfigurationDeserialize
+import me.ihdeveloper.humans.core.ConfigurationSerialize
 import me.ihdeveloper.humans.core.ITEMSTACK_AIR
 import me.ihdeveloper.humans.core.System
+import me.ihdeveloper.humans.core.command.CreateWarpCommand
+import me.ihdeveloper.humans.core.command.SetWarpDisplayNameCommand
+import me.ihdeveloper.humans.core.command.SetWarpLocationCommand
 import me.ihdeveloper.humans.core.command.SummonCommand
 import me.ihdeveloper.humans.core.corePlugin
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
+import me.ihdeveloper.humans.core.entity.CustomMineCart
 import me.ihdeveloper.humans.core.entity.CustomSkeleton
 import me.ihdeveloper.humans.core.entity.Hologram
 import me.ihdeveloper.humans.core.entity.PrisonGuard
+import me.ihdeveloper.humans.core.entity.WarpCart
 import me.ihdeveloper.humans.core.entity.fromEntityType
 import me.ihdeveloper.humans.core.overrideEntity
 import me.ihdeveloper.humans.core.registerEntity
@@ -16,6 +23,7 @@ import me.ihdeveloper.humans.core.spawnEntity
 import me.ihdeveloper.humans.core.summonedEntities
 import me.ihdeveloper.humans.core.summonedEntitiesInfo
 import net.minecraft.server.v1_8_R3.EntityArmorStand
+import net.minecraft.server.v1_8_R3.EntityMinecartRideable
 import net.minecraft.server.v1_8_R3.EntitySkeleton
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -65,20 +73,18 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
     data class EntityInfo(
         val type: String,
         val location: Location
-    ) {
-        companion object {
-            fun deserialize(data: Map<String, Any>) = EntityInfo(
+    ) : ConfigurationSerialize {
+        companion object: ConfigurationDeserialize<EntityInfo> {
+            override fun deserialize(data: Map<String, Any>) = EntityInfo(
                 data["type"] as String,
                 data["location"] as Location
             )
         }
 
-        fun serialize(): Map<String, Any> {
-            return mapOf(
-                "type" to type,
-                "location" to location
-            )
-        }
+        override fun serialize(): Map<String, Any> = mapOf(
+            "type" to type,
+            "location" to location
+        )
     }
 
     private val config = Configuration("entities")
@@ -91,12 +97,14 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
         /** Override base entities with custom ones */
         overrideEntity(EntityArmorStand::class, CustomArmorStand::class, logger)
         overrideEntity(EntitySkeleton::class, CustomSkeleton::class, logger)
+        overrideEntity(EntityMinecartRideable::class, CustomMineCart::class, logger)
 
         logger.info("Registering entities...")
 
         /** Register custom entities */
         registerEntity(Hologram::class, CustomArmorStand::class, logger)
         registerEntity(PrisonGuard::class, CustomSkeleton::class, logger)
+        registerEntity(WarpCart::class, CustomMineCart::class, logger)
 
         /** Loads the entities  */
         config.load(logger)
@@ -154,7 +162,14 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
  * A system for registering commands
  */
 class CommandSystem : System("Core/Command") {
-    private val commands = arrayOf(SummonCommand())
+    private val commands = arrayOf(
+        SummonCommand(),
+
+        /** Warp Commands */
+        CreateWarpCommand(),
+        SetWarpDisplayNameCommand(),
+        SetWarpLocationCommand(),
+    )
 
     override fun init(plugin: JavaPlugin) {
         logger.info("Registering command executors...")

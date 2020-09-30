@@ -9,3 +9,12 @@ commands:
     description: "Summons a custom entity of the game"
     permission: "humans"
     permission-message: "You don't have the permission to do this!"
+  create-warp:
+    usage: "create-warp"
+    description: "Creates a warp info instance"
+  set-warp-name:
+    usage: "set-warp-name <name> [more]"
+    description: "Sets the warp name"
+  set-warp-loc:
+    usage: "set-warp-loc <center|start|end>"
+    description: "Sets the warp location"
