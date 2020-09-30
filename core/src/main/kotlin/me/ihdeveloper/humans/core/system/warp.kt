@@ -68,14 +68,7 @@ class WarpSystem : System("Core/Warp"), Listener {
                 if (player.vehicle != null && player.vehicle.type === EntityType.MINECART)
                     return
 
-                val result = it.check(player)
-                player.sendMessage("Result: $result")
-                it.run {
-                    player.sendMessage("From: x=${from.x}, y=${from.y}, z=${from.z}")
-                    player.location.block.location.run { player.sendMessage("Current: x=${x}, y=${y}, z=${z}") }
-                    player.sendMessage("To: x=${to.x}, y=${to.y}, z=${to.z}")
-                }
-                if (!result)
+                if (!it.check(player))
                     return
 
                 logger.debug("Player[${player.name}] joined the warp gate!")
@@ -98,12 +91,13 @@ class WarpSystem : System("Core/Warp"), Listener {
                 return
 
             val cart = (vehicle as CraftMinecart).handle as WarpCart
-
-            val location = cart.bukkitEntity.location
-            if (to.distance(location) > 1)
+            if (to.block.location.distance(cart.end.block.location) > 1)
                 return
 
-            cart.bukkitEntity.teleport(cart.start)
+            vehicle.passenger.sendMessage("Teleporting...")
+            cart.start.run {
+                cart.setLocation(x, y + 3, z, yaw, pitch)
+            }
         }
     }
 
