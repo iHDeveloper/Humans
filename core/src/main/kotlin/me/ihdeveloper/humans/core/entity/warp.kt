@@ -1,5 +1,6 @@
 package me.ihdeveloper.humans.core.entity
 
+import me.ihdeveloper.humans.core.Warp
 import net.minecraft.server.v1_8_R3.DamageSource
 import net.minecraft.server.v1_8_R3.EntityHuman
 import org.bukkit.Location
@@ -9,12 +10,14 @@ import org.bukkit.Location
  */
 class WarpCart(
     private val playerEntityId: Int,
-    val start: Location,
-    val end: Location,
-) : CustomMineCart(start) {
+    location: Location,
+    val warp: Warp
+) : CustomMineCart(location) {
 
     init {
-        setLocation(start.x, start.y, start.z, start.yaw, start.pitch)
+        location.run {
+            setLocation(x, y, z, yaw, pitch)
+        }
     }
 
     /**

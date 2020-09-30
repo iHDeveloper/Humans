@@ -40,8 +40,8 @@ data class WarpInfo(
 class Warp(
     private val displayName: String,
     private val center: Location,
-    private val start: Location,
-    private val end: Location
+    val start: Location,
+    val end: Location
 ) {
     companion object {
         fun fromInfo(info: WarpInfo) = Warp(
@@ -52,8 +52,9 @@ class Warp(
         )
     }
 
-    val from = center.clone().add(2.0, 0.0, 0.0)
-    val to = center.clone().add(-2.0, 4.0, 0.0)
+    val spawn: Location = center.clone().subtract(0.5, 0.0, 2.5)
+    private val from = center.clone().add(2.0, 0.0, 0.0)
+    private val to = center.clone().add(-2.0, 4.0, 0.0)
     private val carts = arrayListOf<WarpCart>()
     private var holograms: Array<Hologram>? = null
 
@@ -87,7 +88,7 @@ class Warp(
      * And, let the mine cart move.
      */
     fun join(player: Player) {
-        val cart = WarpCart(player.entityId, start, end)
+        val cart = WarpCart(player.entityId, start, this)
         carts.add(cart)
 
         spawnEntity(cart, false, null)

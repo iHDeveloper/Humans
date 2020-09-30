@@ -90,14 +90,14 @@ class WarpSystem : System("Core/Warp"), Listener {
             if ((vehicle as CraftMinecart).handle !is WarpCart)
                 return
 
+            if (vehicle.passenger == null)
+                vehicle.remove()
+
             val cart = (vehicle as CraftMinecart).handle as WarpCart
-            if (to.block.location.distance(cart.end.block.location) > 1)
+            if (to.block.location.distance(cart.warp.end.block.location) > 1)
                 return
 
-            vehicle.passenger.sendMessage("Teleporting...")
-            cart.start.run {
-                cart.setLocation(x, y + 3, z, yaw, pitch)
-            }
+            vehicle.passenger.teleport(cart.warp.spawn)
         }
     }
 
