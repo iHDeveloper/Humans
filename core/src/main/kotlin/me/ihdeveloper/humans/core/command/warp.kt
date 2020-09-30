@@ -91,7 +91,10 @@ class SetWarpLocationCommand : AdminCommand("set-warp-loc") {
         }
 
         val type = args[0]
-        val location = sender.location.block.location
+        val location = sender.location.block.location.apply {
+            yaw = sender.location.yaw
+            pitch = sender.location.pitch
+        }
 
         when (type) {
             "center" -> center = location
