@@ -73,7 +73,7 @@ class SetWarpDisplayNameCommand : AdminCommand("set-warp-name") {
             return true
 
         for (i in 1 until args.size) {
-            displayName += args[i]
+            displayName += " " + args[i]
         }
         return true
     }

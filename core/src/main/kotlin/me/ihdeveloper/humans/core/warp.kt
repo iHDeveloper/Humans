@@ -59,7 +59,7 @@ class Warp(
 
     fun init() {
         center.clone().apply {
-            add(0.5, 1.5, 0.5)
+            add(0.5, 1.0, 0.5)
 
             val title = Hologram(this, "§eDestination:")
 

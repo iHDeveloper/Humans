@@ -7,6 +7,7 @@ import me.ihdeveloper.humans.core.WarpInfo
 import me.ihdeveloper.humans.core.entity.WarpCart
 import me.ihdeveloper.humans.core.warps
 import me.ihdeveloper.humans.core.warpsInfo
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftMinecart
 import org.bukkit.entity.EntityType
@@ -37,6 +38,8 @@ class WarpSystem : System("Core/Warp"), Listener {
             warp.init()
             warps.add(warp)
         }
+
+        Bukkit.getPluginManager().registerEvents(this, plugin)
     }
 
     override fun dispose() {
