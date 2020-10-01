@@ -47,10 +47,13 @@ subprojects {
         implementation(kotlin("stdlib"))
 
         // Include the server jar source
-        compileOnly(files(buildTools.serverJar.absolutePath))
+        if (project.name != "game-service") {
+            compileOnly(files(buildTools.serverJar.absolutePath))
+            implementation(project(":game-service"))
 
-        if (project.name != "core")
-            compileOnly(project(":core"))
+            if (project.name != "core")
+                compileOnly(project(":core"))
+        }
     }
 
     tasks.withType<KotlinCompile>().configureEach {
@@ -80,7 +83,8 @@ subprojects {
             dependsOn("shadowJar")
 
             doLast {
-                val pluginJar = project.buildDir.absolutePath + "/libs/" + shadowJar.get().archiveFileName.get()
+                val dest = if (project.name == "game-service") "services" else "libs"
+                val pluginJar = project.buildDir.absolutePath + "/$dest/" + shadowJar.get().archiveFileName.get()
 
                 // Copy the compiled plugin jar from build/libs to build/
                 copy {
@@ -113,12 +117,14 @@ subprojects {
         }
 
         /**
-         * Run the server with the plugin on it
+         * Prepare the plugin for the server
          */
         register("prepare") {
-            dependsOn(":build-server")
-            dependsOn(":clean-plugins")
-            dependsOn("copy-to-server")
+            if (project.name != "game-service") {
+                dependsOn(":build-server")
+                dependsOn(":clean-plugins")
+                dependsOn("copy-to-server")
+            }
         }
 
     }
