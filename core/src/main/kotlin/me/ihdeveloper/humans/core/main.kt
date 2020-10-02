@@ -96,6 +96,7 @@ class GameCore {
             logger.error("Failed to fetch the updated time from the API!")
             // TODO Change the server state to ERROR
         } else {
+            time = newTime
             thread {
                 newTime.start()
             }

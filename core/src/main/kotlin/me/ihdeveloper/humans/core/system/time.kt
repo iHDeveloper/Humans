@@ -57,8 +57,8 @@ class TimeSystem : System("Core/Time"), Runnable {
 
                 date.suffix = "§f${years}§8/§f${months}"
                 day.suffix = "§f${gameTime.days}"
-                time.prefix = "§8» §f${hours}§e:§f${minutes}"
-                time.suffix = " §e${am}"
+                time.prefix = "§8 » §f${hours}"
+                time.suffix = "§6:§f${minutes} §e${am}"
             }
         }
     }
