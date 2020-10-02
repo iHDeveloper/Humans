@@ -339,12 +339,19 @@ class PlayerSystem : System("Core/Player"), Listener {
     companion object {
         var spawn: Location? = null
     }
+    private val config = Configuration("player")
 
     override fun init(plugin: JavaPlugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin)
+
+        config.load()
+        spawn = config.get<Location?>("spawn", null)
     }
 
-    override fun dispose() {}
+    override fun dispose() {
+        spawn?.let { config.set("spawn", it) }
+        config.save()
+    }
 
     /**
      * Sends a welcome message to the players.
@@ -435,9 +442,8 @@ class PlayerSystem : System("Core/Player"), Listener {
 }
 
 const val SERVER_MOTD =
-"""
-§8» §e§lTHE HUMANS §8§l- §7§lv0.0-ALPHA${"\n"}§8» §cGAME IS UNDER HEAVY DEVELOPMENT
-"""
+"""§8» §e§lTHE HUMANS §8§l- §7§lv0.0-ALPHA
+§8» §cGAME IS UNDER HEAVY DEVELOPMENT"""
 
 /**
  * A system for handling login and ping events

@@ -65,7 +65,7 @@ class SetSpawnCommand : AdminCommand("set-spawn") {
         }
 
         PlayerSystem.spawn = sender.location
-
+        sender.sendMessage("§aSuccess! §ePlayer spawn has been set! :D")
         return true
     }
 }
