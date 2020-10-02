@@ -339,7 +339,7 @@ class PlayerSystem : System("Core/Player"), Listener {
     companion object {
         var spawn: Location? = null
     }
-    private val config = Configuration("player")
+    private val config = Configuration("players")
 
     override fun init(plugin: JavaPlugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin)
