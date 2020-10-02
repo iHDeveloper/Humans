@@ -60,16 +60,25 @@ class BlocksAPI : GameAPI {
         }
     }
 
-    override fun getProfile(player: Player): Profile {
-        return runBlocking {
-            val req = Fuel.get("$API_ENDPOINT/profile/${player.name}")
-            val data = req.body.toString()
+    override suspend fun getProfile(player: Player): Profile? {
+        logger.info("Fetching profile/${player.name}...")
 
-            gson.fromJson(data, Profile::class.java)
-        }
+        Fuel.get("$API_ENDPOINT/profile/${player.name}")
+            .awaitStringResult()
+            .fold(
+                { data ->
+                    logger.info("Fetched! profile/${player.name}...")
+                    return gson.fromJson(data, Profile::class.java)
+                },
+                {
+                    err ->
+                    logger.error("An error of type ${err.exception} happened: ${err.message}")
+                }
+            )
+        return null
     }
 
-    override fun updateProfile(player: Player) {
+    override suspend fun updateProfile(player: Player) {
         TODO("Not yet implemented")
     }
 }

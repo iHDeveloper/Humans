@@ -7,7 +7,7 @@ import org.bukkit.entity.Player
 interface GameAPI {
     fun getTime(): GameTime
 
-    fun getProfile(player: Player): Profile
+    suspend fun getProfile(player: Player): Profile?
 
-    fun updateProfile(player: Player)
+    suspend fun updateProfile(player: Player)
 }
