@@ -27,8 +27,8 @@ class TimeSystem : System("Core/Time"), Runnable {
         val years = x(gameTime.years)
         val months = x(gameTime.months)
         val am = if (gameTime.hours >= 12) "PM" else "AM"
-        val hours = x(gameTime.hours)
-        val minutes = x(gameTime.minutes)
+        val hours = x(if (gameTime.hours >= 12) gameTime.hours - 12 else gameTime.hours)
+        val minutes = x(5 * (gameTime.minutes / 5))
 
         Bukkit.getOnlinePlayers().forEach {
             it.scoreboard.apply {
