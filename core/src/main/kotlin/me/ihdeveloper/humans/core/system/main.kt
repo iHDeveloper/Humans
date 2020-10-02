@@ -344,13 +344,13 @@ class PlayerSystem : System("Core/Player"), Listener {
     override fun init(plugin: JavaPlugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin)
 
-        config.load()
+        config.load(logger)
         spawn = config.get<Location?>("spawn", null)
     }
 
     override fun dispose() {
         spawn?.let { config.set("spawn", it) }
-        config.save()
+        config.save(logger)
     }
 
     /**
@@ -443,7 +443,7 @@ class PlayerSystem : System("Core/Player"), Listener {
 
 const val SERVER_MOTD =
 """§8» §e§lTHE HUMANS §8§l- §7§lv0.0-ALPHA
-§8» §cGAME IS UNDER HEAVY DEVELOPMENT"""
+§8» §c§lGAME IS UNDER HEAVY DEVELOPMENT"""
 
 /**
  * A system for handling login and ping events
