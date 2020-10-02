@@ -89,8 +89,7 @@ subprojects {
             dependsOn("shadowJar")
 
             doLast {
-                val dest = if (project.name == "game-service") "services" else "libs"
-                val pluginJar = project.buildDir.absolutePath + "/$dest/" + shadowJar.get().archiveFileName.get()
+                val pluginJar = project.buildDir.absolutePath + "/libs/" + shadowJar.get().archiveFileName.get()
 
                 // Copy the compiled plugin jar from build/libs to build/
                 copy {

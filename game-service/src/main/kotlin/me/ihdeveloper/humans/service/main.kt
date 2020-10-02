@@ -1,3 +1,4 @@
+@file:JvmName("Main")
 package me.ihdeveloper.humans.service
 
 import com.google.gson.Gson
