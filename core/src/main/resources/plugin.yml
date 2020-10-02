@@ -18,3 +18,6 @@ commands:
   set-warp-loc:
     usage: "set-warp-loc <center|start|end>"
     description: "Sets the warp location"
+  set-spawn:
+    usage: "set-spawn"
+    description: "Sets the spawn location"

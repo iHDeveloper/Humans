@@ -8,6 +8,7 @@ import me.ihdeveloper.humans.core.summonedEntities
 import me.ihdeveloper.humans.core.summonedEntitiesInfo
 import me.ihdeveloper.humans.core.system.CustomEntitySystem
 import net.minecraft.server.v1_8_R3.Entity
+import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
@@ -53,5 +54,15 @@ class SummonCommand : AdminCommand("summon") {
         }
         return true
     }
+}
 
+class SetSpawnCommand : AdminCommand("set-spawn") {
+    override fun execute(sender: CommandSender?, cmd: Command?, label: String?, args: Array<out String>?): Boolean {
+        if (sender !is Player) {
+            sender!!.sendMessage("§cThis command requires a player to be executed!")
+            return true
+        }
+
+        return true
+    }
 }

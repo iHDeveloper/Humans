@@ -6,6 +6,7 @@ import me.ihdeveloper.humans.core.ConfigurationSerialize
 import me.ihdeveloper.humans.core.ITEMSTACK_AIR
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.command.CreateWarpCommand
+import me.ihdeveloper.humans.core.command.SetSpawnCommand
 import me.ihdeveloper.humans.core.command.SetWarpDisplayNameCommand
 import me.ihdeveloper.humans.core.command.SetWarpLocationCommand
 import me.ihdeveloper.humans.core.command.SummonCommand
@@ -169,6 +170,9 @@ class CommandSystem : System("Core/Command") {
         CreateWarpCommand(),
         SetWarpDisplayNameCommand(),
         SetWarpLocationCommand(),
+
+        /** Spawn commands */
+        SetSpawnCommand(),
     )
 
     override fun init(plugin: JavaPlugin) {
@@ -332,6 +336,9 @@ class MenuSystem : System("Core/Menu"), Listener {
  * A system for managing the player events
  */
 class PlayerSystem : System("Core/Player"), Listener {
+    companion object {
+        var spawn: Location? = null
+    }
 
     override fun init(plugin: JavaPlugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin)
@@ -352,6 +359,11 @@ class PlayerSystem : System("Core/Player"), Listener {
             sendMessage("§eWelcome back, §7Human§e!")
             sendMessage("")
             sendMessage("")
+
+            if (spawn != null)
+                teleport(spawn)
+            else
+                logger.warn("Spawn location is not set!")
 
             for (player in Bukkit.getOnlinePlayers()) {
                 if (!player.isOp)
