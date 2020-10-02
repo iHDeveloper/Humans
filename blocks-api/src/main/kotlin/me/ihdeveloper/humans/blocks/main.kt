@@ -5,6 +5,7 @@ import com.github.kittinunf.fuel.coroutines.awaitStringResult
 import com.google.gson.Gson
 import kotlinx.coroutines.*
 import me.ihdeveloper.humans.core.GameLogger
+import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.api.GameAPI
 import me.ihdeveloper.humans.core.core
 import me.ihdeveloper.humans.service.GameTime
@@ -21,10 +22,21 @@ const val API_ENDPOINT = "http://localhost"
 class Main : JavaPlugin() {
     override fun onEnable() {
         core.api = BlocksAPI()
+        core.otherSystems.add(APISystem())
     }
 
     override fun onDisable() {}
 }
+
+class APISystem : System("API") {
+    override fun init(plugin: JavaPlugin) {
+        /** Register the plugin to be able to send outgoing messages to the BungeeCord */
+        plugin.server.messenger.registerOutgoingPluginChannel(plugin, "BungeeCord")
+    }
+
+    override fun dispose() {}
+}
+
 
 class BlocksAPI : GameAPI {
     override fun getTime(): GameTime {

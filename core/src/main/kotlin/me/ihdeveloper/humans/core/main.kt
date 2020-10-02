@@ -69,6 +69,9 @@ class GameCore {
         ScoreboardSystem()
     )
 
+    /** Represents other systems of the game */
+    val otherSystems = arrayListOf<System>()
+
     /**
      * Initialize the core of the game
      */
@@ -93,6 +96,11 @@ class GameCore {
 
         systems.forEach {
             logger.info("Initializing ${it.name.toLowerCase()} system...")
+            it.init(plugin)
+        }
+
+        otherSystems.forEach {
+            logger.info("Initializing ${it.name.toLowerCase()} system (other)...")
             it.init(plugin)
         }
     }
