@@ -7,6 +7,7 @@ import me.ihdeveloper.humans.core.spawnEntity
 import me.ihdeveloper.humans.core.summonedEntities
 import me.ihdeveloper.humans.core.summonedEntitiesInfo
 import me.ihdeveloper.humans.core.system.CustomEntitySystem
+import me.ihdeveloper.humans.core.system.PlayerSystem
 import net.minecraft.server.v1_8_R3.Entity
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
@@ -62,6 +63,8 @@ class SetSpawnCommand : AdminCommand("set-spawn") {
             sender!!.sendMessage("§cThis command requires a player to be executed!")
             return true
         }
+
+        PlayerSystem.spawn = sender.location
 
         return true
     }
