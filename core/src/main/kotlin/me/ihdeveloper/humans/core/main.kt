@@ -13,6 +13,7 @@ import me.ihdeveloper.humans.core.system.WarpSystem
 import me.ihdeveloper.humans.service.GameTime
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
+import kotlin.concurrent.thread
 
 /** Folder that contains data about the plugin */
 val dataFolder = File("plugins/Humans").also { it.mkdir() }
@@ -95,7 +96,9 @@ class GameCore {
             logger.error("Failed to fetch the updated time from the API!")
             // TODO Change the server state to ERROR
         } else {
-            newTime.start()
+            thread {
+                newTime.start()
+            }
         }
 
         systems.forEach {
