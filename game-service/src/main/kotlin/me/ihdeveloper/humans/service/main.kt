@@ -36,24 +36,23 @@ fun main() {
     println("[INFO] Listening on port 80...")
 
     /** Read the current time of the game */
-    get("/time", fun(_: Request, res: Response) {
+    get("/time", fun(_: Request, res: Response): String {
         res.status(200)
-        res.body(gameTime.serialize())
+        return gameTime.serialize()
     })
 
     /** Read a profile from the map */
-    get("/profile/:name", fun(req: Request, res: Response) {
+    get("/profile/:name", fun(req: Request, res: Response): String {
         val name = req.params("name")
 
         val profile = profiles[name]
 
         if (profile == null) {
             res.status(204)
-            res.body("{}")
-            return
+            return "{}"
         }
 
-        res.body(profile.serialize())
+        return profile.serialize()
     })
 
     /** Update profile in the map */

@@ -1,0 +1,6 @@
+name: Humans-BlocksAPI
+version: 0.0
+main: me.ihdeveloper.humans.blocks.Main
+author: iHDeveloper
+depend:
+  - Humans-Core

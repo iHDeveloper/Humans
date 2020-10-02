@@ -1,12 +1,15 @@
 package me.ihdeveloper.humans.core
 
+import me.ihdeveloper.humans.core.api.GameAPI
 import me.ihdeveloper.humans.core.system.BlockSystem
 import me.ihdeveloper.humans.core.system.CommandSystem
 import me.ihdeveloper.humans.core.system.CustomEntitySystem
 import me.ihdeveloper.humans.core.system.LoginSystem
 import me.ihdeveloper.humans.core.system.MenuSystem
 import me.ihdeveloper.humans.core.system.PlayerSystem
+import me.ihdeveloper.humans.core.system.ScoreboardSystem
 import me.ihdeveloper.humans.core.system.WarpSystem
+import me.ihdeveloper.humans.service.GameTime
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
@@ -48,6 +51,12 @@ class Main : JavaPlugin() {
  */
 class GameCore {
 
+    /** An instance to use the game service API */
+    var api: GameAPI? = null
+
+    /** Global time of the game */
+    var time = GameTime()
+
     /** Represents the core systems of the game */
     private val systems = arrayOf(
         LoginSystem(),
@@ -56,7 +65,8 @@ class GameCore {
         MenuSystem(),
         CustomEntitySystem(),
         PlayerSystem(),
-        WarpSystem()
+        WarpSystem(),
+        ScoreboardSystem()
     )
 
     /**
@@ -68,6 +78,17 @@ class GameCore {
             logger.warn("  THE CORE IS BEING INITIALIZED USING ITSELF  ")
             logger.warn("   DON'T USE THIS IN PRODUCTION ENVIRONMENT!  ")
             logger.warn("----------------------------------------------")
+        }
+
+        if (api == null) {
+            logger.error("NO GAME SERVICE API INSTANCE FOUND!")
+            return
+        }
+
+        val newTime = api!!.getTime()
+        if (newTime === time) {
+            logger.error("Failed to fetch the updated time from the API!")
+            // TODO Change the server state to ERROR
         }
 
         systems.forEach {

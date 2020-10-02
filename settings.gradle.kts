@@ -3,5 +3,6 @@ rootProject.name = "Humans"
 include(
     "core",
     "hub",
-    "game-service"
+    "game-service",
+    "blocks-api"
 )

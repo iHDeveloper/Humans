@@ -445,3 +445,19 @@ class LoginSystem : System("Core/Login"), Listener {
         event.motd = SERVER_MOTD
     }
 }
+
+/**
+ * A system for handling player scoreboard
+ */
+class ScoreboardSystem : System("Core/Scoreboard"), Listener {
+    override fun init(plugin: JavaPlugin) {
+        Bukkit.getPluginManager().registerEvents(this, plugin)
+    }
+
+    override fun dispose() {}
+
+    @EventHandler
+    fun onJoin(event: PlayerJoinEvent) {
+        event.player.scoreboard = Bukkit.getScoreboardManager().newScoreboard
+    }
+}
