@@ -8,6 +8,7 @@ import me.ihdeveloper.humans.core.system.LoginSystem
 import me.ihdeveloper.humans.core.system.MenuSystem
 import me.ihdeveloper.humans.core.system.PlayerSystem
 import me.ihdeveloper.humans.core.system.ScoreboardSystem
+import me.ihdeveloper.humans.core.system.TimeSystem
 import me.ihdeveloper.humans.core.system.WarpSystem
 import me.ihdeveloper.humans.service.GameTime
 import org.bukkit.plugin.java.JavaPlugin
@@ -59,6 +60,7 @@ class GameCore {
 
     /** Represents the core systems of the game */
     private val systems = arrayOf(
+        TimeSystem(),
         LoginSystem(),
         BlockSystem(),
         CommandSystem(),
@@ -66,7 +68,7 @@ class GameCore {
         CustomEntitySystem(),
         PlayerSystem(),
         WarpSystem(),
-        ScoreboardSystem()
+        ScoreboardSystem(),
     )
 
     /** Represents other systems of the game */
@@ -92,6 +94,8 @@ class GameCore {
         if (newTime === time) {
             logger.error("Failed to fetch the updated time from the API!")
             // TODO Change the server state to ERROR
+        } else {
+            newTime.start()
         }
 
         systems.forEach {

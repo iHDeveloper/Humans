@@ -26,7 +26,7 @@ fun Profile.Companion.deserialize(json: String): Profile {
 fun main() {
     println("[INFO] Initializing the game service...")
     thread {
-        startTime()
+        gameTime.start(true)
     }
 
     port(80)
