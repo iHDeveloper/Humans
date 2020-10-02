@@ -31,7 +31,7 @@ fun main() {
     }
 
     port(80)
-    init()
+    initExceptionHandler { e: java.lang.Exception? -> e?.printStackTrace() }
 
     println("[INFO] Game service started!")
     println("[INFO] Listening on port 80...")
