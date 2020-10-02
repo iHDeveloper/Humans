@@ -98,7 +98,7 @@ class GameCore {
         } else {
             time = newTime
             thread {
-                newTime.start()
+                time.start()
             }
         }
 

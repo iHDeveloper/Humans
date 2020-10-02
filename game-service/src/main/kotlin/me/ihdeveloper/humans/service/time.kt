@@ -17,40 +17,42 @@ data class GameTime (
      * Seconds per year = 155520000ms (1.8 day)
      *
      */
+    fun tick() = tick(false)
+    fun tick(logger: Boolean) {
+        seconds++
+
+        if (seconds >= 60) {
+            seconds = 0
+            minutes++
+
+            if (minutes >= 60) {
+                minutes = 0
+                hours++
+                if (hours >= 24) {
+                    hours = 0
+                    days++
+                    if (days >= 30) {
+                        months++
+                        if (months >= 12) {
+                            months = 1
+                            years++
+                        }
+                    }
+                }
+            }
+
+            if (logger) println("[INFO] Game Time: [$this]")
+        }
+    }
+
     fun start() = start(false)
     fun start(logger: Boolean) {
         if (logger) println("[INFO] Game time started!")
-        if (logger) println("[INFO] Game Time: [$gameTime]")
+        if (logger) println("[INFO] Game Time: [$this]")
 
         while(true) {
-            gameTime.run {
-                seconds++
-
-                if (seconds >= 60) {
-                    seconds = 0
-                    minutes++
-
-                    if (minutes >= 60) {
-                        minutes = 0
-                        hours++
-                        if (hours >= 24) {
-                            hours = 0
-                            days++
-                            if (days >= 30) {
-                                months++
-                                if (months >= 12) {
-                                    months = 1
-                                    years++
-                                }
-                            }
-                        }
-                    }
-
-                    if (logger) println("[INFO] Game Time: [$gameTime]")
-                }
-
-                Thread.sleep(5)
-            }
+            tick(logger)
+            Thread.sleep(5)
         }
     }
 
