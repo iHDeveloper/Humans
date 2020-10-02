@@ -424,8 +424,7 @@ class PlayerSystem : System("Core/Player"), Listener {
 
 const val SERVER_MOTD =
 """
-§8» §e§lTHE HUMANS §8§l- §7§lv0.0-ALPHA
-§8» §cGAME IS UNDER HEAVY DEVELOPMENT
+§8» §e§lTHE HUMANS §8§l- §7§lv0.0-ALPHA${"\n"}§8» §cGAME IS UNDER HEAVY DEVELOPMENT
 """
 
 /**
