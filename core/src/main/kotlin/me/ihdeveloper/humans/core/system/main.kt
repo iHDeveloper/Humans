@@ -23,12 +23,14 @@ import me.ihdeveloper.humans.core.registerEntity
 import me.ihdeveloper.humans.core.spawnEntity
 import me.ihdeveloper.humans.core.summonedEntities
 import me.ihdeveloper.humans.core.summonedEntitiesInfo
+import me.ihdeveloper.humans.core.toMinecraftWorld
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntityMinecartRideable
 import net.minecraft.server.v1_8_R3.EntitySkeleton
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
@@ -367,8 +369,10 @@ class PlayerSystem : System("Core/Player"), Listener {
             sendMessage("")
             sendMessage("")
 
-            if (spawn != null)
-                teleport(spawn)
+            if (spawn != null) {
+                (this as CraftPlayer).handle.spawnIn(toMinecraftWorld(spawn!!.world))
+                compassTarget = spawn
+            }
             else
                 logger.warn("Spawn location is not set!")
 
