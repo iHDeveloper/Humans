@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.vehicle.VehicleExitEvent
 import org.bukkit.event.vehicle.VehicleMoveEvent
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -98,6 +99,15 @@ class WarpSystem : System("Core/Warp"), Listener {
             vehicle.passenger.teleport(cart.warp.spawn)
             vehicle.remove()
         }
+    }
+
+    @EventHandler
+    fun onExit(event: VehicleExitEvent) {
+        if (event.vehicle.type !== EntityType.MINECART || event.exited.type !== EntityType.PLAYER)
+            return
+        if ((event.vehicle as CraftMinecart).handle !is WarpCart)
+            return
+        event.isCancelled = true
     }
 
     @EventHandler

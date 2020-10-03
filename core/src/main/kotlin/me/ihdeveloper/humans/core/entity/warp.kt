@@ -1,6 +1,7 @@
 package me.ihdeveloper.humans.core.entity
 
 import me.ihdeveloper.humans.core.Warp
+import net.minecraft.server.v1_8_R3.BlockPosition
 import net.minecraft.server.v1_8_R3.DamageSource
 import net.minecraft.server.v1_8_R3.EntityHuman
 import org.bukkit.Location
@@ -17,6 +18,10 @@ class WarpCart(
     init {
         location.run {
             setLocation(x, y, z, yaw, pitch)
+
+            // Fix: Cart doesn't move on the start
+            val pos = BlockPosition(x, y, z)
+            a(pos, this@WarpCart.world.getType(pos))
         }
     }
 

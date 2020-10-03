@@ -376,7 +376,7 @@ class PlayerSystem : System("Core/Player"), Listener {
                 if (!player.isOp)
                     continue
 
-                player.sendMessage("§8[§e@§8] §a+ §9${player.displayName}")
+                player.sendMessage("§8[§e@§8] §a+ §9${displayName}")
             }
         }
 
