@@ -146,7 +146,7 @@ open class CustomNPC(
             sendPacket(PacketPlayOutNamedEntitySpawn(this@CustomNPC))
             sendPacket(PacketPlayOutEntityHeadRotation(this@CustomNPC, headYaw.toByte()))
 
-//            NPCSystem.scheduleRemovePacket(this, this@CustomNPC)
+            NPCSystem.scheduleRemovePacket(this, this@CustomNPC)
         }
 
         update(player)
@@ -163,6 +163,8 @@ open class CustomNPC(
         trackedPlayers.clear()
         holograms?.forEach { it.die() }
     }
+
+    override fun getHeadRotation() = location.yaw
 
     /**
      * Invoked when [PlayerInteractAtEntityEvent] is fired

@@ -61,12 +61,6 @@ class NPCSystem : System("Core/NPC"), Listener {
             }, 5L)
         }
 
-        fun scheduleTeleportPacket(connection: PlayerConnection, npc: EntityPlayer) {
-            Bukkit.getScheduler().runTaskLater(plugin!!, {
-                connection.sendPacket(PacketPlayOutEntityTeleport(npc))
-            }, 1L)
-        }
-
         fun add(info: NPCInfo) {
             npcInfoList.add(info)
             info.apply { npcList.add(fromNPCType(type, location)!!) }
