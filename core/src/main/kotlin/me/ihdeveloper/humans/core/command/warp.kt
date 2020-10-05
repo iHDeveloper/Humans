@@ -3,6 +3,7 @@ package me.ihdeveloper.humans.core.command
 import me.ihdeveloper.humans.core.AdminCommand
 import me.ihdeveloper.humans.core.Warp
 import me.ihdeveloper.humans.core.WarpInfo
+import me.ihdeveloper.humans.core.system.WarpSystem
 import me.ihdeveloper.humans.core.warps
 import me.ihdeveloper.humans.core.warpsInfo
 import org.bukkit.Location
@@ -109,6 +110,15 @@ class SetWarpLocationCommand : AdminCommand("set-warp-loc") {
         }
 
         sender.sendMessage("§aSuccess! §eThe warp location of §b$type §eis set!")
+        return true
+    }
+}
+
+class WarpSaveCommand : AdminCommand("warp-save") {
+
+    override fun execute(sender: CommandSender?, cmd: Command?, label: String?, args: Array<out String>?): Boolean {
+        WarpSystem.save()
+        sender!!.sendMessage("§aSuccess! §eSaved the warps configuration!")
         return true
     }
 }

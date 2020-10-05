@@ -1,6 +1,7 @@
 package me.ihdeveloper.humans.core.system
 
 import me.ihdeveloper.humans.core.Configuration
+import me.ihdeveloper.humans.core.GameLogger
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.Warp
 import me.ihdeveloper.humans.core.WarpInfo
@@ -22,9 +23,23 @@ import org.bukkit.plugin.java.JavaPlugin
  * A system to manage multiple warps
  */
 class WarpSystem : System("Core/Warp"), Listener {
-    private val config = Configuration("warps")
+    companion object {
+        private val config = Configuration("warps")
+        private var logger: GameLogger? = null
+
+        fun save() {
+            val rawWarps = arrayListOf<Map<String, Any>>()
+            for (info in warpsInfo) {
+                rawWarps.add(info.serialize())
+            }
+            config.set("warps", rawWarps)
+
+            config.save(logger)
+        }
+    }
 
     override fun init(plugin: JavaPlugin) {
+        Companion.logger = logger
         config.load(logger)
 
         val rawWarps: ArrayList<Map<String, Any>> = config.get("warps", arrayListOf())
@@ -48,14 +63,6 @@ class WarpSystem : System("Core/Warp"), Listener {
         }
         
         warps.clear()
-        
-        val rawWarps = arrayListOf<Map<String, Any>>()
-        for (info in warpsInfo) {
-            rawWarps.add(info.serialize())
-        }
-        config.set("warps", rawWarps)
-        
-        config.save(logger)
     }
 
     /**
