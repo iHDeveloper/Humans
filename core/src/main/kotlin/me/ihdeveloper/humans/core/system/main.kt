@@ -403,6 +403,7 @@ class PlayerSystem : System("Core/Player"), Listener {
 
             if (spawn != null) {
                 (this as CraftPlayer).handle.spawnIn(toNMSWorld(spawn!!.world))
+                teleport(spawn)
                 compassTarget = spawn
             }
             else

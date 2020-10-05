@@ -32,6 +32,7 @@ data class GameTime (
                     hours = 0
                     days++
                     if (days >= 30) {
+                        days = 0
                         months++
                         if (months >= 12) {
                             months = 1

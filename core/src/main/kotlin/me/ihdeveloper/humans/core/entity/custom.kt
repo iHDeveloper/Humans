@@ -12,10 +12,10 @@ import net.minecraft.server.v1_8_R3.EntityMinecartRideable
 import net.minecraft.server.v1_8_R3.EntityPlayer
 import net.minecraft.server.v1_8_R3.EntitySkeleton
 import net.minecraft.server.v1_8_R3.EnumProtocolDirection
+import net.minecraft.server.v1_8_R3.MathHelper
 import net.minecraft.server.v1_8_R3.NetworkManager
 import net.minecraft.server.v1_8_R3.PacketPlayOutAnimation
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityHeadRotation
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityTeleport
 import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo
 import net.minecraft.server.v1_8_R3.PathfinderGoalSelector
@@ -47,10 +47,10 @@ open class CustomArmorStand(location: Location)
 }
 
 open class CustomSkeleton(
-        private val location: Location
+    private val location: Location
 ) : EntitySkeleton(toNMSWorld(location.world)) {
 
-    protected val nameHologram = Hologram(location.clone().apply {y += 1}, "§cSkeleton")
+    protected val nameHologram = Hologram(location.clone().apply { y += 1 }, "§cSkeleton")
 
     /**
      * Updates the location of the entity in the world
@@ -139,12 +139,14 @@ open class CustomNPC(
 
         trackedPlayers.add(player.id)
 
+        val headYaw = MathHelper.d(headRotation * 256.0f / 360.0f)
+
         player.connection.run {
             sendPacket(PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, this@CustomNPC))
             sendPacket(PacketPlayOutNamedEntitySpawn(this@CustomNPC))
-            NPCSystem.scheduleTeleportPacket(this, this@CustomNPC)
+            sendPacket(PacketPlayOutEntityHeadRotation(this@CustomNPC, headYaw.toByte()))
 
-            NPCSystem.scheduleRemovePacket(this, this@CustomNPC)
+//            NPCSystem.scheduleRemovePacket(this, this@CustomNPC)
         }
 
         update(player)
