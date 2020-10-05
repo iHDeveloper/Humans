@@ -14,6 +14,7 @@ import net.minecraft.server.v1_8_R3.EntitySkeleton
 import net.minecraft.server.v1_8_R3.EnumProtocolDirection
 import net.minecraft.server.v1_8_R3.NetworkManager
 import net.minecraft.server.v1_8_R3.PacketPlayOutAnimation
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityHeadRotation
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityTeleport
 import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo
@@ -141,7 +142,7 @@ open class CustomNPC(
         player.connection.run {
             sendPacket(PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, this@CustomNPC))
             sendPacket(PacketPlayOutNamedEntitySpawn(this@CustomNPC))
-            sendPacket(PacketPlayOutEntityTeleport(this@CustomNPC))
+            NPCSystem.scheduleTeleportPacket(this, this@CustomNPC)
 
             NPCSystem.scheduleRemovePacket(this, this@CustomNPC)
         }

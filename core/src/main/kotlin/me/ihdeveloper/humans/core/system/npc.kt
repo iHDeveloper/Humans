@@ -9,6 +9,7 @@ import me.ihdeveloper.humans.core.entity.HubSelector
 import me.ihdeveloper.humans.core.entity.fromNPCType
 import me.ihdeveloper.humans.core.toNMSPlayer
 import net.minecraft.server.v1_8_R3.EntityPlayer
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityTeleport
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo
 import net.minecraft.server.v1_8_R3.PlayerConnection
 import org.bukkit.Bukkit
@@ -57,6 +58,12 @@ class NPCSystem : System("Core/NPC"), Listener {
         fun scheduleRemovePacket(connection: PlayerConnection, npc: EntityPlayer) {
             Bukkit.getScheduler().runTaskLater(plugin!!, {
                 connection.sendPacket(PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc))
+            }, 1L)
+        }
+
+        fun scheduleTeleportPacket(connection: PlayerConnection, npc: EntityPlayer) {
+            Bukkit.getScheduler().runTaskLater(plugin!!, {
+                connection.sendPacket(PacketPlayOutEntityTeleport(npc))
             }, 1L)
         }
 
