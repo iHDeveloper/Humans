@@ -114,7 +114,7 @@ class SetWarpLocationCommand : AdminCommand("set-warp-loc") {
     }
 }
 
-class WarpSaveCommand : AdminCommand("warp-save") {
+class WarpSaveCommand : AdminCommand("warps-save") {
 
     override fun execute(sender: CommandSender?, cmd: Command?, label: String?, args: Array<out String>?): Boolean {
         WarpSystem.save()

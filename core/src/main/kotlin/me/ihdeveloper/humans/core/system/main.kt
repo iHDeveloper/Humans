@@ -13,6 +13,8 @@ import me.ihdeveloper.humans.core.command.SetSpawnCommand
 import me.ihdeveloper.humans.core.command.SetWarpDisplayNameCommand
 import me.ihdeveloper.humans.core.command.SetWarpLocationCommand
 import me.ihdeveloper.humans.core.command.SummonCommand
+import me.ihdeveloper.humans.core.command.SummonSaveCommand
+import me.ihdeveloper.humans.core.command.WarpSaveCommand
 import me.ihdeveloper.humans.core.core
 import me.ihdeveloper.humans.core.corePlugin
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
@@ -185,11 +187,13 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
 class CommandSystem : System("Core/Command") {
     private val commands = arrayOf(
         SummonCommand(),
+        SummonSaveCommand(),
 
         /** Warp Commands */
         CreateWarpCommand(),
         SetWarpDisplayNameCommand(),
         SetWarpLocationCommand(),
+        WarpSaveCommand(),
 
         /** Spawn commands */
         SetSpawnCommand(),

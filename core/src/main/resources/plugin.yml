@@ -27,3 +27,9 @@ commands:
   npc-save:
     usage: "npc-save"
     description: "Saves the NPC configuration"
+  summon-save:
+    usage: "summon-save"
+    description: "Saves the entities configuration"
+  warps-save:
+    usage: "warps-save"
+    description: "Saves the warps configuration"
