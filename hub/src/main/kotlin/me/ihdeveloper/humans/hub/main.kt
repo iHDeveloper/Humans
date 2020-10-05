@@ -16,6 +16,7 @@ class Main : JavaPlugin() {
     override fun onEnable() {
         logger.info("Initializing core...")
 
+        core.serverName = "Hub"
         core.init(this)
     }
 

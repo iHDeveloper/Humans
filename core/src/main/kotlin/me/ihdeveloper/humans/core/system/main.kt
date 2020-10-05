@@ -13,6 +13,7 @@ import me.ihdeveloper.humans.core.command.SetSpawnCommand
 import me.ihdeveloper.humans.core.command.SetWarpDisplayNameCommand
 import me.ihdeveloper.humans.core.command.SetWarpLocationCommand
 import me.ihdeveloper.humans.core.command.SummonCommand
+import me.ihdeveloper.humans.core.core
 import me.ihdeveloper.humans.core.corePlugin
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
 import me.ihdeveloper.humans.core.entity.CustomMineCart
@@ -74,6 +75,7 @@ import org.bukkit.event.server.ServerListPingEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scoreboard.DisplaySlot
 
 /**
  * A system for registering the entities of the game core
@@ -468,6 +470,10 @@ class PlayerSystem : System("Core/Player"), Listener {
         event.apply {
             entity.health = 20.0
             if (spawn != null) entity.teleport(spawn)
+
+            Bukkit.getOnlinePlayers().forEach {
+                it.sendMessage("${it.displayName} §edied.")
+            }
         }
     }
 
@@ -523,6 +529,14 @@ class ScoreboardSystem : System("Core/Scoreboard"), Listener {
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
-        event.player.scoreboard = Bukkit.getScoreboardManager().newScoreboard
+        event.player.scoreboard = Bukkit.getScoreboardManager().newScoreboard.apply {
+            registerNewObjective("sidebar", "dummy").apply {
+                displayName = "§e§lTHE HUMANS"
+                displaySlot = DisplaySlot.SIDEBAR
+            }
+
+            core.apply { if (serverName != null) getScores("§0§8§oV0.0b ${serverName!!.toUpperCase()}") }
+            getScores("§0§9")
+        }
     }
 }

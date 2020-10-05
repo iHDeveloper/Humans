@@ -54,6 +54,9 @@ class Main : JavaPlugin() {
  */
 class GameCore {
 
+    /** Represents the server name */
+    var serverName: String? = null
+
     /** An instance to use the game service API */
     var api: GameAPI? = null
 

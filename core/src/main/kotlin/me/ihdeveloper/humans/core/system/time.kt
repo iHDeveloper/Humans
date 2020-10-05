@@ -6,9 +6,9 @@ import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scoreboard.DisplaySlot
 
-const val SCORE_DATE = "§0 §8» §eDate: "
-const val SCORE_DAY = "§1 §8» §eDay "
-const val SCORE_TIME = "§2"
+const val SCORE_DATE = "§1 §8» §eDate: "
+const val SCORE_DAY = "§2 §8» §eDay "
+const val SCORE_TIME = "§3"
 const val TEAM_DATE = "@date"
 const val TEAM_DAY = "@day"
 const val TEAM_TIME = "@time"
@@ -32,10 +32,7 @@ class TimeSystem : System("Core/Time"), Runnable {
 
         Bukkit.getOnlinePlayers().forEach {
             it.scoreboard.apply {
-                val objective = getObjective(DisplaySlot.SIDEBAR) ?: registerNewObjective("sidebar", "dummy").apply {
-                    displayName = "§e§lTHE HUMANS"
-                    displaySlot = DisplaySlot.SIDEBAR
-                }
+                val objective = getObjective(DisplaySlot.SIDEBAR)
 
                 val date = getTeam(TEAM_DATE) ?: registerNewTeam(TEAM_DATE).apply {
                     addEntry(SCORE_DATE)
