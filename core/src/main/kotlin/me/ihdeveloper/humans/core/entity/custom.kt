@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile
 import me.ihdeveloper.humans.core.GameLogger
 import me.ihdeveloper.humans.core.setPrivateField
 import me.ihdeveloper.humans.core.spawnEntity
+import me.ihdeveloper.humans.core.system.NPCSystem
 import me.ihdeveloper.humans.core.system.TEAM_NPC
 import me.ihdeveloper.humans.core.toNMSWorld
 import net.minecraft.server.v1_8_R3.EntityArmorStand
@@ -132,6 +133,8 @@ open class CustomNPC(
         player.connection.run {
             sendPacket(PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, this@CustomNPC))
             sendPacket(PacketPlayOutNamedEntitySpawn(this@CustomNPC))
+
+            NPCSystem.scheduleRemovePacket(this, this@CustomNPC)
         }
 
         update(player)

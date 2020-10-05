@@ -8,6 +8,9 @@ import me.ihdeveloper.humans.core.entity.CustomNPC
 import me.ihdeveloper.humans.core.entity.HubSelector
 import me.ihdeveloper.humans.core.entity.fromNPCType
 import me.ihdeveloper.humans.core.toNMSPlayer
+import net.minecraft.server.v1_8_R3.EntityPlayer
+import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo
+import net.minecraft.server.v1_8_R3.PlayerConnection
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer
@@ -47,9 +50,16 @@ class NPCSystem : System("Core/NPC"), Listener {
     }
 
     companion object {
+        private var plugin: JavaPlugin? = null
         private val config = Configuration("npcs")
         private val npcList = arrayListOf<CustomNPC>()
         private val npcInfoList = arrayListOf<NPCInfo>()
+
+        fun scheduleRemovePacket(connection: PlayerConnection, npc: EntityPlayer) {
+            Bukkit.getScheduler().runTaskLater(plugin!!, {
+                connection.sendPacket(PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc))
+            }, 1L)
+        }
 
         fun add(info: NPCInfo) {
             npcInfoList.add(info)
@@ -59,13 +69,14 @@ class NPCSystem : System("Core/NPC"), Listener {
         fun save() {
             val list = arrayListOf<Map<String, Any>>()
             npcInfoList.forEach { list.add(it.serialize()) }
-            config.set("npcs", npcInfoList)
+            config.set("npcs", list)
             config.save()
         }
     }
 
     override fun init(plugin: JavaPlugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin)
+        Companion.plugin = plugin
 
         config.load(logger)
         val rawNPCs = config.get<ArrayList<Map<String, Any>>>("npcs")

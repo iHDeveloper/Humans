@@ -77,6 +77,10 @@ import org.bukkit.inventory.PlayerInventory
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scoreboard.DisplaySlot
 
+const val TEAM_DEV = "@1dev"
+const val TEAM_BUILD = "@2build"
+const val TEAM_MEMBER = "@9member"
+
 /**
  * A system for registering the entities of the game core
  */
@@ -537,6 +541,26 @@ class ScoreboardSystem : System("Core/Scoreboard"), Listener {
 
             core.apply { if (serverName != null) getScores("§0§8§oV0.0b ${serverName!!.toUpperCase()}") }
             getScores("§0§9")
+
+            val devTeam = registerNewTeam(TEAM_DEV).apply {
+                prefix = "§7[DEV] §3"
+            }
+
+            val buildTeam = registerNewTeam(TEAM_BUILD).apply {
+                prefix = "§d"
+            }
+
+            val memberTeam = registerNewTeam(TEAM_MEMBER).apply {
+                prefix = "§9"
+            }
+
+            Bukkit.getOnlinePlayers().forEach {
+                when (it.name) {
+                    "iHDeveloper" -> devTeam
+                    "iSDeveloper" -> buildTeam
+                    else -> memberTeam
+                }.addEntry(it.name)
+            }
         }
     }
 }
