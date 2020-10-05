@@ -6,6 +6,8 @@ import me.ihdeveloper.humans.core.ConfigurationSerialize
 import me.ihdeveloper.humans.core.ITEMSTACK_AIR
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.command.CreateWarpCommand
+import me.ihdeveloper.humans.core.command.NPCSaveCommand
+import me.ihdeveloper.humans.core.command.NPCSummonCommand
 import me.ihdeveloper.humans.core.command.SetSpawnCommand
 import me.ihdeveloper.humans.core.command.SetWarpDisplayNameCommand
 import me.ihdeveloper.humans.core.command.SetWarpLocationCommand
@@ -23,7 +25,7 @@ import me.ihdeveloper.humans.core.registerEntity
 import me.ihdeveloper.humans.core.spawnEntity
 import me.ihdeveloper.humans.core.summonedEntities
 import me.ihdeveloper.humans.core.summonedEntitiesInfo
-import me.ihdeveloper.humans.core.toMinecraftWorld
+import me.ihdeveloper.humans.core.toNMSWorld
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntityMinecartRideable
 import net.minecraft.server.v1_8_R3.EntitySkeleton
@@ -175,6 +177,10 @@ class CommandSystem : System("Core/Command") {
 
         /** Spawn commands */
         SetSpawnCommand(),
+
+        /** NPC commands */
+        NPCSummonCommand(),
+        NPCSaveCommand(),
     )
 
     override fun init(plugin: JavaPlugin) {
@@ -370,7 +376,7 @@ class PlayerSystem : System("Core/Player"), Listener {
             sendMessage("")
 
             if (spawn != null) {
-                (this as CraftPlayer).handle.spawnIn(toMinecraftWorld(spawn!!.world))
+                (this as CraftPlayer).handle.spawnIn(toNMSWorld(spawn!!.world))
                 compassTarget = spawn
             }
             else

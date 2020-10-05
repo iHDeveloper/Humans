@@ -1,5 +1,6 @@
 package me.ihdeveloper.humans.core.entity
 
+import me.ihdeveloper.humans.core.GameLogger
 import me.ihdeveloper.humans.core.spawnEntity
 import net.minecraft.server.v1_8_R3.DamageSource
 import net.minecraft.server.v1_8_R3.EntityHuman
@@ -59,20 +60,21 @@ class Hologram (
  * @param type The type of the npc (e.g. Prison Guard, Prisoner)
  * @param state The state of the npc (e.g. Click, Coming soon)
  */
-fun spawnNPCHologram(location: Location, name: String, type: String, state: String): Array<Hologram> {
+fun spawnNPCHologram(location: Location, name: String, type: String, state: String): Array<Hologram> = spawnNPCHologram(location, name, type, state)
+fun spawnNPCHologram(location: Location, name: String, type: String, state: String, logger: GameLogger?): Array<Hologram> {
     location.clone().apply {
-        y += y + 1.0
+        y += 1.0
 
         val stateHologram = Hologram(this, state)
-        spawnEntity(stateHologram, false, null)
+        spawnEntity(stateHologram, false, logger)
 
-        y += 0.50
+        y += 0.40
         val typeHologram = Hologram(this, type)
-        spawnEntity(typeHologram, false, null)
+        spawnEntity(typeHologram, false, logger)
 
         y += 0.25
         val nameHologram = Hologram(this, name)
-        spawnEntity(nameHologram, false, null)
+        spawnEntity(nameHologram, false, logger)
         return arrayOf(nameHologram, typeHologram, stateHologram)
     }
 }

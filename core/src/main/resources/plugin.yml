@@ -21,3 +21,9 @@ commands:
   set-spawn:
     usage: "set-spawn"
     description: "Sets the spawn location"
+  npc-summon:
+    usage: "npc-summon <type>"
+    description: "Summons an NPC with specified type"
+  npc-save:
+    usage: "npc-save"
+    description: "Saves the NPC configuration"

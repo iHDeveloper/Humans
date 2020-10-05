@@ -6,6 +6,7 @@ import me.ihdeveloper.humans.core.system.CommandSystem
 import me.ihdeveloper.humans.core.system.CustomEntitySystem
 import me.ihdeveloper.humans.core.system.LoginSystem
 import me.ihdeveloper.humans.core.system.MenuSystem
+import me.ihdeveloper.humans.core.system.NPCSystem
 import me.ihdeveloper.humans.core.system.PlayerSystem
 import me.ihdeveloper.humans.core.system.ScoreboardSystem
 import me.ihdeveloper.humans.core.system.TimeSystem
@@ -70,6 +71,7 @@ class GameCore {
         PlayerSystem(),
         WarpSystem(),
         ScoreboardSystem(),
+        NPCSystem()
     )
 
     /** Represents other systems of the game */
