@@ -6,12 +6,15 @@ import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scoreboard.DisplaySlot
 
-const val SCORE_DATE = "§1 §8» §eDate: "
-const val SCORE_DAY = "§2 §8» §eDay "
-const val SCORE_TIME = "§3"
-const val TEAM_DATE = "@date"
-const val TEAM_DAY = "@day"
-const val TEAM_TIME = "@time"
+private const val SCORE_DATE = "§1 §8» §eDate "
+private const val SCORE_DAY = "§2 §8» §eDay "
+private const val SCORE_TIME = "§3"
+private const val TEAM_DATE = "@date"
+private const val TEAM_DAY = "@day"
+private const val TEAM_TIME = "@time"
+
+private const val FULL_MC_DAY = 24000L
+private const val FULL_MC_HOUR = 1000L
 
 /**
  * A system for handling the game time in the server
@@ -24,6 +27,11 @@ class TimeSystem : System("Core/Time"), Runnable {
 
     override fun run() {
         val gameTime = core.time
+        val worldTime = gameTime.let {
+            // TODO Calculate the minutes for more smooth timing
+            (FULL_MC_DAY * it.days) + ( if (it.hours >= 6) FULL_MC_HOUR * (it.hours - 6) else FULL_MC_HOUR * (18 + it.hours))
+        }
+
         val years = x(gameTime.years)
         val months = x(gameTime.months)
         val am = if (gameTime.hours >= 12) "PM" else "AM"
@@ -31,6 +39,14 @@ class TimeSystem : System("Core/Time"), Runnable {
         val minutes = x(5 * (gameTime.minutes / 5))
 
         Bukkit.getOnlinePlayers().forEach {
+            /** Update the time in the player's world */
+            it.world.apply {
+                weatherDuration = 0
+                thunderDuration = 0
+                isThundering = false
+                time = worldTime
+            }
+
             it.scoreboard.apply {
                 val objective = getObjective(DisplaySlot.SIDEBAR)
 

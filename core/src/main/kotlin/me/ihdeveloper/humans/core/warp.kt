@@ -97,7 +97,7 @@ class Warp(
             bukkitEntity.passenger = player
 
             // Fix: Cart doesn't move on the start
-            bukkitEntity.velocity = Vector(0.5, 0.0, 0.0)
+            bukkitEntity.velocity = Vector(0.25, 0.0, 0.0)
         }
     }
 }
