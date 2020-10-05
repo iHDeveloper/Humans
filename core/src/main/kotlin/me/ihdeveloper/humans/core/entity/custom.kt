@@ -59,6 +59,9 @@ open class CustomSkeleton(
      */
     fun setLocation() {
         setLocation(location.x, location.y, location.z, location.yaw, location.pitch)
+
+        /** Change the head rotation of the entity */
+        super.aK = location.yaw
     }
 
     /**
