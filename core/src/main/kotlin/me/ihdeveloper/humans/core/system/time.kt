@@ -34,6 +34,7 @@ class TimeSystem : System("Core/Time"), Runnable {
             it.scoreboard.apply {
                 val objective = getObjective(DisplaySlot.SIDEBAR)
 
+                objective.getScore("§9§9").score = 9
                 val date = getTeam(TEAM_DATE) ?: registerNewTeam(TEAM_DATE).apply {
                     addEntry(SCORE_DATE)
 

@@ -19,9 +19,6 @@ class WarpCart(
     init {
         location.run {
             setLocation(x, y, z, yaw, pitch)
-
-            // Fix: Cart doesn't move on the start
-            bukkitEntity.velocity = Vector(1, 0, 0)
         }
     }
 

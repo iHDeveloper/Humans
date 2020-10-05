@@ -4,6 +4,7 @@ import me.ihdeveloper.humans.core.entity.Hologram
 import me.ihdeveloper.humans.core.entity.WarpCart
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.util.Vector
 
 val warps = mutableListOf<Warp>()
 val warpsInfo = mutableListOf<WarpInfo>()
@@ -92,6 +93,11 @@ class Warp(
         carts.add(cart)
 
         spawnEntity(cart, false, null)
-        cart.bukkitEntity.passenger = player
+        cart.apply {
+            bukkitEntity.passenger = player
+
+            // Fix: Cart doesn't move on the start
+            bukkitEntity.velocity = Vector(1, 0, 0)
+        }
     }
 }

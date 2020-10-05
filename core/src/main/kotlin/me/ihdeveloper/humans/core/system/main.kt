@@ -543,8 +543,8 @@ class ScoreboardSystem : System("Core/Scoreboard"), Listener {
                 displaySlot = DisplaySlot.SIDEBAR
             }
 
-            core.apply { if (serverName != null) sidebar.getScore("§0§8§oV0.0b ${serverName!!.toUpperCase()}").score = 9 }
-            sidebar.getScore("§9").score = 9
+            sidebar.getScore("§0").score = 1
+            core.apply { if (serverName != null) sidebar.getScore("§9§7§oV0.0b - ${serverName!!.toUpperCase()}").score = 1 }
 
             val devTeam = registerNewTeam(TEAM_DEV).apply {
                 prefix = "§7[DEV] §3"
