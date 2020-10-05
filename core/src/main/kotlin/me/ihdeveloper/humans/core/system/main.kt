@@ -538,13 +538,13 @@ class ScoreboardSystem : System("Core/Scoreboard"), Listener {
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
         event.player.scoreboard = Bukkit.getScoreboardManager().newScoreboard.apply {
-            registerNewObjective("sidebar", "dummy").apply {
+            val sidebar = registerNewObjective("sidebar", "dummy").apply {
                 displayName = "§e§lTHE HUMANS"
                 displaySlot = DisplaySlot.SIDEBAR
             }
 
-            core.apply { if (serverName != null) getScores("§0§8§oV0.0b ${serverName!!.toUpperCase()}") }
-            getScores("§0§9")
+            core.apply { if (serverName != null) sidebar.getScore("§0§8§oV0.0b ${serverName!!.toUpperCase()}").score = 9 }
+            sidebar.getScore("§9").score = 9
 
             val devTeam = registerNewTeam(TEAM_DEV).apply {
                 prefix = "§7[DEV] §3"

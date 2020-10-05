@@ -37,7 +37,7 @@ class TimeSystem : System("Core/Time"), Runnable {
                 val date = getTeam(TEAM_DATE) ?: registerNewTeam(TEAM_DATE).apply {
                     addEntry(SCORE_DATE)
 
-                    objective.getScore(SCORE_DATE).score = 9
+                    objective.getScore(SCORE_DATE).score = 8
                 }
 
                 val day = getTeam(TEAM_DAY) ?: registerNewTeam(TEAM_DAY).apply {
@@ -49,7 +49,7 @@ class TimeSystem : System("Core/Time"), Runnable {
                 val time = getTeam(TEAM_TIME) ?: registerNewTeam(TEAM_TIME).apply {
                     addEntry(SCORE_TIME)
 
-                    objective.getScore(SCORE_TIME).score = 7
+                    objective.getScore(SCORE_TIME).score = 8
                 }
 
                 date.suffix = "§f${years}§8/§f${months}"
