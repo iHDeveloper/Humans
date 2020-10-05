@@ -79,7 +79,7 @@ class NPCSystem : System("Core/NPC"), Listener {
         Companion.plugin = plugin
 
         config.load(logger)
-        val rawNPCs = config.get<ArrayList<Map<String, Any>>>("npcs")
+        val rawNPCs = config.get<ArrayList<Map<String, Any>>>("npcs", arrayListOf())
 
         rawNPCs.forEach {
             add(NPCInfo.deserialize(it))
