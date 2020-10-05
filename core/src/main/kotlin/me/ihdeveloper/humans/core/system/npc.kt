@@ -25,7 +25,6 @@ import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scoreboard.NameTagVisibility
 
-private const val NPC_RENDER_DISTANCE = 48
 const val TEAM_NPC = "@z_npc"
 
 /**
@@ -64,6 +63,15 @@ class NPCSystem : System("Core/NPC"), Listener {
         fun add(info: NPCInfo) {
             npcInfoList.add(info)
             info.apply { npcList.add(fromNPCType(type, location)!!) }
+
+            Bukkit.getOnlinePlayers().forEach {
+                for (npc in npcList) {
+                    if (!npc.shouldTrack(it))
+                        continue
+
+                    npc.spawn(toNMSPlayer(it))
+                }
+            }
         }
 
         fun save() {
@@ -101,8 +109,12 @@ class NPCSystem : System("Core/NPC"), Listener {
                 nameTagVisibility = NameTagVisibility.HIDE_FOR_OTHER_TEAMS
             }
 
-            val npc = HubSelector(Location(player.world, -28.5, 69.0, -48.5))
-            npc.spawn(toNMSPlayer(player))
+            for (npc in npcList) {
+                if (!npc.shouldTrack(player))
+                    continue
+
+                npc.spawn(toNMSPlayer(player))
+            }
         }
     }
 
@@ -113,7 +125,7 @@ class NPCSystem : System("Core/NPC"), Listener {
             if (npc.trackedPlayers.contains(event.player.entityId))
                 continue
 
-            if (npc.location.distance(event.player.location) > NPC_RENDER_DISTANCE) {
+            if (!npc.shouldTrack(event.player)) {
                 npc.despawn(toNMSPlayer(event.player))
                 continue
             }

@@ -122,6 +122,12 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
         Bukkit.getPluginManager().registerEvents(this, plugin)
         Companion.logger = logger
 
+         Bukkit.getWorlds().forEach { w ->
+             w.entities.forEach {
+                 it.remove()
+             }
+         }
+
         logger.info("Overriding entities...")
 
         /** Override base entities with custom ones */

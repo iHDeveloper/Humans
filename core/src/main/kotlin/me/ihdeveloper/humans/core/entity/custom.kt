@@ -27,6 +27,8 @@ import org.bukkit.craftbukkit.v1_8_R3.util.UnsafeList
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 
+private const val NPC_RENDER_DISTANCE = 48
+
 /**
  * An custom entity for armor stand
  */
@@ -119,6 +121,11 @@ open class CustomNPC(
     fun initHologram(name: String, type: String, state: String) {
         holograms = spawnNPCHologram(location, name, type, state, GameLogger("Core/NPC/Logger"))
     }
+
+    /**
+     * Check if the NPC should track this player or not
+     */
+    fun shouldTrack(player: Player) = location.distance(player.location) <= NPC_RENDER_DISTANCE
 
     /**
      * Spawns the NPC to the player. And, adds it to the tracking set
