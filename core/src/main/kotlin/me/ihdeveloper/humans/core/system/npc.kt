@@ -58,7 +58,7 @@ class NPCSystem : System("Core/NPC"), Listener {
         fun scheduleRemovePacket(connection: PlayerConnection, npc: EntityPlayer) {
             Bukkit.getScheduler().runTaskLater(plugin!!, {
                 connection.sendPacket(PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, npc))
-            }, 1L)
+            }, 5L)
         }
 
         fun scheduleTeleportPacket(connection: PlayerConnection, npc: EntityPlayer) {
