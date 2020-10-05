@@ -3,6 +3,7 @@ package me.ihdeveloper.humans.core.system
 import me.ihdeveloper.humans.core.Configuration
 import me.ihdeveloper.humans.core.ConfigurationDeserialize
 import me.ihdeveloper.humans.core.ConfigurationSerialize
+import me.ihdeveloper.humans.core.GameLogger
 import me.ihdeveloper.humans.core.ITEMSTACK_AIR
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.command.CreateWarpCommand
@@ -15,6 +16,7 @@ import me.ihdeveloper.humans.core.command.SummonCommand
 import me.ihdeveloper.humans.core.corePlugin
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
 import me.ihdeveloper.humans.core.entity.CustomMineCart
+import me.ihdeveloper.humans.core.entity.CustomNPC
 import me.ihdeveloper.humans.core.entity.CustomSkeleton
 import me.ihdeveloper.humans.core.entity.Hologram
 import me.ihdeveloper.humans.core.entity.PrisonGuard
@@ -58,7 +60,9 @@ import org.bukkit.event.block.BlockPistonRetractEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
+import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.event.player.PlayerDropItemEvent
@@ -92,10 +96,23 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
         )
     }
 
-    private val config = Configuration("entities")
+    companion object {
+        private var logger: GameLogger? = null
+        private val config = Configuration("entities")
+
+        fun save() {
+            val entities = arrayListOf<Map<String, Any>>()
+            for (info in summonedEntitiesInfo) {
+                entities.add(info.serialize())
+            }
+            config.set("entities", entities)
+            config.save(logger)
+        }
+    }
 
     override fun init(plugin: JavaPlugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin)
+        Companion.logger = logger
 
         logger.info("Overriding entities...")
 
@@ -138,13 +155,6 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
         for (summonedEntity in summonedEntities) {
             summonedEntity.bukkitEntity.remove()
         }
-
-        val entities = arrayListOf<Map<String, Any>>()
-        for (info in summonedEntitiesInfo) {
-            entities.add(info.serialize())
-        }
-        config.set("entities", entities)
-        config.save(logger)
 
         summonedEntities.clear()
         summonedEntitiesInfo.clear()
@@ -447,6 +457,32 @@ class PlayerSystem : System("Core/Player"), Listener {
     @Suppress("UNUSED")
     fun onFoodLevel(event: FoodLevelChangeEvent) {
         event.foodLevel = 20
+    }
+
+    /**
+     * Prevent the player from dying
+     */
+    @EventHandler
+    @Suppress("UNUSED")
+    fun onDeath(event: PlayerDeathEvent) {
+        event.apply {
+            entity.health = 20.0
+            if (spawn != null) entity.teleport(spawn)
+        }
+    }
+
+    /**
+     * Prevent the player from getting any kind of damage
+     */
+    @EventHandler
+    @Suppress("UNUSED")
+    fun onDamage(event: EntityDamageEvent) {
+        event.apply {
+            if (entity.type !== EntityType.PLAYER) return
+            if ((entity as CraftPlayer).handle is CustomNPC) return
+
+            isCancelled = true
+        }
     }
 
 }

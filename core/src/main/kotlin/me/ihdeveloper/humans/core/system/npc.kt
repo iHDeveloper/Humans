@@ -77,6 +77,8 @@ class NPCSystem : System("Core/NPC"), Listener {
 
     override fun dispose() {
         npcList.forEach { it.die() }
+        npcList.clear()
+        npcInfoList.clear()
     }
 
     @EventHandler

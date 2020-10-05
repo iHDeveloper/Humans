@@ -57,6 +57,15 @@ class SummonCommand : AdminCommand("summon") {
     }
 }
 
+class SummonSaveCommand : AdminCommand("summon-save") {
+
+    override fun execute(sender: CommandSender?, cmd: Command?, label: String?, args: Array<out String>?): Boolean {
+        CustomEntitySystem.save()
+        sender!!.sendMessage("§aSuccess! §eSaved the entities configuration!")
+        return true
+    }
+}
+
 class SetSpawnCommand : AdminCommand("set-spawn") {
     override fun execute(sender: CommandSender?, cmd: Command?, label: String?, args: Array<out String>?): Boolean {
         if (sender !is Player) {
