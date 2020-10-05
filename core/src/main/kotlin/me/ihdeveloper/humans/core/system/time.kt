@@ -44,7 +44,7 @@ class TimeSystem : System("Core/Time"), Runnable {
                 weatherDuration = 0
                 thunderDuration = 0
                 isThundering = false
-                time = worldTime
+                fullTime = worldTime
             }
 
             it.scoreboard.apply {
