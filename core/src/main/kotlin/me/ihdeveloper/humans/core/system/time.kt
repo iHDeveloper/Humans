@@ -32,6 +32,13 @@ class TimeSystem : System("Core/Time"), Runnable {
             (FULL_MC_DAY * it.days) + ( if (it.hours >= 6) FULL_MC_HOUR * (it.hours - 6) else FULL_MC_HOUR * (18 + it.hours))
         }
 
+        Bukkit.getWorlds().forEach {
+            it.weatherDuration = 0
+            it.thunderDuration = 0
+            it.isThundering = false
+            it.fullTime = worldTime
+        }
+
         val years = x(gameTime.years)
         val months = x(gameTime.months)
         val am = if (gameTime.hours >= 12) "PM" else "AM"
@@ -39,13 +46,6 @@ class TimeSystem : System("Core/Time"), Runnable {
         val minutes = x(5 * (gameTime.minutes / 5))
 
         Bukkit.getOnlinePlayers().forEach {
-            /** Update the time in the player's world */
-            it.world.apply {
-                weatherDuration = 0
-                thunderDuration = 0
-                isThundering = false
-                fullTime = worldTime
-            }
 
             it.scoreboard.apply {
                 val objective = getObjective(DisplaySlot.SIDEBAR)
