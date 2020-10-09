@@ -9,7 +9,7 @@ import org.bukkit.Material
 @GameItemInfo(
     id = "prison:stone",
     name = "Prison Stone",
-    description = ["§7The price of being a prisoner..."],
+    description = [],
     rarity = GameItemRarity.COMMON,
     material = Material.STONE
 )

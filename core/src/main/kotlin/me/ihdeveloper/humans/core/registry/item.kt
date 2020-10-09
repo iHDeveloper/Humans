@@ -3,6 +3,7 @@ package me.ihdeveloper.humans.core.registry
 import me.ihdeveloper.humans.core.GameItem
 import me.ihdeveloper.humans.core.GameItemInfo
 import me.ihdeveloper.humans.core.GameLogger
+import org.bukkit.ChatColor
 import org.bukkit.inventory.ItemStack
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
@@ -62,7 +63,7 @@ fun createItem(itemClass: KClass<out GameItem>, amount: Int = 1): ItemStack {
                 addAll(info.description)
                 add("§0")
                 add("§8-----------------")
-                add("${info.rarity.color}${instance.rarityPrefix} ${info.rarity.name}")
+                add("${info.rarity.color}${ChatColor.BOLD}${instance.rarityPrefix} ${info.rarity.name}")
             }
         }
     }

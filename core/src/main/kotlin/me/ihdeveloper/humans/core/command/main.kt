@@ -107,7 +107,7 @@ class GiveCommand : AdminCommand("give") {
         val item = createItem(id, amount)
 
         if (item === null) {
-            sender.sendMessage("§cWe couldn't find the item with this ID!")
+            sender.sendMessage("§cWe couldn't find an item with this ID!")
             return true
         }
 
