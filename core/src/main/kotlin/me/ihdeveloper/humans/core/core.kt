@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
@@ -144,6 +145,7 @@ annotation class GameItemInfo(
 
     val material: Material,
     val data: Short = 0,
+    val flags: Array<ItemFlag> = [],
 )
 
 /**
