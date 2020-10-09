@@ -4,6 +4,7 @@ import me.ihdeveloper.humans.core.api.GameAPI
 import me.ihdeveloper.humans.core.system.BlockSystem
 import me.ihdeveloper.humans.core.system.CommandSystem
 import me.ihdeveloper.humans.core.system.CustomEntitySystem
+import me.ihdeveloper.humans.core.system.ItemSystem
 import me.ihdeveloper.humans.core.system.LoginSystem
 import me.ihdeveloper.humans.core.system.MenuSystem
 import me.ihdeveloper.humans.core.system.NPCSystem
@@ -66,6 +67,7 @@ class GameCore {
     /** Represents the core systems of the game */
     private val systems = arrayOf(
         TimeSystem(),
+        ItemSystem(),
         LoginSystem(),
         BlockSystem(),
         CommandSystem(),
@@ -74,7 +76,7 @@ class GameCore {
         PlayerSystem(),
         WarpSystem(),
         ScoreboardSystem(),
-        NPCSystem()
+        NPCSystem(),
     )
 
     /** Represents other systems of the game */

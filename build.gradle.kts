@@ -45,6 +45,7 @@ subprojects {
 
     dependencies {
         implementation(kotlin("stdlib"))
+        implementation(kotlin("reflect"))
 
         // Include the server jar source
         if (project.name != "game-service") {

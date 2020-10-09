@@ -7,6 +7,7 @@ import me.ihdeveloper.humans.core.GameLogger
 import me.ihdeveloper.humans.core.ITEMSTACK_AIR
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.command.CreateWarpCommand
+import me.ihdeveloper.humans.core.command.GiveCommand
 import me.ihdeveloper.humans.core.command.NPCSaveCommand
 import me.ihdeveloper.humans.core.command.NPCSummonCommand
 import me.ihdeveloper.humans.core.command.SetSpawnCommand
@@ -192,6 +193,10 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
  */
 class CommandSystem : System("Core/Command") {
     private val commands = arrayOf(
+        /** General Commands */
+        GiveCommand(),
+
+        /** Summon Commands */
         SummonCommand(),
         SummonSaveCommand(),
 

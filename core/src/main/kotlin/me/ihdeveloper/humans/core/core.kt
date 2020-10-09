@@ -1,9 +1,12 @@
 package me.ihdeveloper.humans.core
 
+import org.bukkit.ChatColor
+import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
+import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
@@ -116,4 +119,37 @@ interface ConfigurationSerialize {
  */
 interface ConfigurationDeserialize<T> {
     fun deserialize(data: Map<String, Any>): T
+}
+
+/**
+ * Represents the rarity of the game item
+ */
+enum class GameItemRarity(
+    val color: ChatColor
+) {
+    COMMON(ChatColor.WHITE);
+}
+
+/**
+ * Represents the render info and rules of the game item
+ */
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class GameItemInfo(
+    val id: String,
+    val name: String,
+    val description: Array<String>,
+    val rarity: GameItemRarity,
+
+    val material: Material,
+    val data: Short = 0,
+)
+
+/**
+ * Represents an instance of an item in the game
+ *
+ * The instance performs stateless operations fired from events in the game
+ */
+open class GameItem {
+    open val rarityPrefix: String? = null
 }
