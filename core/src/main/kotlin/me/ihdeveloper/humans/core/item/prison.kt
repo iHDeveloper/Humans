@@ -14,3 +14,12 @@ import org.bukkit.Material
     material = Material.STONE
 )
 class PrisonStone : NaturalItem()
+
+@GameItemInfo(
+    id = "prison:pickaxe",
+    name = "Prison Pickaxe",
+    description = ["§7Made in Wither Prison."],
+    rarity = GameItemRarity.UNCOMMON,
+    material = Material.WOOD_PICKAXE
+)
+class PrisonPickaxe : ToolItem()

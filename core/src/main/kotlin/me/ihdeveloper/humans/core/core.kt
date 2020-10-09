@@ -127,7 +127,8 @@ interface ConfigurationDeserialize<T> {
 enum class GameItemRarity(
     val color: ChatColor
 ) {
-    COMMON(ChatColor.WHITE);
+    COMMON(ChatColor.WHITE),
+    UNCOMMON(ChatColor.GREEN);
 }
 
 /**

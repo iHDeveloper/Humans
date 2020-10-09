@@ -8,3 +8,10 @@ import me.ihdeveloper.humans.core.GameItem
 abstract class NaturalItem : GameItem() {
     override val rarityPrefix = "NATURAL"
 }
+
+/**
+ * Abstraction for tool items (e.g. pickaxe, axe, etc...)
+ */
+abstract class ToolItem : GameItem() {
+    override val rarityPrefix = "TOOL"
+}

@@ -61,7 +61,7 @@ fun createItem(itemClass: KClass<out GameItem>, amount: Int = 1): ItemStack {
             displayName = "${info.rarity.color}${info.name}"
             lore = mutableListOf<String>().apply {
                 addAll(info.description)
-                add("§0")
+                if (info.description.isNotEmpty()) add("§0")
                 add("§8-----------------")
                 add("${info.rarity.color}${ChatColor.BOLD}${instance.rarityPrefix} ${info.rarity.name}")
             }
