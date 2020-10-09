@@ -25,11 +25,11 @@ import me.ihdeveloper.humans.core.entity.Hologram
 import me.ihdeveloper.humans.core.entity.PrisonGuard
 import me.ihdeveloper.humans.core.entity.WarpCart
 import me.ihdeveloper.humans.core.entity.fromEntityType
-import me.ihdeveloper.humans.core.overrideEntity
-import me.ihdeveloper.humans.core.registerEntity
-import me.ihdeveloper.humans.core.spawnEntity
-import me.ihdeveloper.humans.core.summonedEntities
-import me.ihdeveloper.humans.core.summonedEntitiesInfo
+import me.ihdeveloper.humans.core.registry.overrideEntity
+import me.ihdeveloper.humans.core.registry.registerEntity
+import me.ihdeveloper.humans.core.registry.spawnEntity
+import me.ihdeveloper.humans.core.registry.summonedEntities
+import me.ihdeveloper.humans.core.registry.summonedEntitiesInfo
 import me.ihdeveloper.humans.core.toNMSWorld
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntityMinecartRideable

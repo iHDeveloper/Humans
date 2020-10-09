@@ -3,7 +3,7 @@ package me.ihdeveloper.humans.core.entity
 import com.mojang.authlib.GameProfile
 import me.ihdeveloper.humans.core.GameLogger
 import me.ihdeveloper.humans.core.setPrivateField
-import me.ihdeveloper.humans.core.spawnEntity
+import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.system.NPCSystem
 import me.ihdeveloper.humans.core.system.TEAM_NPC
 import me.ihdeveloper.humans.core.toNMSWorld

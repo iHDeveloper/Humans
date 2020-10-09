@@ -3,9 +3,9 @@ package me.ihdeveloper.humans.core.command
 import me.ihdeveloper.humans.core.AdminCommand
 import me.ihdeveloper.humans.core.GameLogger
 import me.ihdeveloper.humans.core.entity.fromEntityType
-import me.ihdeveloper.humans.core.spawnEntity
-import me.ihdeveloper.humans.core.summonedEntities
-import me.ihdeveloper.humans.core.summonedEntitiesInfo
+import me.ihdeveloper.humans.core.registry.spawnEntity
+import me.ihdeveloper.humans.core.registry.summonedEntities
+import me.ihdeveloper.humans.core.registry.summonedEntitiesInfo
 import me.ihdeveloper.humans.core.system.CustomEntitySystem
 import me.ihdeveloper.humans.core.system.PlayerSystem
 import net.minecraft.server.v1_8_R3.Entity
