@@ -66,10 +66,7 @@ fun createItem(itemClass: KClass<out GameItem>, amount: Int = 1): ItemStack {
                 add("${info.rarity.color}${ChatColor.BOLD}${instance.rarityPrefix} ${info.rarity.name}")
             }
 
-            itemFlags.apply {
-                clear()
-                addAll(info.flags)
-            }
+            itemFlags.addAll(info.flags)
         }
     }
 }
