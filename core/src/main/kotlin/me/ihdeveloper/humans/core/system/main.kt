@@ -247,26 +247,25 @@ class BlockSystem : System("Core/Block"), Listener {
      * Cancel any block event.
      * The game doesn't want to be conflicted with vanilla block system
      */
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockBreakEvent) = onEvent(event as BlockEvent)
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPlaceEvent) = onEvent(event as BlockEvent)
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPistonEvent) = onEvent(event as BlockEvent)
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPhysicsEvent) = onEvent(event as BlockEvent)
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockIgniteEvent) = onEvent(event as BlockEvent)
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockGrowEvent) = onEvent(event as BlockEvent)
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockFadeEvent) = onEvent(event as BlockEvent)
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockDispenseEvent) = onEvent(event as BlockEvent)
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockFormEvent) = onEvent(event as BlockEvent)
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockBurnEvent) = onEvent(event as BlockEvent)
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockExplodeEvent) = onEvent(event as BlockEvent)
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockDamageEvent) = onEvent(event as BlockEvent)
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockFromToEvent) = onEvent(event as BlockEvent)
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockMultiPlaceEvent) = onEvent(event as BlockEvent)
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPistonExtendEvent) = onEvent(event as BlockEvent)
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPistonRetractEvent) = onEvent(event as BlockEvent)
-    @Suppress("UNUSED") fun onEvent(event: BlockEvent) {
-        if (event !is Cancellable)
-            return
+    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockBreakEvent) = cancelEvent(event)
+    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPlaceEvent) = cancelEvent(event)
+    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPistonEvent) = cancelEvent(event)
+    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPhysicsEvent) = cancelEvent(event)
+    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockIgniteEvent) = cancelEvent(event)
+    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockGrowEvent) = cancelEvent(event)
+    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockFadeEvent) = cancelEvent(event)
+    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockDispenseEvent) = cancelEvent(event)
+    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockFormEvent) = cancelEvent(event)
+    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockBurnEvent) = cancelEvent(event)
+    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockExplodeEvent) = cancelEvent(event)
+    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockDamageEvent) = cancelEvent(event)
+    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockFromToEvent) = cancelEvent(event)
+    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockMultiPlaceEvent) = cancelEvent(event)
+    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPistonExtendEvent) = cancelEvent(event)
+    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPistonRetractEvent) = cancelEvent(event)
 
+    @Suppress("UNUSED")
+    private fun cancelEvent(event: Cancellable) {
         event.isCancelled = true
     }
 }
