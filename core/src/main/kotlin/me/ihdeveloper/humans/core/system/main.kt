@@ -50,7 +50,6 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockBurnEvent
 import org.bukkit.event.block.BlockDamageEvent
 import org.bukkit.event.block.BlockDispenseEvent
-import org.bukkit.event.block.BlockEvent
 import org.bukkit.event.block.BlockExplodeEvent
 import org.bukkit.event.block.BlockFadeEvent
 import org.bukkit.event.block.BlockFormEvent
@@ -59,7 +58,6 @@ import org.bukkit.event.block.BlockGrowEvent
 import org.bukkit.event.block.BlockIgniteEvent
 import org.bukkit.event.block.BlockMultiPlaceEvent
 import org.bukkit.event.block.BlockPhysicsEvent
-import org.bukkit.event.block.BlockPistonEvent
 import org.bukkit.event.block.BlockPistonExtendEvent
 import org.bukkit.event.block.BlockPistonRetractEvent
 import org.bukkit.event.block.BlockPlaceEvent
@@ -249,7 +247,6 @@ class BlockSystem : System("Core/Block"), Listener {
      */
     @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockBreakEvent) = cancelEvent(event)
     @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPlaceEvent) = cancelEvent(event)
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPistonEvent) = cancelEvent(event)
     @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPhysicsEvent) = cancelEvent(event)
     @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockIgniteEvent) = cancelEvent(event)
     @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockGrowEvent) = cancelEvent(event)
