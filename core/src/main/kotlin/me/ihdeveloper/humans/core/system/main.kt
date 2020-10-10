@@ -263,7 +263,7 @@ class BlockSystem : System("Core/Block"), Listener {
     @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockMultiPlaceEvent) = onEvent(event as BlockEvent)
     @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPistonExtendEvent) = onEvent(event as BlockEvent)
     @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPistonRetractEvent) = onEvent(event as BlockEvent)
-    @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockEvent) {
+    @Suppress("UNUSED") fun onEvent(event: BlockEvent) {
         if (event !is Cancellable)
             return
 
