@@ -44,7 +44,7 @@ class GiveCommand : AdminCommand("give") {
             return true
         }
 
-        if (sender.itemInHand.type === Material.AIR) {
+        if (sender.itemInHand.type !== Material.AIR) {
             sender.sendMessage("§cYour hand is full with an item!")
             return true
         }
