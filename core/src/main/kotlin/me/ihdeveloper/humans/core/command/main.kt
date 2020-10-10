@@ -3,7 +3,6 @@ package me.ihdeveloper.humans.core.command
 import me.ihdeveloper.humans.core.AdminCommand
 import me.ihdeveloper.humans.core.GameLogger
 import me.ihdeveloper.humans.core.entity.fromEntityType
-import me.ihdeveloper.humans.core.registry.createItem
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.registry.summonedEntities
 import me.ihdeveloper.humans.core.registry.summonedEntitiesInfo
@@ -14,7 +13,6 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
-import java.lang.NumberFormatException
 
 class SummonCommand : AdminCommand("summon") {
     private val logger = GameLogger("Core/Command/Summon")
@@ -77,41 +75,6 @@ class SetSpawnCommand : AdminCommand("set-spawn") {
 
         PlayerSystem.spawn = sender.location
         sender.sendMessage("§aSuccess! §ePlayer spawn has been set! :D")
-        return true
-    }
-}
-
-class GiveCommand : AdminCommand("give") {
-    override fun execute(sender: CommandSender?, cmd: Command?, label: String?, args: Array<out String>?): Boolean {
-        if (sender !is Player) {
-            sender!!.sendMessage("§cYou have to be a player to execute this command!")
-            return true
-        }
-
-        if (args!!.isEmpty()) {
-            return false
-        }
-
-        val id: String = args[0]
-        var amount = 1
-
-        if (args.size == 2) {
-            try {
-                amount = Integer.parseInt(args[0])
-            } catch (e: NumberFormatException) {
-                sender.sendMessage("§cFailed to parse the amount.")
-                return true
-            }
-        }
-
-        val item = createItem(id, amount)
-
-        if (item === null) {
-            sender.sendMessage("§cWe couldn't find an item with this ID!")
-            return true
-        }
-
-        sender.inventory.addItem(item)
         return true
     }
 }

@@ -146,6 +146,7 @@ annotation class GameItemInfo(
     val material: Material,
     val data: Short = 0,
     val flags: Array<ItemFlag> = [],
+    val unbreakable: Boolean = false,
 )
 
 /**
@@ -154,5 +155,5 @@ annotation class GameItemInfo(
  * The instance performs stateless operations fired from events in the game
  */
 open class GameItem {
-    open val rarityPrefix: String? = null
+    open val raritySuffix: String? = null
 }

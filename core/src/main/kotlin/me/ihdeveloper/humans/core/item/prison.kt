@@ -22,6 +22,7 @@ class PrisonStone : NaturalItem()
     description = ["§7Made in Wither Prison."],
     rarity = GameItemRarity.UNCOMMON,
     material = Material.WOOD_PICKAXE,
-    flags = [ItemFlag.HIDE_ATTRIBUTES]
+    flags = [ItemFlag.HIDE_ATTRIBUTES],
+    unbreakable = true
 )
 class PrisonPickaxe : ToolItem()

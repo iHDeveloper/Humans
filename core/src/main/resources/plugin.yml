@@ -36,3 +36,6 @@ commands:
   give:
     usage: "give <id> [amount]"
     description: "Gives the player a game item"
+  item-info:
+    usage: "item-info"
+    description: "Describes information about the item in your hand"

@@ -2,6 +2,7 @@ package me.ihdeveloper.humans.core
 
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
+import java.util.UUID
 import net.minecraft.server.v1_8_R3.EntityPlayer
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -10,9 +11,10 @@ import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftInventory
 import org.bukkit.entity.Player
+import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
-import java.util.*
 
 /**
  * An instance of Item Stack AIR
@@ -29,6 +31,8 @@ val COLOR_GRAY = ChatColor.GRAY
 val COLOR_RESET = ChatColor.RESET
 val COLOR_YELLOW = ChatColor.YELLOW
 val COLOR_WHITE = ChatColor.WHITE
+
+private typealias NMSItemStack = net.minecraft.server.v1_8_R3.ItemStack
 
 /**
  * An utility to help in logging the game actions
@@ -98,3 +102,13 @@ fun randomGameProfile(): GameProfile {
 fun GameProfile.applyTexture(texture: String, signature: String) {
     properties.put("textures", Property("textures", texture, signature))
 }
+
+/**
+ * Sets a NMS item directly from inventory
+ */
+fun Inventory.setNMSItem(index: Int, nmsItem: NMSItemStack) = (this as CraftInventory).inventory.setItem(index, nmsItem)
+
+/**
+ * Gets a NMS item directly from inventory
+ */
+fun Inventory.getNMSItem(index: Int) = (this as CraftInventory).inventory.getItem(index)
