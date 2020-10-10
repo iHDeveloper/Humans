@@ -72,6 +72,8 @@ class ItemInfoCommand : AdminCommand("item-info") {
 
         val item = sender.inventory.let { it.getNMSItem(it.heldItemSlot) }
 
+        sender.let { it.sendMessage("§6Printing item info ${it.inventory.itemInHand.itemMeta.displayName}§6...") }
+
         return item.tag.let {
             val itemData = it.get("ItemData")
 
@@ -90,5 +92,5 @@ class ItemInfoCommand : AdminCommand("item-info") {
         }
     }
 
-    private fun Player.printValue(key: String, value: String?) = sendMessage("§e$key§f: ${value ?: "§cnull"}")
+    private fun Player.printValue(key: String, value: String?) = sendMessage("§e» §e$key§f: §6${value ?: "§cnull"}")
 }
