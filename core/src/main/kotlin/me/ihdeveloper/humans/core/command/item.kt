@@ -14,7 +14,9 @@ import net.minecraft.server.v1_8_R3.NBTTagCompound
 import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 
 /**
  * Gives game item to the player
@@ -55,7 +57,14 @@ class GiveCommand : AdminCommand("give") {
         }
 
         sender.inventory.apply {
-            setGameItem(heldItemSlot, if (type === NullGameItem::class) NullGameItemStack(NBTTagCompound()) else GameItemStack(type, 1))
+            setGameItem(
+                heldItemSlot,
+                if (type === NullGameItem::class)
+                    NullGameItemStack(NBTTagCompound().apply {
+                        CraftItemStack.asNMSCopy(ItemStack(Material.STONE, 1, 2.toShort())).save(this)
+                    })
+                else
+                    GameItemStack(type, 1))
         }
         return true
     }

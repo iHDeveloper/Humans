@@ -29,8 +29,8 @@ private val byId = mutableMapOf<String, KClass<out GameItem>>()
         "§7Please report this item",
         "§7to §eAgent iHDeveloper"
     ],
-    material = Material.BOW,
-    data = 96.toShort(),
+    material = Material.DIRT,
+    data = (-1).toShort(),
     rarity = GameItemRarity.SPECIAL,
 )
 class NullGameItem : GameItem() {
