@@ -21,7 +21,7 @@ private val byId = mutableMapOf<String, KClass<out GameItem>>()
 
 @GameItemInfo(
     id = "null",
-    name = "",
+    name = "null",
     description = [
         "§7Contains information about",
         "§7unknown item.",
@@ -29,7 +29,8 @@ private val byId = mutableMapOf<String, KClass<out GameItem>>()
         "§7Please report this item",
         "§7to §eAgent iHDeveloper"
     ],
-    material = Material.AIR,
+    material = Material.GRASS,
+    data = 100.toShort(),
     rarity = GameItemRarity.SPECIAL,
 )
 class NullGameItem : GameItem() {
@@ -99,8 +100,6 @@ fun createItem(itemClass: KClass<out GameItem>, amount: Int = 1): NMSItemStack {
     val instance = instances[itemClass]!!
 
     val bukkitItem = itemClass.let {
-        if (itemClass === NullGameItem::class)
-            @Suppress("DEPRECATED") ItemStack(-1, 1)
         ItemStack(info.material, amount, info.data)
     }
 
