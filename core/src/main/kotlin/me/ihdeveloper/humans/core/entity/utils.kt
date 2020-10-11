@@ -19,6 +19,7 @@ fun fromEntityType(type: String, location: Location): Entity? = when(type) {
  */
 fun fromNPCType(type: String, location: Location): CustomNPC? = when(type) {
     "hub_selector" -> HubSelector(location)
+    "agent_developer" -> AgentDeveloper(location)
     else -> null
 }
 

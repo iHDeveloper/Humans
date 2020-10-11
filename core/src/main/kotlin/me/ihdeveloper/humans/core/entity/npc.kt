@@ -1,16 +1,19 @@
 package me.ihdeveloper.humans.core.entity
 
+import me.ihdeveloper.humans.core.corePlugin
+import me.ihdeveloper.humans.core.util.Conversation
 import me.ihdeveloper.humans.core.util.applyTexture
 import me.ihdeveloper.humans.core.util.randomGameProfile
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
+/**
+ * Provides the ability to switch between hub servers
+ */
 class HubSelector(
     location: Location
-) : CustomNPC(
-    location,
-    profile
-) {
+) : CustomNPC(location, profile) {
     companion object {
         private val profile = randomGameProfile().apply {
             applyTexture(
@@ -31,3 +34,39 @@ class HubSelector(
         }
     }
 }
+
+/**
+ * An agent in the humans agency
+ *
+ * Represents a developer in the team
+ */
+class AgentDeveloper(
+    location: Location
+) : CustomNPC(location, profile) {
+    companion object {
+        private val profile = randomGameProfile().apply {
+            applyTexture(
+                texture = "ewogICJ0aW1lc3RhbXAiIDogMTYwMjQxMzAxMzExNywKICAicHJvZmlsZUlkIiA6ICJkODAwZDI4MDlmNTE0ZjkxODk4YTU4MWYzODE0Yzc5OSIsCiAgInByb2ZpbGVOYW1lIiA6ICJ0aGVCTFJ4eCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9mYmNiM2Q1NTY3NjM0OWM0ZmFkMDI1OTdmYzQ1ZDQ4MDQzY2M3NTQ1NGZhOGVmYTA2MDVjY2Q5NjBkZmM3MGFjIgogICAgfQogIH0KfQ==",
+                signature = "ADXCLVbFPYeEqMNq+g6evhAhIQ3gXLixoH+FriqO2gp5tesz1lJZlCnyz+qDO4UZKOoW+slnA5P2ik7GWGi/7lZV4mx9hIbNfFbmjYUbjhVE0VmK6t74rfrW1SsUA+pI6MtcXjelrJ4W30bQlj+uq9lJkLuNEaDBz/WimnWZe5WQrMwcqEuNKdVTwtQCTj6LYDdhXVO8nwBiMQ1MRMtAPkKejrWdCv0Z68MCymuSV76ZzK9X9LbLrB3LzVeU8X4ln+In9aNJLYUCTude7w9XbsEf9hANXp0ZNusZ706keREMG/KwLuyrCn4tb2G+i52i1rL20rrMwiNIl62Xoug3Ra4jbq2CWKZ3Iqy8dhB6wjt0zDoT8oeyn4wOmcC08iI7CGLGCC0Vlq0yRYvDM5fw1IeFaQ6O3maxF7ZNMtmO5zv3Z8+8MOgk5a55rXivjqFIC8nn4jYWzYlK2PAPnAJTMXTOLN4uBtW1d5+o1i/Lkn7hf1xi0mKfbejjrV8FtgUOIHaIc9V4/3osxAefAdEkib15qJSR3Grnu5v3PWZwFSDqkEk1l3kwF7b7A1/e2O3dAcYDNsCHintCzr0VPIYdNp8WLRNsJxm6XhecInjB0CLqzf/qChOTwBVCCRgnfprERV8FGMHH8Uj66KaPFLyf4YGfQWbSNFNvtikIbK2bp0s="
+            )
+        }
+
+        private val conversationMessages = arrayOf(
+            "§7[NPC] §3iHDeveloper: §eHello!, I am an agent in the HG aka Humans agency.",
+            "§7[NPC] §3iHDeveloper: §eIt's a secret agency for helping \"Humans\" stay alive in the prison",
+            "§7[NPC] §3iHDeveloper: §eI will provide some of the agency services.",
+            "§7[NPC] §3iHDeveloper: §eThese services will improves your life in the prison.",
+            "§7[NPC] §3iHDeveloper: §eCome back later to use these services!"
+        )
+    }
+
+    init {
+        initNPC()
+        initHologram("§3iHDeveloper", "§7Prison Agent", "§e§lCOMING SOON")
+    }
+
+    override fun interact(player: Player) {
+        Conversation(player, conversationMessages).start()
+    }
+}
+
