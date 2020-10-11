@@ -64,7 +64,7 @@ class GiveCommand : AdminCommand("give") {
                         CraftItemStack.asNMSCopy(ItemStack(Material.STONE, 1, 2.toShort())).save(this)
                     })
                 else
-                    GameItemStack(type, 1))
+                    GameItemStack(type, amount))
         }
         return true
     }

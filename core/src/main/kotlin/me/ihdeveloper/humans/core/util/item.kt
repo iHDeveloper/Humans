@@ -29,6 +29,9 @@ fun Inventory.setGameItem(index: Int, item: GameItemStack) {
     val nmsItem = createItem(item.type, item.amount)
 
     /** Include any state of the item in NBT */
+    if (item is NullGameItemStack) {
+        nmsItem.tag.set("LostData", item.nbt)
+    }
 
     setNMSItem(index, nmsItem)
 }
@@ -55,6 +58,10 @@ fun Inventory.getGameItem(index: Int): GameItemStack? {
 
             if (type === null)
                 return NullGameItemStack(nms.save(NBTTagCompound()))
+
+            if (type === NullGameItem::class) {
+                return NullGameItemStack(nms.tag.getCompound("LostData"))
+            }
 
             return GameItemStack(
                 type = type,
