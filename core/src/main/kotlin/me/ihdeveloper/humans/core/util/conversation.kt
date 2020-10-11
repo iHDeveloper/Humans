@@ -16,7 +16,7 @@ class Conversation(
     override fun run() = sendChat()
 
     private fun sendChat() {
-        if (index > messages.size) {
+        if (index >= messages.size) {
             return
         }
 

@@ -6,7 +6,10 @@ import me.ihdeveloper.humans.core.util.applyTexture
 import me.ihdeveloper.humans.core.util.randomGameProfile
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.SkullMeta
 
 /**
  * Provides the ability to switch between hub servers
@@ -63,6 +66,15 @@ class AgentDeveloper(
     init {
         initNPC()
         initHologram("§3iHDeveloper", "§7Prison Agent", "§e§lCOMING SOON")
+
+        val itemSkull = ItemStack(Material.SKULL_ITEM, 1, 3.toShort())
+        itemSkull.apply {
+            itemMeta = (itemMeta as SkullMeta).apply {
+                owner = "iHDeveloper"
+            }
+        }
+
+        (bukkitEntity as Player).inventory.helmet = itemSkull
     }
 
     override fun interact(player: Player) {
