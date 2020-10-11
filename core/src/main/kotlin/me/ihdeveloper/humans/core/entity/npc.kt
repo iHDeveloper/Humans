@@ -7,6 +7,7 @@ import me.ihdeveloper.humans.core.util.randomGameProfile
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
@@ -55,7 +56,7 @@ class AgentDeveloper(
         }
 
         private val conversationMessages = arrayOf(
-            "§7[NPC] §3iHDeveloper: §eHello!, I am an agent in the HG aka Humans agency.",
+            "§7[NPC] §3iHDeveloper: §eHello!, I am an agent in the HG aka Humans Agency.",
             "§7[NPC] §3iHDeveloper: §eIt's a secret agency for helping \"Humans\" stay alive in the prison",
             "§7[NPC] §3iHDeveloper: §eI will provide some of the agency services.",
             "§7[NPC] §3iHDeveloper: §eThese services will improves your life in the prison.",
@@ -74,7 +75,7 @@ class AgentDeveloper(
             }
         }
 
-        (bukkitEntity as Player).inventory.helmet = itemSkull
+        inventory.setItem(103, CraftItemStack.asNMSCopy(itemSkull))
     }
 
     override fun interact(player: Player) {
