@@ -1,7 +1,7 @@
 package me.ihdeveloper.humans.core.entity
 
-import me.ihdeveloper.humans.core.applyTexture
-import me.ihdeveloper.humans.core.randomGameProfile
+import me.ihdeveloper.humans.core.util.applyTexture
+import me.ihdeveloper.humans.core.util.randomGameProfile
 import org.bukkit.Location
 import org.bukkit.entity.Player
 

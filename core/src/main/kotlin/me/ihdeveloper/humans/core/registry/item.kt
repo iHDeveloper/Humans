@@ -2,21 +2,62 @@ package me.ihdeveloper.humans.core.registry
 
 import me.ihdeveloper.humans.core.GameItem
 import me.ihdeveloper.humans.core.GameItemInfo
-import me.ihdeveloper.humans.core.GameLogger
+import me.ihdeveloper.humans.core.util.GameLogger
 import org.bukkit.ChatColor
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
+import me.ihdeveloper.humans.core.GameItemRarity
+import me.ihdeveloper.humans.core.GameItemStack
+import me.ihdeveloper.humans.core.util.NMSItemStack
 import net.minecraft.server.v1_8_R3.NBTTagCompound
+import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack
 
 private val infos = mutableMapOf<KClass<out GameItem>, GameItemInfo>()
 private val instances = mutableMapOf<KClass<out GameItem>, GameItem>()
 private val byId = mutableMapOf<String, KClass<out GameItem>>()
 
-private typealias NMSItemStack = net.minecraft.server.v1_8_R3.ItemStack
+@GameItemInfo(
+    id = "null",
+    name = "",
+    description = [
+        "§7Contains information about",
+        "§7unknown item.",
+        "§0",
+        "§7Please report this item",
+        "§7to §eAgent iHDeveloper"
+    ],
+    material = Material.AIR,
+    rarity = GameItemRarity.SPECIAL,
+)
+class NullGameItem : GameItem() {
+    companion object {
+        /**
+         * Returns null NMS item stack containing nbt about "item".
+         */
+        fun asNMSItem(item: NMSItemStack): NMSItemStack {
+            val nms = createItem(NullGameItem::class)
+            nms.tag.set("UnknownData", item.tag)
 
+            return nms
+        }
+    }
+}
+
+open class NullGameItemStack(
+    val nbt: NBTTagCompound
+): GameItemStack(NullGameItem::class)
+
+/**
+ * Returns a game item stateless instance class
+ */
+fun getItemClass(id: String): KClass<out GameItem>? = byId[id]
+
+/**
+ * Register a game item in the item registry
+ */
 fun registerItem(itemClass: KClass<out GameItem>, logger: GameLogger?) {
     var info: GameItemInfo? = null
 
@@ -39,7 +80,7 @@ fun registerItem(itemClass: KClass<out GameItem>, logger: GameLogger?) {
 
 
 /**
- * Creates an registered game item
+ * Creates a game item from the item registry
  */
 fun createItem(id: String, amount: Int = 1): NMSItemStack? {
     val itemClass = byId[id]
@@ -57,11 +98,14 @@ fun createItem(itemClass: KClass<out GameItem>, amount: Int = 1): NMSItemStack {
     val info = infos[itemClass]!!
     val instance = instances[itemClass]!!
 
-    val bukkitItem = ItemStack(
-        info.material,
-        amount,
-        info.data
-    ).apply {
+    val bukkitItem = itemClass.let {
+        if (itemClass === NullGameItem::class)
+            @Suppress("DEPRECATED")
+            ItemStack(-1, 1)
+        ItemStack(info.material, amount, info.data)
+    }
+
+    bukkitItem.apply {
         itemMeta = itemMeta.apply {
             displayName = "${info.rarity.color}${info.name}"
             lore = mutableListOf<String>().apply {

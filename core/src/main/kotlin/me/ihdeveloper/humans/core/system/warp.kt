@@ -1,7 +1,7 @@
 package me.ihdeveloper.humans.core.system
 
 import me.ihdeveloper.humans.core.Configuration
-import me.ihdeveloper.humans.core.GameLogger
+import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.Warp
 import me.ihdeveloper.humans.core.WarpInfo

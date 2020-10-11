@@ -1,6 +1,6 @@
 package me.ihdeveloper.humans.core.registry
 
-import me.ihdeveloper.humans.core.GameLogger
+import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.system.CustomEntitySystem
 import net.minecraft.server.v1_8_R3.Entity
 import net.minecraft.server.v1_8_R3.EntityTypes

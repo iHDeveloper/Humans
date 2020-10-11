@@ -5,11 +5,9 @@ import me.ihdeveloper.humans.core.ConfigurationDeserialize
 import me.ihdeveloper.humans.core.ConfigurationSerialize
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.entity.CustomNPC
-import me.ihdeveloper.humans.core.entity.HubSelector
 import me.ihdeveloper.humans.core.entity.fromNPCType
-import me.ihdeveloper.humans.core.toNMSPlayer
+import me.ihdeveloper.humans.core.util.toNMSPlayer
 import net.minecraft.server.v1_8_R3.EntityPlayer
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityTeleport
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo
 import net.minecraft.server.v1_8_R3.PlayerConnection
 import org.bukkit.Bukkit

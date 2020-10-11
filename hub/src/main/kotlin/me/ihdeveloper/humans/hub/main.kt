@@ -1,6 +1,6 @@
 package me.ihdeveloper.humans.hub
 
-import me.ihdeveloper.humans.core.GameLogger
+import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.core
 import org.bukkit.plugin.java.JavaPlugin
 

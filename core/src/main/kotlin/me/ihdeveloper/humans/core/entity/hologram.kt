@@ -1,6 +1,6 @@
 package me.ihdeveloper.humans.core.entity
 
-import me.ihdeveloper.humans.core.GameLogger
+import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import net.minecraft.server.v1_8_R3.DamageSource
 import net.minecraft.server.v1_8_R3.EntityHuman

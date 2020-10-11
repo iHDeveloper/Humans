@@ -16,6 +16,7 @@ import me.ihdeveloper.humans.service.GameTime
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import kotlin.concurrent.thread
+import me.ihdeveloper.humans.core.util.GameLogger
 
 /** Folder that contains data about the plugin */
 val dataFolder = File("plugins/Humans").also { it.mkdir() }

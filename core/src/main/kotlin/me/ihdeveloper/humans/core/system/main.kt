@@ -3,8 +3,8 @@ package me.ihdeveloper.humans.core.system
 import me.ihdeveloper.humans.core.Configuration
 import me.ihdeveloper.humans.core.ConfigurationDeserialize
 import me.ihdeveloper.humans.core.ConfigurationSerialize
-import me.ihdeveloper.humans.core.GameLogger
-import me.ihdeveloper.humans.core.ITEMSTACK_AIR
+import me.ihdeveloper.humans.core.util.GameLogger
+import me.ihdeveloper.humans.core.util.ITEMSTACK_AIR
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.command.CreateWarpCommand
 import me.ihdeveloper.humans.core.command.GiveCommand
@@ -32,7 +32,7 @@ import me.ihdeveloper.humans.core.registry.registerEntity
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.registry.summonedEntities
 import me.ihdeveloper.humans.core.registry.summonedEntitiesInfo
-import me.ihdeveloper.humans.core.toNMSWorld
+import me.ihdeveloper.humans.core.util.toNMSWorld
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntityMinecartRideable
 import net.minecraft.server.v1_8_R3.EntitySkeleton

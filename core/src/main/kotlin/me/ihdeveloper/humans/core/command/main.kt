@@ -1,7 +1,7 @@
 package me.ihdeveloper.humans.core.command
 
 import me.ihdeveloper.humans.core.AdminCommand
-import me.ihdeveloper.humans.core.GameLogger
+import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.entity.fromEntityType
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.registry.summonedEntities

@@ -2,9 +2,14 @@ package me.ihdeveloper.humans.core.command
 
 import java.lang.NumberFormatException
 import me.ihdeveloper.humans.core.AdminCommand
-import me.ihdeveloper.humans.core.getNMSItem
+import me.ihdeveloper.humans.core.GameItemStack
+import me.ihdeveloper.humans.core.registry.NullGameItem
+import me.ihdeveloper.humans.core.registry.NullGameItemStack
+import me.ihdeveloper.humans.core.util.getNMSItem
 import me.ihdeveloper.humans.core.registry.createItem
-import me.ihdeveloper.humans.core.setNMSItem
+import me.ihdeveloper.humans.core.registry.getItemClass
+import me.ihdeveloper.humans.core.util.setGameItem
+import me.ihdeveloper.humans.core.util.setNMSItem
 import net.minecraft.server.v1_8_R3.NBTTagCompound
 import org.bukkit.Material
 import org.bukkit.command.Command
@@ -37,9 +42,9 @@ class GiveCommand : AdminCommand("give") {
             }
         }
 
-        val item = createItem(id, amount)
+        val type = getItemClass(id)
 
-        if (item === null) {
+        if (type === null) {
             sender.sendMessage("§cWe couldn't find an item with this ID!")
             return true
         }
@@ -49,7 +54,9 @@ class GiveCommand : AdminCommand("give") {
             return true
         }
 
-        sender.inventory.apply { setNMSItem(heldItemSlot, item) }
+        sender.inventory.apply {
+            setGameItem(heldItemSlot, if (type === NullGameItem::class) NullGameItemStack(NBTTagCompound()) else GameItemStack(type, 1))
+        }
         return true
     }
 }
@@ -75,14 +82,14 @@ class ItemInfoCommand : AdminCommand("item-info") {
         sender.let { it.sendMessage("§6Printing item info ${it.inventory.itemInHand.itemMeta.displayName}§6...") }
 
         return item.tag.let {
-            val itemData = it.get("ItemData")
+            val itemData = it.getCompound("ItemData")
 
             if (itemData == null) {
                 sender.sendMessage("§cThe item doesn't have game data!")
                 return true
             }
 
-            (itemData as NBTTagCompound).apply {
+            itemData.apply {
                 val id = getString("id")
 
                 sender.printValue("id", id)
@@ -92,5 +99,5 @@ class ItemInfoCommand : AdminCommand("item-info") {
         }
     }
 
-    private fun Player.printValue(key: String, value: String?) = sendMessage("§e» §e$key§f: §6${value ?: "§cnull"}")
+    private fun Player.printValue(key: String, value: String?) = sendMessage("§7» §e$key§f: §6${value ?: "§cnull"}")
 }

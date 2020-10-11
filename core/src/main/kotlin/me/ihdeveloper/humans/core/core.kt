@@ -6,10 +6,12 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
-import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
+import kotlin.reflect.KClass
+import me.ihdeveloper.humans.core.util.GameLogger
 
 /**
  * Represents a system in the game.
@@ -129,7 +131,8 @@ enum class GameItemRarity(
     val color: ChatColor
 ) {
     COMMON(ChatColor.WHITE),
-    UNCOMMON(ChatColor.GREEN);
+    UNCOMMON(ChatColor.GREEN),
+    SPECIAL(ChatColor.RED);
 }
 
 /**
@@ -157,3 +160,12 @@ annotation class GameItemInfo(
 open class GameItem {
     open val raritySuffix: String? = null
 }
+
+/**
+ * A stateful instance of the game item to avoid using [ItemStack]
+ *
+ */
+open class GameItemStack(
+    val type: KClass<out GameItem>,
+    val amount: Int = 1,
+)

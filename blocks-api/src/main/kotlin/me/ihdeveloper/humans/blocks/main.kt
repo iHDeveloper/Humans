@@ -4,7 +4,7 @@ import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitStringResult
 import com.google.gson.Gson
 import kotlinx.coroutines.*
-import me.ihdeveloper.humans.core.GameLogger
+import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.api.GameAPI
 import me.ihdeveloper.humans.core.core
