@@ -33,19 +33,7 @@ private val byId = mutableMapOf<String, KClass<out GameItem>>()
     data = Short.MAX_VALUE,
     rarity = GameItemRarity.SPECIAL,
 )
-class NullGameItem : GameItem() {
-    companion object {
-        /**
-         * Returns null NMS item stack containing nbt about "item".
-         */
-        fun asNMSItem(item: NMSItemStack): NMSItemStack {
-            val nms = createItem(NullGameItem::class)
-            nms.tag.set("UnknownData", item.tag)
-
-            return nms
-        }
-    }
-}
+class NullGameItem : GameItem()
 
 open class NullGameItemStack(
     val nbt: NBTTagCompound
@@ -108,7 +96,7 @@ fun createItem(itemClass: KClass<out GameItem>, amount: Int = 1): NMSItemStack {
                 addAll(info.description)
                 if (info.description.isNotEmpty()) add("§0")
                 add("§8-----------------")
-                add("${info.rarity.color}${ChatColor.BOLD}${info.rarity.name} ${instance.raritySuffix}")
+                add("${info.rarity.color}${ChatColor.BOLD}${info.rarity.name} ${instance.raritySuffix ?: ""}")
             }
 
             info.flags.forEach { if (it != ItemFlag.HIDE_UNBREAKABLE) addItemFlags(it) }
