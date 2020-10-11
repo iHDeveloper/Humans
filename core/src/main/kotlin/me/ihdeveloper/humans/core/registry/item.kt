@@ -29,8 +29,8 @@ private val byId = mutableMapOf<String, KClass<out GameItem>>()
         "§7Please report this item",
         "§7to §eAgent iHDeveloper"
     ],
-    material = Material.GRASS,
-    data = 100.toShort(),
+    material = Material.BOW,
+    data = 96.toShort(),
     rarity = GameItemRarity.SPECIAL,
 )
 class NullGameItem : GameItem() {
@@ -99,9 +99,7 @@ fun createItem(itemClass: KClass<out GameItem>, amount: Int = 1): NMSItemStack {
     val info = infos[itemClass]!!
     val instance = instances[itemClass]!!
 
-    val bukkitItem = itemClass.let {
-        ItemStack(info.material, amount, info.data)
-    }
+    val bukkitItem = ItemStack(info.material, amount, info.data)
 
     bukkitItem.apply {
         itemMeta = itemMeta.apply {

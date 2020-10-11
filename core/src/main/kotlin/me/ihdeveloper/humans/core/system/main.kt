@@ -314,7 +314,7 @@ class MenuSystem : System("Core/Menu"), Listener {
     @EventHandler
     @Suppress("UNUSED")
     fun onMoveItem(event: InventoryMoveItemEvent) {
-        if (event.item != GAME_MENU)
+        if (event.item.type === Material.NETHER_STAR)
             return
         event.isCancelled = true
     }
