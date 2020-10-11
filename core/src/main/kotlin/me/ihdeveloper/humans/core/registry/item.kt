@@ -100,8 +100,7 @@ fun createItem(itemClass: KClass<out GameItem>, amount: Int = 1): NMSItemStack {
 
     val bukkitItem = itemClass.let {
         if (itemClass === NullGameItem::class)
-            @Suppress("DEPRECATED")
-            ItemStack(-1, 1)
+            @Suppress("DEPRECATED") ItemStack(-1, 1)
         ItemStack(info.material, amount, info.data)
     }
 
