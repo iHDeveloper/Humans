@@ -101,8 +101,8 @@ class BlocksAPI : GameAPI {
             logger.info("Updating profile/$name...")
 
             Fuel.post("$API_ENDPOINT/profile/$name")
-                .timeout(PROFILE_TIMEOUT)
-                .timeoutRead(PROFILE_TIMEOUT)
+//                .timeout(PROFILE_TIMEOUT)
+//                .timeoutRead(PROFILE_TIMEOUT)
                 .body(gson.toJson(profile))
                 .awaitStringResult()
                 .fold(

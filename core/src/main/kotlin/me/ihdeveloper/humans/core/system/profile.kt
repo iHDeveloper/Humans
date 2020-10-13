@@ -1,14 +1,16 @@
 package me.ihdeveloper.humans.core.system
 
 import com.google.gson.JsonObject
-import kotlin.math.roundToInt
+import me.ihdeveloper.humans.core.GameItemStack
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.core
 import me.ihdeveloper.humans.core.registry.NullGameItemStack
+import me.ihdeveloper.humans.core.registry.getItemClass
 import me.ihdeveloper.humans.core.util.getGameItem
 import me.ihdeveloper.humans.core.util.getNMSItem
+import me.ihdeveloper.humans.core.util.setGameItem
 import me.ihdeveloper.humans.service.api.Profile
-import net.minecraft.server.v1_8_R3.NBTBase
+import net.minecraft.server.v1_8_R3.MojangsonParser
 import net.minecraft.server.v1_8_R3.NBTTagCompound
 import org.bukkit.Bukkit
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftInventoryPlayer
@@ -69,6 +71,60 @@ class ProfileSystem : System("Core/Profile"), Listener {
     @Suppress("UNUSED")
     fun onJoin(event: PlayerJoinEvent) {
         // TODO Read inventory data and load it into the player
+        event.run {
+            player.run {
+                logger.info("Loading $name...")
+
+                val profile = profiles[name]!!
+
+                (player.inventory as CraftInventoryPlayer).run {
+                    for (i in 0 until 36) {
+                        val nbtAsJson = profile.inventory[i]
+
+                        if (nbtAsJson === null)
+                            continue
+
+                        /** Converts the json into string and remove double quotes from the whole string */
+                        /** That's because the [MojangsonParser] doesn't understand the double quotes */
+                        /** For example of understandable json by [MojangsonParser]: {amount:1,data:{id:"prison:stone"}} */
+                        val readableJsonData = nbtAsJson.toString().replace("\"", "")
+
+                        /** Parses from json to NBT */
+                        val nbt = MojangsonParser.parse(readableJsonData)
+
+                        if (!nbt.hasKey("amount") || !nbt.hasKey("data"))
+                            continue
+
+                        val amount = nbt.getInt("amount")
+
+                        nbt.getCompound("data").run {
+                            if (!hasKey("id"))
+                                return
+
+                            when (val id = getString("id")) {
+                                "null" -> {
+                                    setGameItem(i, NullGameItemStack(getCompound("Lost")))
+                                }
+                                else -> {
+                                    val itemClass = getItemClass(id)
+
+                                    if (itemClass === null) {
+                                        setGameItem(i, NullGameItemStack(NBTTagCompound().apply {
+                                            setString("id", id)
+                                            setString("error", "Failed to find the class for this item")
+                                        }))
+                                    } else {
+                                        setGameItem(i, GameItemStack(itemClass, amount))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                logger.info("Loaded! $name")
+            }
+        }
     }
 
     /**
