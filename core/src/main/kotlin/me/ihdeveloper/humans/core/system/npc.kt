@@ -121,15 +121,16 @@ class NPCSystem : System("Core/NPC"), Listener {
     @Suppress("UNUSED")
     fun onMove(event: PlayerMoveEvent) {
         for (npc in npcList) {
-            if (npc.trackedPlayers.contains(event.player.entityId))
-                continue
-
-            if (!npc.shouldTrack(event.player)) {
-                npc.despawn(toNMSPlayer(event.player))
+            if (npc.trackedPlayers.contains(event.player.entityId)) {
+                if (!npc.shouldTrack(event.player)) {
+                    npc.despawn(toNMSPlayer(event.player))
+                    logger.debug("[NPC Tracker] Despawning ${event.player.name}...")
+                }
                 continue
             }
 
             npc.spawn(toNMSPlayer(event.player))
+            logger.debug("[NPC Tracker] Spawning ${event.player.name}...")
         }
     }
 

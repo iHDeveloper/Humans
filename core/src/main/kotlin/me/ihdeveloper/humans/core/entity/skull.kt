@@ -18,7 +18,7 @@ class WitherSkull(
         initLocation()
         isInvisible = true
 
-        equipment[1] = CraftItemStack.asNMSCopy(ItemStack(Material.SKULL_ITEM, 1, 1.toShort()))
+        equipment[0] = CraftItemStack.asNMSCopy(ItemStack(Material.SKULL_ITEM, 1, 1.toShort()))
     }
 
 }
