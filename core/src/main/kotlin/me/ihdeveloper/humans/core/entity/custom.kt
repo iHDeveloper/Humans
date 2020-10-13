@@ -7,7 +7,10 @@ import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.system.NPCSystem
 import me.ihdeveloper.humans.core.system.TEAM_NPC
 import me.ihdeveloper.humans.core.util.toNMSWorld
+import net.minecraft.server.v1_8_R3.DamageSource
+import net.minecraft.server.v1_8_R3.Entity
 import net.minecraft.server.v1_8_R3.EntityArmorStand
+import net.minecraft.server.v1_8_R3.EntityGiantZombie
 import net.minecraft.server.v1_8_R3.EntityMinecartRideable
 import net.minecraft.server.v1_8_R3.EntityPlayer
 import net.minecraft.server.v1_8_R3.EntitySkeleton
@@ -85,6 +88,48 @@ open class CustomSkeleton(
     override fun die() {
         super.die()
         nameHologram.bukkitEntity.remove()
+    }
+
+    /**
+     * Prevent the guard from burning by fire
+     */
+    override fun m() {
+        return
+    }
+
+    /**
+     * Prevent the guard from moving
+     */
+    override fun move(d0: Double, d1: Double, d2: Double) {
+        return
+    }
+
+    /**
+     * Prevent the guard from colliding with anyone
+     */
+    override fun collide(entity: Entity?) {
+        return
+    }
+
+    /**
+     * Prevent the guard from getting damaged
+     */
+    override fun damageEntity(damagesource: DamageSource?, f: Float): Boolean {
+        return false
+    }
+
+    /**
+     * Prevent the guard from moving
+     */
+    override fun g(d0: Double, d1: Double, d2: Double) {
+        return
+    }
+
+    /**
+     * Prevent the guard from attacking anyone. If a bow is in the guard's hand
+     */
+    override fun n() {
+        return
     }
 
 }
@@ -184,4 +229,55 @@ open class CustomNPC(
             sendPacket(PacketPlayOutAnimation(this@CustomNPC, 0))
         }
     }
+}
+
+/**
+ * Custom entity for giant zombie
+ */
+open class CustomGiant(
+    private val location: Location
+) : EntityGiantZombie(toNMSWorld(location.world)) {
+
+    protected fun initLocation() {
+        location.run { setLocation(x, y, z, yaw, pitch) }
+
+        /** Change the head rotation of the entity */
+        super.aK = location.yaw
+    }
+
+    /**
+     * Prevent the guard from burning by fire
+     */
+    override fun m() {
+        return
+    }
+
+    /**
+     * Prevent the guard from moving
+     */
+    override fun move(d0: Double, d1: Double, d2: Double) {
+        return
+    }
+
+    /**
+     * Prevent the guard from colliding with anyone
+     */
+    override fun collide(entity: Entity?) {
+        return
+    }
+
+    /**
+     * Prevent the guard from getting damaged
+     */
+    override fun damageEntity(damagesource: DamageSource?, f: Float): Boolean {
+        return false
+    }
+
+    /**
+     * Prevent the guard from moving
+     */
+    override fun g(d0: Double, d1: Double, d2: Double) {
+        return
+    }
+
 }

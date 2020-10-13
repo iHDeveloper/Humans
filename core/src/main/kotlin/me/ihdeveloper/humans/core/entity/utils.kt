@@ -11,6 +11,7 @@ import org.bukkit.Location
 fun fromEntityType(type: String, location: Location): Entity? = when(type) {
     "prison_guard" -> PrisonGuard(location)
     "hologram" -> Hologram(location, "Text")
+    "wither_skull" -> WitherSkull(location)
     else -> null
 }
 

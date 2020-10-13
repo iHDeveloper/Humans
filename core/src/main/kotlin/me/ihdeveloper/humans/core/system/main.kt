@@ -20,12 +20,14 @@ import me.ihdeveloper.humans.core.command.WarpSaveCommand
 import me.ihdeveloper.humans.core.core
 import me.ihdeveloper.humans.core.corePlugin
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
+import me.ihdeveloper.humans.core.entity.CustomGiant
 import me.ihdeveloper.humans.core.entity.CustomMineCart
 import me.ihdeveloper.humans.core.entity.CustomNPC
 import me.ihdeveloper.humans.core.entity.CustomSkeleton
 import me.ihdeveloper.humans.core.entity.Hologram
 import me.ihdeveloper.humans.core.entity.PrisonGuard
 import me.ihdeveloper.humans.core.entity.WarpCart
+import me.ihdeveloper.humans.core.entity.WitherSkull
 import me.ihdeveloper.humans.core.entity.fromEntityType
 import me.ihdeveloper.humans.core.registry.overrideEntity
 import me.ihdeveloper.humans.core.registry.registerEntity
@@ -35,6 +37,7 @@ import me.ihdeveloper.humans.core.registry.summonedEntitiesInfo
 import me.ihdeveloper.humans.core.util.Conversation
 import me.ihdeveloper.humans.core.util.toNMSWorld
 import net.minecraft.server.v1_8_R3.EntityArmorStand
+import net.minecraft.server.v1_8_R3.EntityGiantZombie
 import net.minecraft.server.v1_8_R3.EntityMinecartRideable
 import net.minecraft.server.v1_8_R3.EntitySkeleton
 import org.bukkit.Bukkit
@@ -136,6 +139,7 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
         overrideEntity(EntityArmorStand::class, CustomArmorStand::class, logger)
         overrideEntity(EntitySkeleton::class, CustomSkeleton::class, logger)
         overrideEntity(EntityMinecartRideable::class, CustomMineCart::class, logger)
+        overrideEntity(EntityGiantZombie::class, CustomGiant::class, logger)
 
         logger.info("Registering entities...")
 
@@ -143,6 +147,7 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
         registerEntity(Hologram::class, CustomArmorStand::class, logger)
         registerEntity(PrisonGuard::class, CustomSkeleton::class, logger)
         registerEntity(WarpCart::class, CustomMineCart::class, logger)
+        registerEntity(WitherSkull::class, CustomGiant::class, logger)
 
         /** Loads the entities  */
         config.load(logger)
