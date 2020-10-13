@@ -81,12 +81,12 @@ class ItemInfoCommand : AdminCommand("item-info") {
             return true
         }
 
-        if (sender.itemInHand.type === Material.AIR) {
+        val item = sender.inventory.let { it.getNMSItem(it.heldItemSlot) }
+
+        if (item === null) {
             sender.sendMessage("§cYou have nothing in your hand!")
             return true
         }
-
-        val item = sender.inventory.let { it.getNMSItem(it.heldItemSlot) }
 
         sender.let { it.sendMessage("§6Printing item info ${it.inventory.itemInHand.itemMeta.displayName}§6...") }
 
