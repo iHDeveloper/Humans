@@ -75,7 +75,7 @@ class AgentDeveloper(
             }
         }
 
-        inventory.setItem(103, CraftItemStack.asNMSCopy(itemSkull))
+        (bukkitEntity as Player).inventory.helmet = itemSkull
     }
 
     override fun interact(player: Player) {
