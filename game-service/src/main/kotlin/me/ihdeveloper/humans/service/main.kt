@@ -49,7 +49,7 @@ fun main() {
         val profile = profiles[name]
 
         if (profile == null) {
-            res.status(204)
+            res.status(200)
             return "{}"
         }
 

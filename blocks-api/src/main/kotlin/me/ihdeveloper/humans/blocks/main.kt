@@ -90,7 +90,6 @@ class BlocksAPI : GameAPI {
                         null
                     }
                 )
-            null
         }
     }
 
