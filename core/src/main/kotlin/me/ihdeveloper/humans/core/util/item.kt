@@ -49,12 +49,14 @@ fun Inventory.getGameItem(index: Int): GameItemStack? {
     if (nms === null)
         return null
 
-    nms.tag.run {
-        val data = getCompound("ItemData")
+    if (nms.tag === null)
+        return NullGameItemStack(nms.save(NBTTagCompound()))
 
-        if (data === null) {
+    nms.tag.run {
+        if (!hasKey("ItemData"))
             return NullGameItemStack(nms.save(NBTTagCompound()))
-        }
+
+        val data = getCompound("ItemData")!!
 
         data.run {
             val id = getString("id")
@@ -64,9 +66,8 @@ fun Inventory.getGameItem(index: Int): GameItemStack? {
             if (type === null)
                 return NullGameItemStack(nms.save(NBTTagCompound()))
 
-            if (type === NullGameItem::class) {
+            if (type === NullGameItem::class)
                 return NullGameItemStack(getCompound("Lost"))
-            }
 
             return GameItemStack(
                 type = type,

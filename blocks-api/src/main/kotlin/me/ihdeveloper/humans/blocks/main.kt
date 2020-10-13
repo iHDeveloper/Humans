@@ -1,6 +1,9 @@
 package me.ihdeveloper.humans.blocks
 
 import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.core.awaitResponseResult
+import com.github.kittinunf.fuel.coroutines.awaitResponseResult
+import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.github.kittinunf.fuel.coroutines.awaitStringResult
 import com.google.gson.Gson
 import kotlinx.coroutines.runBlocking
@@ -68,7 +71,7 @@ class BlocksAPI : GameAPI {
         return runBlocking {
             logger.info("Fetching profile/${name}...")
 
-            Fuel.get("$API_ENDPOINT/profile/${name}")
+            Fuel.get("$API_ENDPOINT/profile/$name")
                 .timeout(PROFILE_TIMEOUT)
                 .timeoutRead(PROFILE_TIMEOUT)
                 .awaitStringResult()
@@ -77,7 +80,7 @@ class BlocksAPI : GameAPI {
                         if (data == "{}") {
                             Profile(
                                 skills = Skills(0),
-                                inventory = "{}",
+                                inventory = mapOf(),
                                 new = true
                             )
                         } else {
@@ -94,6 +97,25 @@ class BlocksAPI : GameAPI {
     }
 
     override fun updateProfile(name: String, profile: Profile) {
-        TODO("Not yet implemented")
+        return runBlocking {
+            logger.info("Updating profile/$name...")
+
+            Fuel.post("$API_ENDPOINT/profile/$name")
+                .timeout(PROFILE_TIMEOUT)
+                .timeoutRead(PROFILE_TIMEOUT)
+                .body(gson.toJson(profile))
+                .awaitStringResult()
+                .fold(
+                    {
+                        /** Successfully updated */
+                        logger.info("Updated! profile/$name")
+                    },
+                    { err ->
+                        logger.error("Failed to update profile/$name")
+                        logger.error("An error of type ${err.exception} happened: ${err.message}")
+                    }
+                )
+
+        }
     }
 }

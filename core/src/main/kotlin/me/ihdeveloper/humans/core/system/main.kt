@@ -450,6 +450,7 @@ class PlayerSystem : System("Core/Player"), Listener {
             player.sendMessage("§8[§e@§8] §c- §9${player.displayName}")
         }
 
+        event.player.inventory.clear()
         event.quitMessage = null
     }
 

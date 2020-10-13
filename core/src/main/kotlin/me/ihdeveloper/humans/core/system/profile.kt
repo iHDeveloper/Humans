@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import kotlin.math.roundToInt
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.core
+import me.ihdeveloper.humans.core.registry.NullGameItemStack
 import me.ihdeveloper.humans.core.util.getGameItem
 import me.ihdeveloper.humans.core.util.getNMSItem
 import me.ihdeveloper.humans.service.api.Profile
@@ -78,8 +79,8 @@ class ProfileSystem : System("Core/Profile"), Listener {
     fun onQuit(event: PlayerQuitEvent) {
         event.run {
             player.run {
-                logger.debug("Saving $name...")
-                val encodedInventory = mutableMapOf<Int, String>()
+                logger.info("Saving $name...")
+                val profileInventory = mutableMapOf<Int, JsonObject>()
 
                 (player.inventory as CraftInventoryPlayer).run {
                     for (i in 0 until 36) {
@@ -94,17 +95,27 @@ class ProfileSystem : System("Core/Profile"), Listener {
 
                         val nbt = NBTTagCompound()
                         nbt.setInt("amount", gameItemStack.amount)
-                        nbt.set("data", nmsItemStack.tag.get("ItemData"))
+                        if (gameItemStack is NullGameItemStack)
+                            nbt.set("data", NBTTagCompound().apply {
+                                setString("id", "null")
+                                set("Lost", gameItemStack.nbt)
+                            })
+                        else
+                            nbt.set("data", nmsItemStack.tag.get("ItemData"))
 
-                        encodedInventory[i] = nbt.toString()
+                        profileInventory[i] = core.gson.fromJson(nbt.toString(), JsonObject::class.java)
                     }
                 }
 
                 profiles[name]!!.apply {
-                    inventory = core.gson.toJson(encodedInventory)
+                    inventory = profileInventory
+
+                    core.api!!.updateProfile(name, this)
                 }
 
-                logger.debug("Profile: ${core.gson.toJson(profiles[name])}")
+                profiles.remove(name)
+
+                logger.info("Saved! $name")
             }
         }
     }

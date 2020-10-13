@@ -60,11 +60,6 @@ fun main() {
     post("/profile/:name", fun(req: Request, res: Response) {
         val name = req.params("name")
 
-        if (profiles[name] == null) {
-            res.status(404)
-            return
-        }
-
         try {
             profiles[name] = Profile.deserialize(req.body())
             res.status(204)
