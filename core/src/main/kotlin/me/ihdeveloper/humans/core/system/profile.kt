@@ -78,6 +78,7 @@ class ProfileSystem : System("Core/Profile"), Listener {
     fun onQuit(event: PlayerQuitEvent) {
         event.run {
             player.run {
+                logger.debug("Saving $name...")
                 val encodedInventory = mutableMapOf<Int, String>()
 
                 (player.inventory as CraftInventoryPlayer).run {

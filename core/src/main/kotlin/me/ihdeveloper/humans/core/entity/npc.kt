@@ -56,7 +56,7 @@ class AgentDeveloper(
         }
 
         private val conversationMessages = arrayOf(
-            "§7[NPC] §3iHDeveloper: §eHello!, I am an agent in the HG aka Humans Agency.",
+            "§7[NPC] §3iHDeveloper: §eHello! I am an agent in the HG aka Humans Agency.",
             "§7[NPC] §3iHDeveloper: §eIt's a secret agency for helping \"Humans\" stay alive in the prison",
             "§7[NPC] §3iHDeveloper: §eI will provide some of the agency services.",
             "§7[NPC] §3iHDeveloper: §eThese services will improves your life in the prison.",
