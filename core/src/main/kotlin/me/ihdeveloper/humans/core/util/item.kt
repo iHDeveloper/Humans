@@ -20,7 +20,7 @@ fun Inventory.setNMSItem(index: Int, nmsItem: NMSItemStack) = (this as CraftInve
 /**
  * Gets a NMS item directly from inventory
  */
-fun Inventory.getNMSItem(index: Int): ItemStack = (this as CraftInventory).inventory.getItem(index)
+fun Inventory.getNMSItem(index: Int): ItemStack? = (this as CraftInventory).inventory.getItem(index)
 
 /**
  * Sets a game item in the inventory
@@ -45,6 +45,9 @@ fun Inventory.setGameItem(index: Int, item: GameItemStack) {
  */
 fun Inventory.getGameItem(index: Int): GameItemStack? {
     val nms = getNMSItem(index)
+
+    if (nms === null)
+        return null
 
     nms.tag.run {
         val data = getCompound("ItemData")

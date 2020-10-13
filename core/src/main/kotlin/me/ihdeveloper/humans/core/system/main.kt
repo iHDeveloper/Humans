@@ -375,12 +375,13 @@ class MenuSystem : System("Core/Menu"), Listener {
  */
 class PlayerSystem : System("Core/Player"), Listener {
     companion object {
-        private var spawn: Location? = null
+        var spawn: Location? = null
 
         private val messages = arrayOf(
             "§7You are in unknown location.",
             "§7You don't remember what happened to you.",
-            ""
+            "§7You seem to be in a disclosed place.",
+            "§7There's a suspicious door. Try to open it!"
         )
     }
     private val config = Configuration("players")

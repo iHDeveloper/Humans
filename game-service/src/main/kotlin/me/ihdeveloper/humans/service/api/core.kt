@@ -4,9 +4,9 @@ package me.ihdeveloper.humans.service.api
  * Represents the player's profile in the game
  */
 data class Profile (
-    val skills: Skills,
-    val inventory: String,
-    val new: Boolean,
+    var skills: Skills,
+    var inventory: String,
+    var new: Boolean,
 ) {
     companion object
 }

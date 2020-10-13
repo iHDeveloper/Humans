@@ -1,5 +1,6 @@
 package me.ihdeveloper.humans.core
 
+import com.google.gson.Gson
 import me.ihdeveloper.humans.core.api.GameAPI
 import me.ihdeveloper.humans.core.system.BlockSystem
 import me.ihdeveloper.humans.core.system.CommandSystem
@@ -65,6 +66,9 @@ class GameCore {
 
     /** Global time of the game */
     var time = GameTime()
+
+    /** An instance of Gson */
+    val gson = Gson()
 
     /** Represents the core systems of the game */
     private val systems = arrayOf(

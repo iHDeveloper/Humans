@@ -1,9 +1,16 @@
 package me.ihdeveloper.humans.core.system
 
+import com.google.gson.JsonObject
+import kotlin.math.roundToInt
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.core
+import me.ihdeveloper.humans.core.util.getGameItem
+import me.ihdeveloper.humans.core.util.getNMSItem
 import me.ihdeveloper.humans.service.api.Profile
+import net.minecraft.server.v1_8_R3.NBTBase
+import net.minecraft.server.v1_8_R3.NBTTagCompound
 import org.bukkit.Bukkit
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftInventoryPlayer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -16,10 +23,6 @@ import org.bukkit.plugin.java.JavaPlugin
  * A system for handling profiles
  */
 class ProfileSystem : System("Core/Profile"), Listener {
-    private data class InventoryItemInfo(
-        val amount: Int?,
-        val data: String?
-    )
 
     companion object {
         val profiles = mutableMapOf<String, Profile>()
@@ -73,7 +76,36 @@ class ProfileSystem : System("Core/Profile"), Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     @Suppress("UNUSED")
     fun onQuit(event: PlayerQuitEvent) {
-        // TODO Write inventory data from player and store it in the service
+        event.run {
+            player.run {
+                val encodedInventory = mutableMapOf<Int, String>()
+
+                (player.inventory as CraftInventoryPlayer).run {
+                    for (i in 0 until 36) {
+                        if (i == 8)
+                            continue
+
+                        val nmsItemStack = getNMSItem(i)!!
+                        val gameItemStack = getGameItem(i)
+
+                        if (gameItemStack === null)
+                            continue
+
+                        val nbt = NBTTagCompound()
+                        nbt.setInt("amount", gameItemStack.amount)
+                        nbt.set("data", nmsItemStack.tag.get("ItemData"))
+
+                        encodedInventory[i] = nbt.toString()
+                    }
+                }
+
+                profiles[name]!!.apply {
+                    inventory = core.gson.toJson(encodedInventory)
+                }
+
+                logger.debug("Profile: ${core.gson.toJson(profiles[name])}")
+            }
+        }
     }
 
 }
