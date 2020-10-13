@@ -3,13 +3,14 @@ package me.ihdeveloper.humans.blocks
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitStringResult
 import com.google.gson.Gson
-import kotlinx.coroutines.*
+import kotlinx.coroutines.runBlocking
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.api.GameAPI
 import me.ihdeveloper.humans.core.core
 import me.ihdeveloper.humans.service.GameTime
 import me.ihdeveloper.humans.service.api.Profile
+import me.ihdeveloper.humans.service.api.Skills
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -18,6 +19,8 @@ val gson = Gson()
 
 //const val API_ENDPOINT = "humans.blocks.api"
 const val API_ENDPOINT = "http://localhost"
+
+const val PROFILE_TIMEOUT = 50
 
 class Main : JavaPlugin() {
     override fun onEnable() {
@@ -46,7 +49,8 @@ class BlocksAPI : GameAPI {
             /** Reference to the default time in the core */
             var time = core.time
 
-            Fuel.get("$API_ENDPOINT/time").awaitStringResult().fold(
+            Fuel.get("$API_ENDPOINT/time")
+                .awaitStringResult().fold(
                 { data ->
                     time = gson.fromJson(data, GameTime::class.java)
                     logger.info("Fetched! Game Time -> $time")
@@ -60,25 +64,37 @@ class BlocksAPI : GameAPI {
         }
     }
 
-    override suspend fun getProfile(player: Player): Profile? {
-        logger.info("Fetching profile/${player.name}...")
+    override fun getProfile(name: String): Profile? {
+        return runBlocking {
+            logger.info("Fetching profile/${name}...")
 
-        Fuel.get("$API_ENDPOINT/profile/${player.name}")
-            .awaitStringResult()
-            .fold(
-                { data ->
-                    logger.info("Fetched! profile/${player.name}...")
-                    return gson.fromJson(data, Profile::class.java)
-                },
-                {
-                    err ->
-                    logger.error("An error of type ${err.exception} happened: ${err.message}")
-                }
-            )
-        return null
+            Fuel.get("$API_ENDPOINT/profile/${name}")
+                .timeout(PROFILE_TIMEOUT)
+                .timeoutRead(PROFILE_TIMEOUT)
+                .awaitStringResult()
+                .fold(
+                    { data ->
+                        if (data == "{}") {
+                            Profile(
+                                skills = Skills(0),
+                                inventory = "{}",
+                                new = true
+                            )
+                        } else {
+                            logger.info("Fetched! profile/${name}...")
+                            gson.fromJson(data, Profile::class.java)
+                        }
+                    },
+                    { err ->
+                        logger.error("An error of type ${err.exception} happened: ${err.message}")
+                        null
+                    }
+                )
+            null
+        }
     }
 
-    override suspend fun updateProfile(player: Player) {
+    override fun updateProfile(name: String, profile: Profile) {
         TODO("Not yet implemented")
     }
 }

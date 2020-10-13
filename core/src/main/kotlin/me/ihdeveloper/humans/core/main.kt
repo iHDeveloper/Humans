@@ -16,6 +16,7 @@ import me.ihdeveloper.humans.service.GameTime
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import kotlin.concurrent.thread
+import me.ihdeveloper.humans.core.system.ProfileSystem
 import me.ihdeveloper.humans.core.util.GameLogger
 
 /** Folder that contains data about the plugin */
@@ -69,6 +70,7 @@ class GameCore {
     private val systems = arrayOf(
         TimeSystem(),
         ItemSystem(),
+        ProfileSystem(),
         LoginSystem(),
         BlockSystem(),
         CommandSystem(),

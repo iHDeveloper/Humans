@@ -32,6 +32,7 @@ import me.ihdeveloper.humans.core.registry.registerEntity
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.registry.summonedEntities
 import me.ihdeveloper.humans.core.registry.summonedEntitiesInfo
+import me.ihdeveloper.humans.core.util.Conversation
 import me.ihdeveloper.humans.core.util.toNMSWorld
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntityMinecartRideable
@@ -44,6 +45,7 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
@@ -373,7 +375,13 @@ class MenuSystem : System("Core/Menu"), Listener {
  */
 class PlayerSystem : System("Core/Player"), Listener {
     companion object {
-        var spawn: Location? = null
+        private var spawn: Location? = null
+
+        private val messages = arrayOf(
+            "§7You are in unknown location.",
+            "§7You don't remember what happened to you.",
+            ""
+        )
     }
     private val config = Configuration("players")
 
@@ -394,14 +402,20 @@ class PlayerSystem : System("Core/Player"), Listener {
      *
      * Prevent from the broadcasting the join message
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     @Suppress("UNUSED")
     fun onJoin(event: PlayerJoinEvent) {
         event.player.run {
-            // TODO send a special message for new players!
-            sendMessage("§eWelcome back, §7Human§e!")
-            sendMessage("")
-            sendMessage("")
+            val profile = ProfileSystem.profiles[name]
+
+            if (profile!!.new) {
+                Conversation(player, messages).start()
+                // TODO start a special scene for the new players!
+            } else {
+                sendMessage("§eWelcome back, §7Human§e!")
+                sendMessage("")
+                sendMessage("")
+            }
 
             if (spawn != null) {
                 (this as CraftPlayer).handle.spawnIn(toNMSWorld(spawn!!.world))
