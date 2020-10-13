@@ -85,10 +85,10 @@ class ProfileSystem : System("Core/Profile"), Listener {
                         if (i == 8)
                             continue
 
-                        val nmsItemStack = getNMSItem(i)!!
+                        val nmsItemStack = getNMSItem(i)
                         val gameItemStack = getGameItem(i)
 
-                        if (gameItemStack === null)
+                        if (nmsItemStack === null || gameItemStack === null)
                             continue
 
                         val nbt = NBTTagCompound()
