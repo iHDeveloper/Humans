@@ -1,5 +1,6 @@
 package me.ihdeveloper.humans.core.entity
 
+import com.mojang.authlib.GameProfile
 import me.ihdeveloper.humans.core.corePlugin
 import me.ihdeveloper.humans.core.util.Conversation
 import me.ihdeveloper.humans.core.util.applyTexture
@@ -56,17 +57,17 @@ class AgentDeveloper(
         }
 
         private val conversationMessages = arrayOf(
-            "§7[NPC] §3iHDeveloper: §eHello! I am an agent in the HG aka Humans Agency.",
-            "§7[NPC] §3iHDeveloper: §eIt's a secret agency for helping \"Humans\" stay alive in the prison",
-            "§7[NPC] §3iHDeveloper: §eI will provide some of the agency services.",
-            "§7[NPC] §3iHDeveloper: §eThese services will improves your life in the prison.",
-            "§7[NPC] §3iHDeveloper: §eCome back later to use these services!"
+            "§7[NPC] §3HD: §eHello! I am an agent in the HG aka Humans Agency.",
+            "§7[NPC] §3HD: §eIt's a secret agency for helping \"Humans\" stay alive in the prison",
+            "§7[NPC] §3HD: §eI will provide some of the agency services.",
+            "§7[NPC] §3HD: §eThese services will improves your life in the prison.",
+            "§7[NPC] §3HD: §eCome back later to use these services!"
         )
     }
 
     init {
         initNPC()
-        initHologram("§3iHDeveloper", "§7Prison Agent", "§e§lCOMING SOON")
+        initHologram("§3HD", "§7Prison Agent", "§e§lCOMING SOON")
 
         val itemSkull = ItemStack(Material.SKULL_ITEM, 1, 3.toShort())
         itemSkull.apply {
@@ -83,3 +84,31 @@ class AgentDeveloper(
     }
 }
 
+/**
+ * A prisoner who lives in the prison and knows valuable information
+ */
+class Prisoner (
+    name: String,
+    skullName: String,
+    private val messages: Array<String>,
+    location: Location,
+    profile: GameProfile
+) : CustomNPC(location, profile) {
+
+    init {
+        initNPC()
+        initHologram("§e$name", "§7Prisoner", "§e§lCLICK")
+
+        val itemSkull = ItemStack(Material.SKULL_ITEM, 1, 3.toShort())
+        itemSkull.apply {
+            itemMeta = (itemMeta as SkullMeta).apply {
+                owner = skullName
+            }
+        }
+
+        (bukkitEntity as Player).inventory.helmet = itemSkull
+    }
+
+    override fun interact(player: Player) = Conversation(player, messages).start()
+
+}

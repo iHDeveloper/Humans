@@ -1,5 +1,7 @@
 package me.ihdeveloper.humans.core.entity
 
+import me.ihdeveloper.humans.core.entity.npc.PrisonerType
+import me.ihdeveloper.humans.core.entity.npc.newPrisoner
 import net.minecraft.server.v1_8_R3.Entity
 import net.minecraft.server.v1_8_R3.EntityPlayer
 import net.minecraft.server.v1_8_R3.PlayerConnection
@@ -26,6 +28,7 @@ fun fromEntityType(type: String, location: Location): Entity? = when(type) {
 fun fromNPCType(type: String, location: Location): CustomNPC? = when(type) {
     "hub_selector" -> HubSelector(location)
     "agent_developer" -> AgentDeveloper(location)
+    "prisoner_sattam" -> newPrisoner(location, PrisonerType.SATTAM)
     else -> null
 }
 
