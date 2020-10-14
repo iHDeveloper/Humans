@@ -2,11 +2,15 @@ package me.ihdeveloper.humans.core.entity
 
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.registry.spawnEntity
+import me.ihdeveloper.humans.core.util.NMSItemStack
 import net.minecraft.server.v1_8_R3.DamageSource
 import net.minecraft.server.v1_8_R3.EntityHuman
-import net.minecraft.server.v1_8_R3.ItemStack
 import net.minecraft.server.v1_8_R3.Vec3D
 import org.bukkit.Location
+import org.bukkit.entity.Giant
+import org.bukkit.inventory.ItemStack
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
 
 /**
  * A hologram to display a 3D text in the world
@@ -31,7 +35,7 @@ class Hologram (
     }
 
     /** Prevent the player from putting any item to the hologram */
-    override fun d(i: Int, itemstack: ItemStack?): Boolean {
+    override fun d(i: Int, itemstack: NMSItemStack?): Boolean {
         return false
     }
 
@@ -56,14 +60,17 @@ class Hologram (
  */
 class ItemHologram(
     location: Location,
-    private val itemStack: ItemStack
+    itemStack: ItemStack
 ) : CustomGiant(location) {
 
     init {
         initLocation()
         isInvisible = true
 
-        equipment[0] = itemStack
+        (bukkitEntity as Giant).apply {
+            equipment.itemInHand = itemStack
+            addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, Int.MAX_VALUE, 1, false, false), true)
+        }
     }
 
 }
