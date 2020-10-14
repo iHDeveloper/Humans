@@ -29,6 +29,9 @@ fun fromNPCType(type: String, location: Location): CustomNPC? = when(type) {
     "hub_selector" -> HubSelector(location)
     "agent_developer" -> AgentDeveloper(location)
     "prisoner_sattam" -> newPrisoner(location, PrisonerType.SATTAM)
+    "prisoner_idhoom" -> newPrisoner(location, PrisonerType.IDHOOM)
+    "prisoner_almond" -> newPrisoner(location, PrisonerType.ALMOND)
+    "prisoner_brhom" -> newPrisoner(location, PrisonerType.BRHOM)
     else -> null
 }
 
