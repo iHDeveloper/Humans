@@ -32,7 +32,7 @@ fun newPrisoner(location: Location, type: PrisonerType): Prisoner = when(type) {
         arrayOf(
             "§7[NPC] §eiDhoom: §7The challenge is to survive in this prison as \"Human\"",
             "§7[NPC] §eiDhoom: §7The §cWither Soldier§7 is going to lead the prison",
-            "§7[NPC] §eiDhoom: §7His only goal is to make you life miserable in this prison!"
+            "§7[NPC] §eiDhoom: §7His only goal is to make your life as \"Human\" miserable in this prison!"
         ),
         location,
         randomGameProfile().apply { applyTexture(PROFILE_TEXTURE, PROFILE_SIGNATURE) }
@@ -43,7 +43,7 @@ fun newPrisoner(location: Location, type: PrisonerType): Prisoner = when(type) {
         arrayOf(
             "§7[NPC] §eAlmond: §7Funding projects in the hub will open opportunities",
             "§7[NPC] §eAlmond: §7It will help humans survive in this prison",
-            "§7[NPC] §eAlmond: §7You can find projects to fund by finding NPC with type §ePrison Builder§",
+            "§7[NPC] §eAlmond: §7You can find projects to fund by finding NPC with type §ePrison Builder",
             "§7[NPC] §eAlmond: §7Each project has different materials depending on the type and design of the project",
         ),
         location,
@@ -53,8 +53,8 @@ fun newPrisoner(location: Location, type: PrisonerType): Prisoner = when(type) {
         "Brhom",
         "1Brhom",
         arrayOf(
-            "§7[NPC] §eBrhom: Mining a stack of §ePrison Stone§7 in the §eStone Mine§7",
-            "§7[NPC] §eBrhom: will give you a pass to access the §eCoal Mine§7!"
+            "§7[NPC] §eBrhom: §7Mining a stack of §ePrison Stone§7 in the §eStone Mine§7",
+            "§7[NPC] §eBrhom: §7will give you a pass to access the §eCoal Mine§7!"
         ),
         location,
         randomGameProfile().apply { applyTexture(PROFILE_TEXTURE, PROFILE_SIGNATURE) }
