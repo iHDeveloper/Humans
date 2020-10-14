@@ -25,9 +25,9 @@ import me.ihdeveloper.humans.core.entity.CustomMineCart
 import me.ihdeveloper.humans.core.entity.CustomNPC
 import me.ihdeveloper.humans.core.entity.CustomSkeleton
 import me.ihdeveloper.humans.core.entity.Hologram
+import me.ihdeveloper.humans.core.entity.ItemHologram
 import me.ihdeveloper.humans.core.entity.PrisonGuard
 import me.ihdeveloper.humans.core.entity.WarpCart
-import me.ihdeveloper.humans.core.entity.WitherSkull
 import me.ihdeveloper.humans.core.entity.fromEntityType
 import me.ihdeveloper.humans.core.registry.overrideEntity
 import me.ihdeveloper.humans.core.registry.registerEntity
@@ -147,7 +147,7 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
         registerEntity(Hologram::class, CustomArmorStand::class, logger)
         registerEntity(PrisonGuard::class, CustomSkeleton::class, logger)
         registerEntity(WarpCart::class, CustomMineCart::class, logger)
-        registerEntity(WitherSkull::class, CustomGiant::class, logger)
+        registerEntity(ItemHologram::class, CustomGiant::class, logger)
 
         /** Loads the entities  */
         config.load(logger)

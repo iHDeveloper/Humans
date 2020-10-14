@@ -2,6 +2,8 @@ package me.ihdeveloper.humans.core.entity
 
 import net.minecraft.server.v1_8_R3.Entity
 import net.minecraft.server.v1_8_R3.EntityPlayer
+import net.minecraft.server.v1_8_R3.ItemStack
+import net.minecraft.server.v1_8_R3.Items
 import net.minecraft.server.v1_8_R3.PlayerConnection
 import org.bukkit.Location
 
@@ -11,7 +13,7 @@ import org.bukkit.Location
 fun fromEntityType(type: String, location: Location): Entity? = when(type) {
     "prison_guard" -> PrisonGuard(location)
     "hologram" -> Hologram(location, "Text")
-    "wither_skull" -> WitherSkull(location)
+    "pickaxe_hologram" -> ItemHologram(location, ItemStack(Items.STONE_PICKAXE))
     else -> null
 }
 

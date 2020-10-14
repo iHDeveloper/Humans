@@ -52,6 +52,23 @@ class Hologram (
 }
 
 /**
+ * 3D Hologram for [ItemStack]
+ */
+class ItemHologram(
+    location: Location,
+    private val itemStack: ItemStack
+) : CustomGiant(location) {
+
+    init {
+        initLocation()
+        isInvisible = true
+
+        equipment[0] = itemStack
+    }
+
+}
+
+/**
  * Spawns a hologram for a NPC
  * It consists of name and type of the npc
  *
