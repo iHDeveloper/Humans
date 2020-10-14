@@ -67,7 +67,9 @@ class ItemHologram(
         initLocation()
         isInvisible = true
 
-        (bukkitEntity as Giant).apply {
+        val bukkit = this.getBukkitEntity()
+
+        (bukkit as Giant).apply {
             equipment.itemInHand = itemStack
             addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, Int.MAX_VALUE, 1, false, false), true)
         }
