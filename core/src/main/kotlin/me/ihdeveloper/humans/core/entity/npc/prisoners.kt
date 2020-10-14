@@ -20,7 +20,7 @@ fun newPrisoner(location: Location, type: PrisonerType): Prisoner = when(type) {
         "Sattam",
         "S6aam",
         arrayOf(
-            "§7[NPC] §eSattam: §7When the §cWither King§7 opened the stone mine",
+            "§7[NPC] §eSattam: §7When the §cWither King§7 opened the stone mine the first mine in this prison",
             "§7[NPC] §eSattam: §7This pickaxe was the one that he used to break the first block in the mine",
         ),
         location,

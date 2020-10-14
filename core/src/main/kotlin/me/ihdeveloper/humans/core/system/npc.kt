@@ -60,8 +60,15 @@ class NPCSystem : System("Core/NPC"), Listener {
         }
 
         fun add(info: NPCInfo) {
-            npcInfoList.add(info)
-            info.apply { npcList.add(fromNPCType(type, location)!!) }
+            info.apply {
+                val npc = fromNPCType(type, location)
+
+                if (npc === null)
+                    return
+
+                npcList.add(npc)
+                npcInfoList.add(this)
+            }
 
             Bukkit.getOnlinePlayers().forEach {
                 for (npc in npcList) {
