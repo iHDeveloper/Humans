@@ -106,7 +106,9 @@ class Prisoner (
             }
         }
 
-        (bukkitEntity as Player).inventory.helmet = itemSkull
+        val bukkit = getBukkitEntity()
+
+        (bukkit as Player).inventory.helmet = itemSkull
     }
 
     override fun interact(player: Player) = Conversation(player, messages).start()
