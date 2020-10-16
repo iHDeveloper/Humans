@@ -39,3 +39,9 @@ commands:
   item-info:
     usage: "item-info"
     description: "Describes information about the item in your hand"
+  set-scene-loc:
+    usage: "set-scene-loc <name> <key>"
+    description: "Sets an location using key in the scene metadata"
+  play-scene:
+    usage: "play-scene <name>"
+    description: "Run a scene of the game"

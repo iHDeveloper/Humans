@@ -11,9 +11,12 @@ import net.minecraft.server.v1_8_R3.DamageSource
 import net.minecraft.server.v1_8_R3.Entity
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntityGiantZombie
+import net.minecraft.server.v1_8_R3.EntityLiving
 import net.minecraft.server.v1_8_R3.EntityMinecartRideable
 import net.minecraft.server.v1_8_R3.EntityPlayer
+import net.minecraft.server.v1_8_R3.EntityPotion
 import net.minecraft.server.v1_8_R3.EntitySkeleton
+import net.minecraft.server.v1_8_R3.EntityWitch
 import net.minecraft.server.v1_8_R3.EnumProtocolDirection
 import net.minecraft.server.v1_8_R3.MathHelper
 import net.minecraft.server.v1_8_R3.NetworkManager
@@ -27,6 +30,7 @@ import net.minecraft.server.v1_8_R3.PlayerInteractManager
 import net.minecraft.server.v1_8_R3.WorldServer
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.World
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer
 import org.bukkit.craftbukkit.v1_8_R3.util.UnsafeList
 import org.bukkit.entity.Player
@@ -49,6 +53,9 @@ open class CustomArmorStand(location: Location)
 
 }
 
+/**
+ * Custom entity for skeleton
+ */
 open class CustomSkeleton(
     private val location: Location
 ) : EntitySkeleton(toNMSWorld(location.world)) {
@@ -91,42 +98,42 @@ open class CustomSkeleton(
     }
 
     /**
-     * Prevent the guard from burning by fire
+     * Prevent the skeleton from burning by fire
      */
     override fun m() {
         return
     }
 
     /**
-     * Prevent the guard from moving
+     * Prevent the skeleton from moving
      */
     override fun move(d0: Double, d1: Double, d2: Double) {
         return
     }
 
     /**
-     * Prevent the guard from colliding with anyone
+     * Prevent the skeleton from colliding with anyone
      */
     override fun collide(entity: Entity?) {
         return
     }
 
     /**
-     * Prevent the guard from getting damaged
+     * Prevent the skeleton from getting damaged
      */
     override fun damageEntity(damagesource: DamageSource?, f: Float): Boolean {
         return false
     }
 
     /**
-     * Prevent the guard from moving
+     * Prevent the skeleton from moving
      */
     override fun g(d0: Double, d1: Double, d2: Double) {
         return
     }
 
     /**
-     * Prevent the guard from attacking anyone. If a bow is in the guard's hand
+     * Prevent the skeleton from attacking anyone. If a bow is in the skeleton's hand
      */
     override fun n() {
         return
@@ -246,38 +253,123 @@ open class CustomGiant(
     }
 
     /**
-     * Prevent the guard from burning by fire
+     * Prevent the giant from burning by fire
      */
     override fun m() {
         return
     }
 
     /**
-     * Prevent the guard from moving
+     * Prevent the giant from moving
      */
     override fun move(d0: Double, d1: Double, d2: Double) {
         return
     }
 
     /**
-     * Prevent the guard from colliding with anyone
+     * Prevent the giant from colliding with anyone
      */
     override fun collide(entity: Entity?) {
         return
     }
 
     /**
-     * Prevent the guard from getting damaged
+     * Prevent the giant from getting damaged
      */
     override fun damageEntity(damagesource: DamageSource?, f: Float): Boolean {
         return false
     }
 
     /**
-     * Prevent the guard from moving
+     * Prevent the giant from moving
      */
     override fun g(d0: Double, d1: Double, d2: Double) {
         return
     }
 
 }
+
+/**
+ * Custom entity for witch
+ */
+open class CustomWitch(
+    private val location: Location
+) : EntityWitch(toNMSWorld(location.world)) {
+
+    protected val nameHologram = Hologram(location.clone().apply { y += 1 }, "§cWitch")
+
+    protected fun setLocation() {
+        location.run {
+            setLocation(x, y, z, yaw, pitch)
+            super.aK = yaw
+        }
+    }
+
+    /**
+     * Clears [PathfinderGoalSelector] using Reflection
+     */
+    protected fun clearPathfinderSelector(selector: PathfinderGoalSelector) {
+        setPrivateField(selector, "b", UnsafeList<PathfinderGoalSelector>())
+        setPrivateField(selector, "c", UnsafeList<PathfinderGoalSelector>())
+    }
+
+    /**
+     * Spawns the name hologram
+     */
+    fun spawnHologram() {
+        spawnEntity(nameHologram, false, null)
+    }
+
+    /**
+     * Remove the hologram when the entity dies
+     */
+    override fun die() {
+        super.die()
+        nameHologram.bukkitEntity.remove()
+    }
+
+    /**
+     * Override witch's tick function with nothing
+     */
+    override fun m() {
+        return
+    }
+
+    /**
+     * Prevent the witch from moving
+     */
+    override fun move(d0: Double, d1: Double, d2: Double) {
+        return
+    }
+
+    /**
+     * Prevent the witch from colliding with anyone
+     */
+    override fun collide(entity: Entity?) {
+        return
+    }
+
+    /**
+     * Prevent the witch from getting damaged
+     */
+    override fun damageEntity(damagesource: DamageSource?, f: Float): Boolean {
+        return false
+    }
+
+    /**
+     * Prevent the witch from moving
+     */
+    override fun g(d0: Double, d1: Double, d2: Double) {
+        return
+    }
+
+}
+
+/**
+ * Custom entity for potions
+ */
+open class CustomPotion(
+    world: World,
+    entity: EntityLiving,
+    type: Int
+) : EntityPotion(toNMSWorld(world), entity, type)

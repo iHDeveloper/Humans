@@ -14,7 +14,12 @@ import org.bukkit.inventory.ItemStack
  * Generates an entity class depending on the type
  */
 fun fromEntityType(type: String, location: Location): Entity? = when(type) {
+    /** Prison entities */
     "prison_guard" -> PrisonGuard(location)
+    "prison_watcher" -> PrisonWatcher(location)
+    "prison_witch" -> PrisonWitch(location)
+
+    /** Hologram entities */
     "hologram" -> Hologram(location, "Text")
     "pickaxe_hologram" -> ItemHologram(location, ItemStack(Material.STONE_PICKAXE).apply {
         addEnchantment(Enchantment.DIG_SPEED, 1)
@@ -26,8 +31,11 @@ fun fromEntityType(type: String, location: Location): Entity? = when(type) {
  * Generates an NPC depending on the given type
  */
 fun fromNPCType(type: String, location: Location): CustomNPC? = when(type) {
+    /** General NPCs */
     "hub_selector" -> HubSelector(location)
     "agent_developer" -> AgentDeveloper(location)
+
+    /** Prisoners */
     "prisoner_sattam" -> newPrisoner(location, PrisonerType.SATTAM)
     "prisoner_idhoom" -> newPrisoner(location, PrisonerType.IDHOOM)
     "prisoner_almond" -> newPrisoner(location, PrisonerType.ALMOND)

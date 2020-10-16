@@ -11,6 +11,8 @@ import me.ihdeveloper.humans.core.command.GiveCommand
 import me.ihdeveloper.humans.core.command.ItemInfoCommand
 import me.ihdeveloper.humans.core.command.NPCSaveCommand
 import me.ihdeveloper.humans.core.command.NPCSummonCommand
+import me.ihdeveloper.humans.core.command.PlaySceneCommand
+import me.ihdeveloper.humans.core.command.SceneSetLocationCommand
 import me.ihdeveloper.humans.core.command.SetSpawnCommand
 import me.ihdeveloper.humans.core.command.SetWarpDisplayNameCommand
 import me.ihdeveloper.humans.core.command.SetWarpLocationCommand
@@ -23,10 +25,14 @@ import me.ihdeveloper.humans.core.entity.CustomArmorStand
 import me.ihdeveloper.humans.core.entity.CustomGiant
 import me.ihdeveloper.humans.core.entity.CustomMineCart
 import me.ihdeveloper.humans.core.entity.CustomNPC
+import me.ihdeveloper.humans.core.entity.CustomPotion
 import me.ihdeveloper.humans.core.entity.CustomSkeleton
+import me.ihdeveloper.humans.core.entity.CustomWitch
 import me.ihdeveloper.humans.core.entity.Hologram
 import me.ihdeveloper.humans.core.entity.ItemHologram
 import me.ihdeveloper.humans.core.entity.PrisonGuard
+import me.ihdeveloper.humans.core.entity.PrisonWatcher
+import me.ihdeveloper.humans.core.entity.PrisonWitch
 import me.ihdeveloper.humans.core.entity.WarpCart
 import me.ihdeveloper.humans.core.entity.fromEntityType
 import me.ihdeveloper.humans.core.registry.overrideEntity
@@ -35,11 +41,14 @@ import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.registry.summonedEntities
 import me.ihdeveloper.humans.core.registry.summonedEntitiesInfo
 import me.ihdeveloper.humans.core.util.Conversation
+import me.ihdeveloper.humans.core.util.toNMS
 import me.ihdeveloper.humans.core.util.toNMSWorld
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntityGiantZombie
 import net.minecraft.server.v1_8_R3.EntityMinecartRideable
+import net.minecraft.server.v1_8_R3.EntityPotion
 import net.minecraft.server.v1_8_R3.EntitySkeleton
+import net.minecraft.server.v1_8_R3.EntityWitch
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -127,6 +136,7 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
         Bukkit.getPluginManager().registerEvents(this, plugin)
         Companion.logger = logger
 
+
          Bukkit.getWorlds().forEach { w ->
              w.entities.forEach {
                  it.remove()
@@ -140,6 +150,8 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
         overrideEntity(EntitySkeleton::class, CustomSkeleton::class, logger)
         overrideEntity(EntityMinecartRideable::class, CustomMineCart::class, logger)
         overrideEntity(EntityGiantZombie::class, CustomGiant::class, logger)
+        overrideEntity(EntityWitch::class, CustomWitch::class, logger)
+        overrideEntity(EntityPotion::class, CustomPotion::class, logger)
 
         logger.info("Registering entities...")
 
@@ -148,6 +160,9 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
         registerEntity(PrisonGuard::class, CustomSkeleton::class, logger)
         registerEntity(WarpCart::class, CustomMineCart::class, logger)
         registerEntity(ItemHologram::class, CustomGiant::class, logger)
+        registerEntity(PrisonWatcher::class, CustomArmorStand::class, logger)
+        registerEntity(PrisonWitch::class, CustomWitch::class, logger)
+        registerEntity(PrisonWitch.Potion::class, CustomPotion::class, logger)
 
         /** Loads the entities  */
         config.load(logger)
@@ -219,6 +234,10 @@ class CommandSystem : System("Core/Command") {
         /** NPC commands */
         NPCSummonCommand(),
         NPCSaveCommand(),
+
+        /** Scene commands */
+        SceneSetLocationCommand(),
+        PlaySceneCommand(),
     )
 
     override fun init(plugin: JavaPlugin) {
@@ -424,7 +443,7 @@ class PlayerSystem : System("Core/Player"), Listener {
             }
 
             if (spawn != null) {
-                (this as CraftPlayer).handle.spawnIn(toNMSWorld(spawn!!.world))
+                toNMS().spawnIn(toNMSWorld(spawn!!.world))
                 teleport(spawn)
                 compassTarget = spawn
             }

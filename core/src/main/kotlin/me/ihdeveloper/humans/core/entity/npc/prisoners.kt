@@ -27,12 +27,12 @@ fun newPrisoner(location: Location, type: PrisonerType): Prisoner = when(type) {
         randomGameProfile().apply { applyTexture(PROFILE_TEXTURE, PROFILE_SIGNATURE) }
     )
     PrisonerType.IDHOOM -> Prisoner(
-        "iDhoom",
+        "Dhoom",
         "iDhoom",
         arrayOf(
-            "§7[NPC] §eiDhoom: §7The challenge is to survive in this prison as \"Human\"",
-            "§7[NPC] §eiDhoom: §7The §cWither Soldier§7 is going to lead the prison",
-            "§7[NPC] §eiDhoom: §7His only goal is to make your life as \"Human\" miserable in this prison!"
+            "§7[NPC] §eDhoom: §7The challenge is to survive in this prison as \"Human\"",
+            "§7[NPC] §eDhoom: §7The §cWither Soldier§7 is going to lead the prison",
+            "§7[NPC] §eDhoom: §7His only goal is to make your life as \"Human\" miserable in this prison!"
         ),
         location,
         randomGameProfile().apply { applyTexture(PROFILE_TEXTURE, PROFILE_SIGNATURE) }

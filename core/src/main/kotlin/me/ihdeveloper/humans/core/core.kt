@@ -11,7 +11,9 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import kotlin.reflect.KClass
+import me.ihdeveloper.humans.core.system.SceneSystem
 import me.ihdeveloper.humans.core.util.GameLogger
+import org.bukkit.Bukkit
 
 /**
  * Represents a system in the game.
@@ -169,3 +171,104 @@ open class GameItemStack(
     val type: KClass<out GameItem>,
     val amount: Int = 1,
 )
+
+/**
+ * Represents the state of the scene
+ */
+enum class SceneState {
+    NOT_STARTED,
+    RUNNING,
+    PAUSED,
+    STOPPED;
+}
+
+/**
+ * Contains actions that represents a scene in the game
+ */
+open class Scene(
+    private val name: String,
+    protected val logger: GameLogger
+) : Runnable {
+
+    /** State of the scene */
+    var state = SceneState.NOT_STARTED
+
+    /** A frame is something that happens at a certain time since the scene started */
+    private val frames = mutableMapOf<Long, () -> Unit>()
+
+    private var currentTick: Long = 0
+
+    fun start() {
+        logger.debug("Starting $name...")
+        state = SceneState.RUNNING
+
+        frames[0L]?.invoke()
+
+        currentTick = 1
+        schedule()
+    }
+
+    fun pause() {
+        logger.debug("Pausing $name...")
+        state = SceneState.PAUSED
+    }
+
+    fun resume() {
+        logger.debug("Resuming $name...")
+        state = SceneState.RUNNING
+    }
+
+    fun stop() {
+        logger.debug("Stopping $name...")
+        state = SceneState.STOPPED
+
+        frames[-1L]?.invoke()
+
+        frames.clear()
+    }
+
+    override fun run() {
+        if (state === SceneState.PAUSED)
+            schedule()
+        else if (state !== SceneState.RUNNING)
+            return
+
+        frames[-2L]?.invoke()
+        frames[currentTick]?.invoke()
+
+        currentTick++
+        schedule()
+    }
+
+    /**
+     * Implements a frame with its action in the scene's memory
+     *
+     * It's possible for a frame to start, pause and stop the scene
+     */
+    protected fun frame(ticks: Long, block: () -> Unit) = frames.set(ticks, block)
+
+    /**
+     * Represents the first frame of the scene to initialize some stuff for the scene to work
+     */
+    protected fun initFrame(block: () -> Unit) = frame(0L, block)
+
+    /**
+     * Represents the frame for disposing the references to the objects of the scene
+     */
+    protected fun disposeFrame(block: () -> Unit) = frame(-1L, block)
+
+    /**
+     * Called before the frame's being executed
+     */
+    protected fun everyFrame(block: () -> Unit) = frame(-2L, block)
+
+
+    private fun schedule() = Bukkit.getScheduler().runTaskLater(SceneSystem.plugin, this, 1L)
+}
+
+/**
+ * Represents the metadata of scene companion class
+ */
+interface SceneMeta {
+    val config: Configuration
+}

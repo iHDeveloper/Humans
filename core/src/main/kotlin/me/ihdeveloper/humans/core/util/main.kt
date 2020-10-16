@@ -98,3 +98,8 @@ fun randomGameProfile(): GameProfile {
 fun GameProfile.applyTexture(texture: String, signature: String) {
     properties.put("textures", Property("textures", texture, signature))
 }
+
+/**
+ * Converts [Player] to [EntityPlayer]
+ */
+fun Player.toNMS(): EntityPlayer = (this as CraftPlayer).handle
