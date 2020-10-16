@@ -12,6 +12,7 @@ import me.ihdeveloper.humans.core.command.ItemInfoCommand
 import me.ihdeveloper.humans.core.command.NPCSaveCommand
 import me.ihdeveloper.humans.core.command.NPCSummonCommand
 import me.ihdeveloper.humans.core.command.PlaySceneCommand
+import me.ihdeveloper.humans.core.command.SaveSceneCommand
 import me.ihdeveloper.humans.core.command.SceneSetLocationCommand
 import me.ihdeveloper.humans.core.command.SetSpawnCommand
 import me.ihdeveloper.humans.core.command.SetWarpDisplayNameCommand
@@ -238,6 +239,7 @@ class CommandSystem : System("Core/Command") {
         /** Scene commands */
         SceneSetLocationCommand(),
         PlaySceneCommand(),
+        SaveSceneCommand(),
     )
 
     override fun init(plugin: JavaPlugin) {

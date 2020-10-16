@@ -37,6 +37,8 @@ class IntroScene(
 ): IndividualScene(player, "Intro", GameLogger("Scene/Intro")) {
     companion object: SceneMeta {
         override val config = Configuration("scene-intro")
+
+        fun save() = config.save()
     }
 
     private val spawn = config.get<Location>("spawn")

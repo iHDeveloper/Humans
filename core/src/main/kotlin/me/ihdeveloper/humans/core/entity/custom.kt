@@ -160,7 +160,7 @@ open class CustomNPC(
     PlayerInteractManager(toNMSWorld(location.world))
 ) {
     val trackedPlayers = mutableSetOf<Int>()
-    var holograms: Array<Hologram>? = null
+    private var holograms: Array<Hologram>? = null
 
     fun initNPC() {
         connection = PlayerConnection(server, NetworkManager(EnumProtocolDirection.SERVERBOUND), this)
@@ -182,7 +182,7 @@ open class CustomNPC(
     /**
      * Check if the NPC should track this player or not
      */
-    fun shouldTrack(player: Player) = (player.world.name == location.world.name) && (location.distance(player.location) <= NPC_RENDER_DISTANCE)
+    fun shouldTrack(player: Player) = (location.distance(player.location) <= NPC_RENDER_DISTANCE)
 
     /**
      * Spawns the NPC to the player. And, adds it to the tracking set

@@ -40,6 +40,38 @@ class SceneSetLocationCommand : AdminCommand("set-scene-loc") {
     }
 }
 
+class SaveSceneCommand : AdminCommand("save-scene") {
+
+    override fun execute(sender: CommandSender?, cmd: Command?, label: String?, args: Array<out String>?): Boolean {
+        if (sender !is Player) {
+            sender!!.sendMessage("§cYou need to be a player to execute this command!")
+            return true
+        }
+
+        if (args!!.isEmpty()) {
+            return false
+        }
+
+        val name = args[0]
+
+        var failed = false
+        when (name) {
+            "intro" -> IntroScene.save()
+            else -> failed = true
+        }
+
+        sender.run {
+            if (failed) {
+                sendMessage("§cFailed! §eCouldn't find the scene's name")
+            } else {
+                sendMessage("§eSaving scene with name §6$name...")
+            }
+        }
+        return true
+    }
+
+}
+
 /**
  * Command for playing and testing a scene in the game
  */
@@ -67,7 +99,7 @@ class PlaySceneCommand : AdminCommand("play-scene") {
             if (failed) {
                 sendMessage("§cFailed! §eCouldn't find the scene's name")
             } else {
-                sendMessage("§aSuccess! §ePlaying scene $name...")
+                sendMessage("§aSuccess! §ePlaying scene §6$name...")
             }
         }
         return true

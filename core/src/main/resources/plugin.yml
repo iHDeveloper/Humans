@@ -45,3 +45,6 @@ commands:
   play-scene:
     usage: "play-scene <name>"
     description: "Run a scene of the game"
+  save-scene:
+    usage: "save-scene <name>"
+    description: "Saves a scene configuration"
