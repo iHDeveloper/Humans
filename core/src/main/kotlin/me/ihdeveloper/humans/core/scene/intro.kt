@@ -8,8 +8,10 @@ import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.system.PlayerSystem
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.util.between
+import me.ihdeveloper.humans.core.util.freeze
 import me.ihdeveloper.humans.core.util.toNMS
 import me.ihdeveloper.humans.core.util.toNMSWorld
+import me.ihdeveloper.humans.core.util.unfreeze
 import net.minecraft.server.v1_8_R3.ItemStack
 import net.minecraft.server.v1_8_R3.Items
 import org.bukkit.Location
@@ -137,6 +139,7 @@ class IntroScene(
         }
 
         frame(30) {
+            player.freeze()
             player.teleport(end)
         }
 
@@ -185,6 +188,7 @@ class IntroScene(
                     sendMessage("")
 
                 teleport(PlayerSystem.spawn)
+                player.unfreeze()
                 foodLevel = 20
                 health = 20.0
             }
