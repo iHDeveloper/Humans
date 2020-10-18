@@ -41,7 +41,7 @@ private const val NPC_RENDER_DISTANCE = 48
 /**
  * An custom entity for armor stand
  */
-open class CustomArmorStand(private val location: Location)
+open class CustomArmorStand(protected val location: Location)
     : EntityArmorStand(toNMSWorld(location.world), location.x, location.y, location.z) {
 
     /**
@@ -308,7 +308,7 @@ open class CustomWitch(
     private val location: Location
 ) : EntityWitch(toNMSWorld(location.world)) {
 
-    protected val nameHologram = Hologram(location.clone().apply { y += 1 }, "§cWitch")
+    protected val nameHologram = Hologram(location.clone().apply { y += 1.25 }, "§cWitch")
 
     protected fun setLocation() {
         location.run {

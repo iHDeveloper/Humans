@@ -2,6 +2,7 @@ package me.ihdeveloper.humans.core.system
 
 import me.ihdeveloper.humans.core.Scene
 import me.ihdeveloper.humans.core.System
+import me.ihdeveloper.humans.core.scene.IndividualScene
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
@@ -11,7 +12,7 @@ class SceneSystem : System("Core/Scene") {
     companion object {
         lateinit var plugin: JavaPlugin
 
-        val players = hashMapOf<String, Scene>()
+        val players = mutableMapOf<String, IndividualScene>()
     }
 
     override fun init(plugin: JavaPlugin) {

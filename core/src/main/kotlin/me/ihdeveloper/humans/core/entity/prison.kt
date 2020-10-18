@@ -1,6 +1,7 @@
 package me.ihdeveloper.humans.core.entity
 
 import kotlin.math.sqrt
+import me.ihdeveloper.humans.core.corePlugin
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.scene.IntroScene
 import me.ihdeveloper.humans.core.system.SceneSystem
@@ -15,6 +16,7 @@ import net.minecraft.server.v1_8_R3.Items
 import net.minecraft.server.v1_8_R3.MovingObjectPosition
 import net.minecraft.server.v1_8_R3.PathfinderGoalLookAtPlayer
 import net.minecraft.server.v1_8_R3.Vec3D
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
@@ -51,7 +53,12 @@ class PrisonGuard(
  */
 class PrisonWatcher(
     location: Location
-) : CustomArmorStand(location) {
+) : CustomArmorStand(location), Runnable {
+    private val maxY = location.y + 1.0
+    private val minY = location.y - 1.0
+
+    /** up = false, down = true */
+    private var direction = false
 
     init {
         customName = "§cPrison Watcher"
@@ -63,6 +70,25 @@ class PrisonWatcher(
         (getBukkitEntity() as ArmorStand).run {
             helmet = ItemStack(Material.SKULL_ITEM)
         }
+        Bukkit.getScheduler().runTaskTimer(corePlugin, this, 0L, 1L)
+    }
+
+    /** Move the body down and up every 1 tick */
+    override fun run() {
+        if (direction) {
+            if (location.y <= minY) {
+                direction = true
+            } else {
+                location.add(0.0, -0.10,0.0)
+            }
+        } else {
+            if (location.y >= maxY) {
+                direction = false
+            } else {
+                location.add(0.0, 0.10,0.0)
+            }
+        }
+        setLocation()
     }
 
     /** Prevent the player from putting any item to the prison watcher */
