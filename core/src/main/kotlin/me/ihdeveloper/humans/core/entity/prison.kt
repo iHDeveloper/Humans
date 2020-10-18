@@ -6,6 +6,7 @@ import me.ihdeveloper.humans.core.scene.IntroScene
 import me.ihdeveloper.humans.core.system.SceneSystem
 import me.ihdeveloper.humans.core.util.NMSItemStack
 import me.ihdeveloper.humans.core.util.findEntities
+import net.minecraft.server.v1_8_R3.BlockPosition
 import net.minecraft.server.v1_8_R3.DamageSource
 import net.minecraft.server.v1_8_R3.EntityHuman
 import net.minecraft.server.v1_8_R3.EntityLiving
@@ -118,7 +119,8 @@ class PrisonWitch(
                 }
             }
 
-            this.die()
+            world.triggerEffect(2002, BlockPosition(this), potionValue)
+            die()
             return
         }
 
@@ -129,8 +131,6 @@ class PrisonWitch(
 
         clearPathfinderSelector(goalSelector)
         clearPathfinderSelector(targetSelector)
-
-        goalSelector.a(0, PathfinderGoalLookAtPlayer(this, EntityHuman::class.java, 2F))
 
         nameHologram.text = "§cPrison Witch"
         spawnHologram()
