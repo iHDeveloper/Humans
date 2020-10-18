@@ -30,6 +30,7 @@ import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.ArmorStand
 import org.bukkit.inventory.ItemStack
+import org.bukkit.scheduler.BukkitTask
 
 private const val WATCHER_Y_RANGE = 0.5
 private const val WATCHER_Y_SPEED = 0.1
@@ -76,6 +77,8 @@ class PrisonWatcher(
     /** Used to calculate the Y difference for sending packets */
     private var diffY: Double = 0.0
 
+    private var animationTask: BukkitTask? = null
+
     init {
         customName = "§cPrison Watcher"
         customNameVisible = true
@@ -89,7 +92,11 @@ class PrisonWatcher(
     }
 
     /** Starts the loop for the animation */
-    fun startAnimation() = Bukkit.getScheduler().runTaskTimer(corePlugin, this, 0L, 1L)
+    fun startAnimation() {
+        isAnimating = true
+
+        animationTask = Bukkit.getScheduler().runTaskTimer(corePlugin, this, 0L, 1L)
+    }
 
     /** Move the body down and up every 1 tick */
     override fun run() {
@@ -131,6 +138,12 @@ class PrisonWatcher(
         return false
     }
 
+    override fun die() {
+        super.die()
+
+        animationTask?.cancel()
+    }
+
 
     /** Methods that deals with the packet layer */
 
@@ -138,8 +151,8 @@ class PrisonWatcher(
     fun spawnToPlayer(player: EntityPlayer) {
         player.connection.also {
             it.sendPacket(PacketPlayOutSpawnEntityLiving(this))
-            val pitch = MathHelper.d(location.pitch).toByte()
-            val yaw = aK.toInt().toByte()
+            val pitch = MathHelper.d(location.pitch * 256.0f / 360.0f).toByte()
+            val yaw = MathHelper.d(location.yaw * 256.0f / 360.0f).toByte()
             it.sendPacket(PacketPlayOutEntity.PacketPlayOutEntityLook(id, yaw, pitch, true))
             it.sendPacket(PacketPlayOutEntityHeadRotation(this, yaw))
             it.sendPacket(PacketPlayOutUpdateEntityNBT(id, NBTTagCompound().apply { b(this) }))
@@ -152,7 +165,7 @@ class PrisonWatcher(
 
     fun updateMove(player: EntityPlayer) {
         player.connection.also {
-            it.sendPacket(PacketPlayOutEntity.PacketPlayOutRelEntityMove(id, 0.toByte(), diffY.toInt().toByte(), 0.toByte(), false))
+            it.sendPacket(PacketPlayOutEntity.PacketPlayOutRelEntityMove(id, 0.toByte(), diffY.toInt().toByte(), 0.toByte(), true))
         }
     }
 

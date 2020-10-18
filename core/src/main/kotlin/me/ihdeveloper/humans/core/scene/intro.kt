@@ -94,7 +94,7 @@ class IntroScene(
 
         everyFrame {
             player.run {
-                if (currentFrame >= 41 && watcher.isAnimating) {
+                if (watcher.isAnimating) {
                     watcher.updateMove(toNMS())
                 }
 
