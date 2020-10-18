@@ -233,8 +233,11 @@ class PrisonWitch(
             player.connection.sendPacket(PacketPlayOutSpawnEntity(this, 73, potionValue))
         }
 
-        fun updatePos(player: EntityPlayer) {
-            player.connection.sendPacket(PacketPlayOutEntityTeleport(this))
+        fun updatePos(player: EntityPlayer, x: Double, y: Double, z: Double) {
+            val bX = x.toInt().toByte()
+            val bY = y.toInt().toByte()
+            val bZ = z.toInt().toByte()
+            player.connection.sendPacket(PacketPlayOutEntity.PacketPlayOutRelEntityMove(id, bX, bY, bZ, false))
         }
 
 

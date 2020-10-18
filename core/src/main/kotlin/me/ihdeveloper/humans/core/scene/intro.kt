@@ -19,6 +19,7 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
+import org.bukkit.util.Vector
 
 /**
  * Making the new player trying to escape a mysterious place in the game
@@ -96,8 +97,11 @@ class IntroScene(
                         watcher.updateMove(it)
                     }
 
+                    val oldLoc = thrownPotion?.run { Vector(locX, locY, locZ) }
                     thrownPotion?.onTick()
-                    thrownPotion?.updatePos(it)
+                    val delta = thrownPotion?.run { Vector(locX, locY, locZ) }
+                    delta?.subtract(oldLoc)
+                    delta?.run { thrownPotion?.updatePos(it, x, y, z) }
                 }
 
                 if (scenario == 0 && location.between(pos1, pos2)) {
