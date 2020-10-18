@@ -87,9 +87,6 @@ class IntroScene(
 
         everyFrame {
             player.run {
-                if (scenario in 0..2)
-                    logger.debug("Scenario: $scenario")
-
                 if (scenario == 0 && location.between(pos1, pos2)) {
                     scenario++
                     resume()
@@ -141,44 +138,46 @@ class IntroScene(
             }
         }
 
-        frame(1000) {
+        frame(20) {
             player.sendMessage("§cPrison Watcher: §fYou shouldn't die this easily.")
         }
 
-        frame(2500) {
+        frame(50) {
             player.sendMessage("§cPrison Watcher: §fYou need to suffer living in this prison!")
         }
 
-        frame(3500) {
+        frame(70) {
             player.sendMessage("§cPrison Watcher: §fWitch, send this human somewhere unsafe!")
         }
 
-        frame (3600) {
+        frame (72) {
             player.sendMessage("§cPrison Witch: §fYessir!")
 
             witch.equipment[0] = ItemStack(Items.POTION)
         }
 
-        frame(3700) {
+        frame(74) {
             player.sendMessage("§cPrison Witch: §fI'm going to send you to...")
 
             witch.shoot(player.toNMS())
         }
 
-        frame (4000) {
+        frame (80) {
             player.sendMessage("§cPrison Witch: §eHumans Prison")
         }
 
-        frame(4700) {
+        frame(94) {
             player.run { @Suppress("DEPRECATION") sendBlockChange(location, Material.PORTAL, 0) }
         }
 
-        frame(6000) {
+        frame(120) {
             player.run {
                 for (i in 1 until 3)
                     sendMessage("")
 
                 teleport(PlayerSystem.spawn)
+                foodLevel = 20
+                health = 20.0
             }
         }
 

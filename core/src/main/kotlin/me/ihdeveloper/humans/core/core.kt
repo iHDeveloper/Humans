@@ -218,6 +218,9 @@ open class Scene(
 
     fun resume() {
         logger.debug("Resuming $name...")
+
+        currentTick++
+        frames[currentTick++]?.invoke()
         state = SceneState.RUNNING
     }
 
@@ -244,7 +247,6 @@ open class Scene(
         frames[currentTick]?.invoke()
 
         currentTick++
-        logger.debug("Scene($name) Tick: $currentTick")
         schedule()
     }
 
