@@ -232,10 +232,12 @@ open class Scene(
     }
 
     override fun run() {
-        if (state === SceneState.PAUSED)
+        if (state === SceneState.PAUSED) {
             schedule()
-        else if (state !== SceneState.RUNNING)
             return
+        } else if (state !== SceneState.RUNNING) {
+            return
+        }
 
         frames[-2L]?.invoke()
         frames[currentTick]?.invoke()
