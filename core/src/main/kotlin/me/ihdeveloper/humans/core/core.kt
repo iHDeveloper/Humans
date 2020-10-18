@@ -233,6 +233,7 @@ open class Scene(
 
     override fun run() {
         if (state === SceneState.PAUSED) {
+            frames[-2L]?.invoke()
             schedule()
             return
         } else if (state !== SceneState.RUNNING) {
