@@ -41,9 +41,13 @@ class IntroScene(
         fun save() = config.save()
     }
 
+    init {
+        config.run { if (!isLoaded) load() }
+    }
+
     private val spawn = config.get<Location>("spawn")
-    private val watcherSpawn = config.get<Location>("watcher")
-    private val witchSpawn = config.get<Location>("witch")
+    private val watcherSpawn = config.get<Location?>("watcher")
+    private val witchSpawn = config.get<Location?>("witch")
     private val end = config.get<Location>("end")
 
     /** Scenario 1 */
@@ -58,8 +62,16 @@ class IntroScene(
     private val pos5 = config.get<Location>("pos5")
     private val pos6 = config.get<Location>("pos6")
 
-    private val watcher = PrisonWatcher(watcherSpawn)
-    private val witch = PrisonWitch(witchSpawn)
+    init {
+        if (watcherSpawn == null) {
+            logger.error("Watcher spawn not found in the config")
+        } else if (witchSpawn == null) {
+            logger.error("Witch spawn not found in the config")
+        }
+    }
+
+    private val watcher = PrisonWatcher(watcherSpawn!!)
+    private val witch = PrisonWitch(witchSpawn!!)
 
     private var scenario = 0
 
@@ -154,8 +166,7 @@ class IntroScene(
         }
 
         frame(4700) {
-            @Suppress("DEPRECATED")
-            player.run { sendBlockChange(location, Material.PORTAL, 0) }
+            player.run { @Suppress("DEPRECATION") sendBlockChange(location, Material.PORTAL, 0) }
         }
 
         frame(6000) {

@@ -65,6 +65,7 @@ abstract class AdminCommand(name: String): me.ihdeveloper.humans.core.Command(na
 class Configuration(val name: String) {
     private val file = File(dataFolder, "${name}.yml")
     private val config = YamlConfiguration()
+    var isLoaded = false
 
     /**
      * Load the configuration from the file
@@ -77,6 +78,7 @@ class Configuration(val name: String) {
             file.createNewFile()
 
         config.load(file)
+        isLoaded = true
     }
 
     /**
