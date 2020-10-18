@@ -2,7 +2,6 @@ package me.ihdeveloper.humans.core.entity
 
 import kotlin.math.sqrt
 import me.ihdeveloper.humans.core.corePlugin
-import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.scene.IntroScene
 import me.ihdeveloper.humans.core.system.SceneSystem
 import me.ihdeveloper.humans.core.util.NMSItemStack
@@ -23,7 +22,6 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutEntityTeleport
 import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntity
 import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntityLiving
 import net.minecraft.server.v1_8_R3.PacketPlayOutUpdateEntityNBT
-import net.minecraft.server.v1_8_R3.PathfinderGoalLookAtPlayer
 import net.minecraft.server.v1_8_R3.Vec3D
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -186,6 +184,17 @@ class PrisonWitch(
         private val playerName: String?,
     ) : CustomPotion(world, witch, 32696 /* Weakness Potion */) {
 
+        /** Used to detect if the projectile shot already*/
+        var isShooting = false
+
+        fun onTick() = t_()
+
+        override fun shoot(d0: Double, d1: Double, d2: Double, f: Float, f1: Float) {
+            super.shoot(d0, d1, d2, f, f1)
+
+            isShooting = true
+        }
+
         override fun a(movingobjectposition: MovingObjectPosition?) {
             val boundingBox = boundingBox.grow(4.0, 4.0, 4.0)
 
@@ -211,6 +220,18 @@ class PrisonWitch(
             return
         }
 
+        /** Methods that deals with the packet layer */
+
+
+        fun spawnToPlayer(player: EntityPlayer) {
+            player.connection.sendPacket(PacketPlayOutSpawnEntity(this, 73, potionValue))
+        }
+
+        fun updatePos(player: EntityPlayer) {
+            player.connection.sendPacket(PacketPlayOutEntityTeleport(this))
+        }
+
+
     }
 
     init {
@@ -233,7 +254,6 @@ class PrisonWitch(
         val distance = sqrt((x * x) + (z * z))
 
         potion.shoot(x, y + (distance * 0.2F), z, 0.75F, 0.75F)
-        spawnEntity(potion, true, null)
         return potion
     }
 

@@ -12,7 +12,6 @@ import me.ihdeveloper.humans.core.util.freeze
 import me.ihdeveloper.humans.core.util.toNMS
 import me.ihdeveloper.humans.core.util.toNMSWorld
 import me.ihdeveloper.humans.core.util.unfreeze
-import net.minecraft.server.v1_8_R3.Entity
 import net.minecraft.server.v1_8_R3.ItemStack
 import net.minecraft.server.v1_8_R3.Items
 import org.bukkit.Location
@@ -53,8 +52,6 @@ class IntroScene(
     private val witchSpawn = config.get<Location?>("witch")
     private val end = config.get<Location>("end")
 
-    private val entitiesToHide = arrayListOf<Entity>()
-
     /** Scenario 1 */
     private val pos1 = config.get<Location>("pos1")
     private val pos2 = config.get<Location>("pos2")
@@ -77,6 +74,7 @@ class IntroScene(
 
     private val watcher = PrisonWatcher(watcherSpawn!!)
     private val witch = PrisonWitch(witchSpawn!!)
+    private var thrownPotion: PrisonWitch.Potion? = null
 
     private var scenario = 0
 
@@ -93,8 +91,13 @@ class IntroScene(
 
         everyFrame {
             player.run {
-                if (watcher.isAnimating) {
-                    watcher.updateMove(toNMS())
+                toNMS().also {
+                    if (watcher.isAnimating) {
+                        watcher.updateMove(it)
+                    }
+
+                    thrownPotion?.onTick()
+                    thrownPotion?.updatePos(it)
                 }
 
                 if (scenario == 0 && location.between(pos1, pos2)) {
@@ -194,8 +197,13 @@ class IntroScene(
         frame (262) {
             player.sendMessage("§cPrison Witch: §eHumans Prison")
 
-            witch.shoot(player.toNMS())
-            witch.equipment[0] = null
+            player.toNMS().also {
+                thrownPotion = witch.shoot(it)
+                witch.equipment[0] = null
+                witch.updateInventory(it)
+                thrownPotion!!.spawnToPlayer(it)
+            }
+
             pause()
         }
 
