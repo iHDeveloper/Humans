@@ -29,7 +29,7 @@ import org.bukkit.potion.PotionEffectType
  * When the player leaves the door, He gets blind. And, he is saying "The door seems to be broken"
  *
  * Scenario 3:
- * THe player enters a dark hall
+ * The player enters a dark hall
  *
  */
 class IntroScene(
@@ -101,6 +101,8 @@ class IntroScene(
             player.run {
                 addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 1, false, false))
                 addPotionEffect(PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 1, false, false))
+
+                sendMessage("§7§oThe door seems to be broken...")
             }
 
             spawnEntity(watcher, false, logger)

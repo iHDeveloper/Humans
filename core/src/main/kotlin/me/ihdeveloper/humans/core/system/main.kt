@@ -514,10 +514,15 @@ class PlayerSystem : System("Core/Player"), Listener {
     /**
      * Prevent the player from getting hunger
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     @Suppress("UNUSED")
     fun onFoodLevel(event: FoodLevelChangeEvent) {
-        event.foodLevel = 20
+        event.run {
+            if (SceneSystem.players.contains(entity.name))
+                return
+
+            isCancelled = true
+        }
     }
 
     /**

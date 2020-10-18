@@ -200,6 +200,7 @@ open class Scene(
 
     fun start() {
         logger.debug("Starting $name...")
+        SceneSystem.players.add(name)
         state = SceneState.RUNNING
 
         frames[0L]?.invoke()
@@ -220,6 +221,7 @@ open class Scene(
 
     fun stop() {
         logger.debug("Stopping $name...")
+        SceneSystem.players.remove(name)
         state = SceneState.STOPPED
 
         frames[-1L]?.invoke()

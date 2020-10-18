@@ -9,6 +9,8 @@ import org.bukkit.plugin.java.JavaPlugin
 class SceneSystem : System("Core/Scene") {
     companion object {
         lateinit var plugin: JavaPlugin
+
+        val players = mutableSetOf<String>()
     }
 
     override fun init(plugin: JavaPlugin) {
