@@ -444,6 +444,9 @@ class PlayerSystem : System("Core/Player"), Listener {
                 sendMessage("")
             }
 
+            foodLevel = 20
+            health = 20.0
+
             if (spawn != null) {
                 toNMS().spawnIn(toNMSWorld(spawn!!.world))
                 teleport(spawn)

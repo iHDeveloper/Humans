@@ -94,6 +94,7 @@ class IntroScene(
                     scenario++
                     resume()
                 } else if (scenario == 2 && location.between(pos5, pos6)) {
+                    scenario++
                     resume()
                 }
             }
