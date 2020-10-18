@@ -154,6 +154,7 @@ class IntroScene(
             player.sendMessage("§cPrison Witch: §fYessir!")
 
             witch.equipment[0] = ItemStack(Items.POTION)
+            witch.playerName = player.name
         }
 
         frame(190) {
@@ -181,6 +182,10 @@ class IntroScene(
                 foodLevel = 20
                 health = 20.0
             }
+        }
+
+        frame(305) {
+            stop()
         }
 
         disposeFrame {

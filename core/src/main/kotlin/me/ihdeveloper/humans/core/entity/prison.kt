@@ -107,19 +107,26 @@ class PrisonWitch(
             if (playerName != null) {
                 val entities = world.findEntities(EntityPlayer::class, boundingBox)
                 for (entity in entities) {
+                    println("[DEBUG] EntityName: ${entity.name} != $playerName")
                     if (entity.name != playerName)
                         continue
 
+                    println("[DEBUG] Fetching Scene of $playerName...")
+                    println("[DEBUG] Scene of $playerName is ${SceneSystem.players[playerName]}")
                     val scene = SceneSystem.players[playerName] ?: break
+                    println("[DEBUG] Fetched! Scene of $playerName...")
 
                     if (scene !is IntroScene)
                         break
 
+                    println("[DEBUG] Resuming scene of $playerName")
                     scene.resume()
                 }
             }
 
+            /** Show potion effect particles on the world */
             world.triggerEffect(2002, BlockPosition(this), potionValue)
+
             die()
             return
         }
