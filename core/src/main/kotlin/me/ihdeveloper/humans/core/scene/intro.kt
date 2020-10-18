@@ -87,6 +87,9 @@ class IntroScene(
 
         everyFrame {
             player.run {
+                if (scenario in 0..2)
+                    logger.debug("Scenario: $scenario")
+
                 if (scenario == 0 && location.between(pos1, pos2)) {
                     scenario++
                     resume()

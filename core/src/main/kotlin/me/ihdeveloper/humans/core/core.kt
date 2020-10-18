@@ -244,6 +244,7 @@ open class Scene(
         frames[currentTick]?.invoke()
 
         currentTick++
+        logger.debug("Scene($name) Tick: $currentTick")
         schedule()
     }
 
