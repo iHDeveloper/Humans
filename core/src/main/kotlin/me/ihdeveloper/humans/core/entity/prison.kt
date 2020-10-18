@@ -19,6 +19,7 @@ import net.minecraft.server.v1_8_R3.NBTTagCompound
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntity
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityEquipment
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityHeadRotation
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityTeleport
 import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntity
 import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntityLiving
 import net.minecraft.server.v1_8_R3.PacketPlayOutUpdateEntityNBT
@@ -153,7 +154,7 @@ class PrisonWatcher(
             it.sendPacket(PacketPlayOutSpawnEntityLiving(this))
             val pitch = MathHelper.d(location.pitch * 256.0f / 360.0f).toByte()
             val yaw = MathHelper.d(location.yaw * 256.0f / 360.0f).toByte()
-            it.sendPacket(PacketPlayOutEntity.PacketPlayOutEntityLook(id, yaw, pitch, true))
+            it.sendPacket(PacketPlayOutEntity.PacketPlayOutEntityLook(id, yaw, pitch, false))
             it.sendPacket(PacketPlayOutEntityHeadRotation(this, yaw))
             it.sendPacket(PacketPlayOutUpdateEntityNBT(id, NBTTagCompound().apply { b(this) }))
 
@@ -165,7 +166,7 @@ class PrisonWatcher(
 
     fun updateMove(player: EntityPlayer) {
         player.connection.also {
-            it.sendPacket(PacketPlayOutEntity.PacketPlayOutRelEntityMove(id, 0.toByte(), diffY.toInt().toByte(), 0.toByte(), true))
+            it.sendPacket(PacketPlayOutEntityTeleport(this))
         }
     }
 
