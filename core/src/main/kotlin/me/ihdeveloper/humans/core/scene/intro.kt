@@ -142,35 +142,35 @@ class IntroScene(
             player.sendMessage("§cPrison Watcher: §fYou shouldn't die this easily.")
         }
 
-        frame(90) {
+        frame(70) {
             player.sendMessage("§cPrison Watcher: §fYou need to suffer living in this prison!")
         }
 
-        frame(130) {
+        frame(90) {
             player.sendMessage("§cPrison Watcher: §fWitch, send this human somewhere unsafe!")
         }
 
-        frame (170) {
+        frame (120) {
             player.sendMessage("§cPrison Witch: §fYessir!")
 
             witch.equipment[0] = ItemStack(Items.POTION)
         }
 
-        frame(210) {
+        frame(160) {
             player.sendMessage("§cPrison Witch: §fI'm going to send you to...")
+        }
+
+        frame (180) {
+            player.sendMessage("§cPrison Witch: §eHumans Prison")
 
             witch.shoot(player.toNMS())
         }
 
-        frame (250) {
-            player.sendMessage("§cPrison Witch: §eHumans Prison")
-        }
-
-        frame(270) {
+        frame(220) {
             player.run { @Suppress("DEPRECATION") sendBlockChange(location, Material.PORTAL, 0) }
         }
 
-        frame(370) {
+        frame(340) {
             player.run {
                 for (i in 1 until 3)
                     sendMessage("")

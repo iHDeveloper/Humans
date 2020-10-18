@@ -1,6 +1,7 @@
 package me.ihdeveloper.humans.core.entity
 
 import kotlin.math.sqrt
+import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.util.NMSItemStack
 import net.minecraft.server.v1_8_R3.DamageSource
 import net.minecraft.server.v1_8_R3.EntityHuman
@@ -113,7 +114,7 @@ class PrisonWitch(
         val distance = sqrt((x * x) + (z * z))
 
         potion.shoot(x, y + (distance * 0.2F), z, 0.75F, 0.75F)
-        world.addEntity(potion)
+        spawnEntity(potion, true, null)
     }
 
 }
