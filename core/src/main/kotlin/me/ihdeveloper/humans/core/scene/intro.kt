@@ -115,11 +115,11 @@ class IntroScene(
         }
 
         frame(30) {
-            player.sendMessage("§7You don't remember what happened to you.")
+            player.sendMessage("§7§oYou don't remember what happened to you.")
         }
 
         frame(40) {
-            player.sendMessage("§7You seem to be in a suspicious place.")
+            player.sendMessage("§7§oYou seem to be in a suspicious place.")
             pause()
         }
 
@@ -151,8 +151,8 @@ class IntroScene(
         }
 
         frame(72) {
-            player.freeze()
             player.teleport(end)
+            player.freeze()
         }
 
         frame(102) {
@@ -199,8 +199,8 @@ class IntroScene(
                 for (i in 1 until 3)
                     sendMessage("")
 
-                teleport(PlayerSystem.spawn)
                 player.unfreeze()
+                teleport(PlayerSystem.spawn)
                 foodLevel = 20
                 health = 20.0
             }
