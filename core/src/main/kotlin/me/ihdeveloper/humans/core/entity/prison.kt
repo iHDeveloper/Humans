@@ -77,13 +77,13 @@ class PrisonWatcher(
     override fun run() {
         if (direction) {
             if (location.y <= minY) {
-                direction = true
+                direction = false
             } else {
                 location.add(0.0, -0.10,0.0)
             }
         } else {
             if (location.y >= maxY) {
-                direction = false
+                direction = true
             } else {
                 location.add(0.0, 0.10,0.0)
             }

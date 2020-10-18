@@ -199,10 +199,10 @@ open class Scene(
     private val frames = mutableMapOf<Long, () -> Unit>()
 
     private var currentTick: Long = 0
+    private var cancelThisTick = false
 
     open fun start() {
         logger.debug("Starting $name...")
-        logger.debug("Scene[$name] = ${SceneSystem.players[name]}")
         state = SceneState.RUNNING
 
         frames[0L]?.invoke()
@@ -214,12 +214,18 @@ open class Scene(
     fun pause() {
         logger.debug("Pausing $name...")
         state = SceneState.PAUSED
+        logger.debug("Pausing $name with tick $currentTick...")
     }
 
     fun resume() {
         logger.debug("Resuming $name...")
 
         state = SceneState.RUNNING
+
+        cancelThisTick = true
+        logger.debug("Resuming $name with tick (old=$currentTick, new=${currentTick + 1})...")
+        frames[currentTick]?.invoke()
+        currentTick++
     }
 
     open fun stop() {
@@ -240,10 +246,17 @@ open class Scene(
             return
         }
 
+        if (cancelThisTick) {
+            cancelThisTick = false
+            schedule()
+            return
+        }
+
         frames[-2L]?.invoke()
         frames[currentTick]?.invoke()
-
+        logger.debug("Executing tick (current=$currentTick, new=${currentTick + 1})")
         currentTick++
+
         schedule()
     }
 
