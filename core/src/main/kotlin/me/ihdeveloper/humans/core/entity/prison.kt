@@ -6,6 +6,7 @@ import me.ihdeveloper.humans.core.scene.IntroScene
 import me.ihdeveloper.humans.core.system.SceneSystem
 import me.ihdeveloper.humans.core.util.NMSItemStack
 import me.ihdeveloper.humans.core.util.findEntities
+import me.ihdeveloper.humans.core.util.toNMS
 import net.minecraft.server.v1_8_R3.BlockPosition
 import net.minecraft.server.v1_8_R3.DamageSource
 import net.minecraft.server.v1_8_R3.EntityHuman
@@ -16,12 +17,14 @@ import net.minecraft.server.v1_8_R3.MathHelper
 import net.minecraft.server.v1_8_R3.MovingObjectPosition
 import net.minecraft.server.v1_8_R3.NBTTagCompound
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntity
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityEquipment
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityHeadRotation
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityTeleport
 import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntity
 import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntityLiving
 import net.minecraft.server.v1_8_R3.PacketPlayOutUpdateEntityNBT
+import net.minecraft.server.v1_8_R3.PacketPlayOutWorldEvent
 import net.minecraft.server.v1_8_R3.Vec3D
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -210,11 +213,14 @@ class PrisonWitch(
                         break
 
                     scene.resume()
+
+                    /** Show potion effect particles on the world */
+                    scene.player.toNMS().connection.also {
+                        it.sendPacket(PacketPlayOutWorldEvent(2002, BlockPosition(this), potionValue, false))
+                        it.sendPacket(PacketPlayOutEntityDestroy(id))
+                    }
                 }
             }
-
-            /** Show potion effect particles on the world */
-            world.triggerEffect(2002, BlockPosition(this), potionValue)
 
             die()
             return
