@@ -88,8 +88,8 @@ class PrisonWitch(
     ) : CustomPotion(world, witch, 32696 /* Weakness Potion */) {
 
         override fun a(movingobjectposition: MovingObjectPosition?) {
-            this.die()
-            return
+//            this.die()
+//            return
         }
 
     }

@@ -150,7 +150,7 @@ class IntroScene(
             player.sendMessage("§cPrison Watcher: §fWitch, send this human somewhere unsafe!")
         }
 
-        frame (120) {
+        frame(110) {
             player.sendMessage("§cPrison Witch: §fYessir!")
 
             witch.equipment[0] = ItemStack(Items.POTION)
@@ -164,13 +164,14 @@ class IntroScene(
             player.sendMessage("§cPrison Witch: §eHumans Prison")
 
             witch.shoot(player.toNMS())
+            witch.equipment[0] = null
         }
 
         frame(220) {
             player.run { @Suppress("DEPRECATION") sendBlockChange(location, Material.PORTAL, 0) }
         }
 
-        frame(340) {
+        frame(320) {
             player.run {
                 for (i in 1 until 3)
                     sendMessage("")
