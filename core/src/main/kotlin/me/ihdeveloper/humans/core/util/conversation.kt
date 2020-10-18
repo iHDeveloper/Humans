@@ -9,14 +9,35 @@ class Conversation(
     private val player: Player,
     private val messages: Array<String>
 ): Runnable {
-    private var index = 0
+    companion object {
+        val currentRunning = mutableMapOf<String, Conversation>()
+    }
 
-    fun start() = sendChat()
+    private var index = 0
+    private var stop = false
+
+    fun start() {
+        val current = currentRunning[player.name]
+        current?.stop()
+
+        currentRunning[player.name] = this
+        sendChat()
+    }
+
+    fun stop() {
+        stop = true
+        currentRunning.remove(player.name)
+    }
 
     override fun run() = sendChat()
 
     private fun sendChat() {
+        if (stop) {
+            return
+        }
+
         if (index >= messages.size) {
+            currentRunning.remove(player.name)
             return
         }
 

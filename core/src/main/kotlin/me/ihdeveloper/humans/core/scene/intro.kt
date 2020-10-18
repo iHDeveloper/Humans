@@ -5,6 +5,7 @@ import me.ihdeveloper.humans.core.SceneMeta
 import me.ihdeveloper.humans.core.entity.PrisonWatcher
 import me.ihdeveloper.humans.core.entity.PrisonWitch
 import me.ihdeveloper.humans.core.registry.spawnEntity
+import me.ihdeveloper.humans.core.system.GAME_MENU
 import me.ihdeveloper.humans.core.system.PlayerSystem
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.util.between
@@ -80,6 +81,7 @@ class IntroScene(
     init {
         initFrame {
             player.run {
+                inventory.setItem(8, null)
                 toNMS().spawnIn(toNMSWorld(location.world))
                 teleport(spawn)
                 compassTarget = spawn
@@ -201,6 +203,7 @@ class IntroScene(
 
                 player.unfreeze()
                 teleport(PlayerSystem.spawn)
+                inventory.setItem(8, GAME_MENU)
                 foodLevel = 20
                 health = 20.0
             }
