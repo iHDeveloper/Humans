@@ -170,7 +170,11 @@ class IntroScene(
         }
 
         frame(211) {
-            player.run { @Suppress("DEPRECATION") sendBlockChange(location, Material.PORTAL, 0) }
+            player.run {
+                foodLevel = 20
+                health = 20.0
+                @Suppress("DEPRECATION") sendBlockChange(location, Material.PORTAL, 0)
+            }
         }
 
         frame(301) {

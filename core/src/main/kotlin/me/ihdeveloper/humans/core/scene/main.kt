@@ -1,6 +1,7 @@
 package me.ihdeveloper.humans.core.scene
 
 import me.ihdeveloper.humans.core.Scene
+import me.ihdeveloper.humans.core.system.SceneSystem
 import me.ihdeveloper.humans.core.util.GameLogger
 import org.bukkit.entity.Player
 
@@ -12,4 +13,18 @@ open class IndividualScene(
     val player: Player,
     name: String,
     logger: GameLogger
-) : Scene(name, logger)
+) : Scene(name, logger) {
+
+    override fun start() {
+        super.start()
+
+        SceneSystem.players[player.name] = this
+    }
+
+    override fun stop() {
+        super.stop()
+
+        SceneSystem.players.remove(player.name)
+    }
+
+}

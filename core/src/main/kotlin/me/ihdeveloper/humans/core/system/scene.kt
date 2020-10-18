@@ -11,7 +11,7 @@ class SceneSystem : System("Core/Scene") {
     companion object {
         lateinit var plugin: JavaPlugin
 
-        val players = mutableMapOf<String, Scene>()
+        val players = hashMapOf<String, Scene>()
     }
 
     override fun init(plugin: JavaPlugin) {

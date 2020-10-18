@@ -200,9 +200,9 @@ open class Scene(
 
     private var currentTick: Long = 0
 
-    fun start() {
+    open fun start() {
         logger.debug("Starting $name...")
-        SceneSystem.players[name] = this
+        logger.debug("Scene[$name] = ${SceneSystem.players[name]}")
         state = SceneState.RUNNING
 
         frames[0L]?.invoke()
@@ -222,9 +222,8 @@ open class Scene(
         state = SceneState.RUNNING
     }
 
-    fun stop() {
+    open fun stop() {
         logger.debug("Stopping $name...")
-        SceneSystem.players.remove(name)
         state = SceneState.STOPPED
 
         frames[-1L]?.invoke()
