@@ -2,16 +2,22 @@ package me.ihdeveloper.humans.core.entity
 
 import kotlin.math.sqrt
 import me.ihdeveloper.humans.core.registry.spawnEntity
+import me.ihdeveloper.humans.core.scene.IntroScene
+import me.ihdeveloper.humans.core.system.SceneSystem
 import me.ihdeveloper.humans.core.util.NMSItemStack
+import me.ihdeveloper.humans.core.util.findEntities
 import net.minecraft.server.v1_8_R3.DamageSource
 import net.minecraft.server.v1_8_R3.EntityHuman
 import net.minecraft.server.v1_8_R3.EntityLiving
-import net.minecraft.server.v1_8_R3.ItemStack
+import net.minecraft.server.v1_8_R3.EntityPlayer
 import net.minecraft.server.v1_8_R3.Items
 import net.minecraft.server.v1_8_R3.MovingObjectPosition
 import net.minecraft.server.v1_8_R3.Vec3D
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.World
+import org.bukkit.entity.ArmorStand
+import org.bukkit.inventory.ItemStack
 
 /**
  * A guard that protects the prison
@@ -28,9 +34,9 @@ class PrisonGuard(
         clearPathfinderSelector(goalSelector)
         clearPathfinderSelector(targetSelector)
 
-        setEquipment(0, ItemStack(Items.IRON_SWORD))
-        setEquipment(2, ItemStack(Items.LEATHER_CHESTPLATE))
-        setEquipment(3, ItemStack(Items.LEATHER_LEGGINGS))
+        setEquipment(0, NMSItemStack(Items.IRON_SWORD))
+        setEquipment(2, NMSItemStack(Items.LEATHER_CHESTPLATE))
+        setEquipment(3, NMSItemStack(Items.LEATHER_LEGGINGS))
 
         nameHologram.text = "§cPrison Guard"
         spawnHologram()
@@ -51,7 +57,9 @@ class PrisonWatcher(
         isInvisible = true
         setGravity(false)
 
-        equipment[1] = ItemStack(Items.SKULL)
+        (getBukkitEntity() as ArmorStand).run {
+            helmet = ItemStack(Material.SKULL_ITEM)
+        }
     }
 
     /** Prevent the player from putting any item to the prison watcher */
@@ -82,14 +90,34 @@ class PrisonWatcher(
 class PrisonWitch(
     private val location: Location
 ) : CustomWitch(location) {
+    var playerName: String? = null
+
     class Potion(
         world: World,
         witch: PrisonWitch,
+        private val playerName: String?,
     ) : CustomPotion(world, witch, 32696 /* Weakness Potion */) {
 
         override fun a(movingobjectposition: MovingObjectPosition?) {
-//            this.die()
-//            return
+            val boundingBox = boundingBox.grow(2.0, 2.0, 2.0)
+
+            if (playerName != null) {
+                val entities = world.findEntities(EntityPlayer::class, boundingBox)
+                for (entity in entities) {
+                    if (entity.name != playerName)
+                        continue
+
+                    val scene = SceneSystem.players[playerName] ?: break
+
+                    if (scene !is IntroScene)
+                        break
+
+                    scene.resume()
+                }
+            }
+
+            this.die()
+            return
         }
 
     }
@@ -105,7 +133,7 @@ class PrisonWitch(
     }
 
     fun shoot(target: EntityLiving) {
-        val potion = Potion(location.world, this)
+        val potion = Potion(location.world, this, playerName)
         val targetY = target.locY + target.headHeight.toDouble() - 1.100000023841858
         potion.pitch -= -20F
         val x = target.locX + target.motX - locX

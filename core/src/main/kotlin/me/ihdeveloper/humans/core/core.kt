@@ -202,7 +202,7 @@ open class Scene(
 
     fun start() {
         logger.debug("Starting $name...")
-        SceneSystem.players.add(name)
+        SceneSystem.players[name] = this
         state = SceneState.RUNNING
 
         frames[0L]?.invoke()
