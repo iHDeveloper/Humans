@@ -4,7 +4,6 @@ import me.ihdeveloper.humans.core.Configuration
 import me.ihdeveloper.humans.core.SceneMeta
 import me.ihdeveloper.humans.core.entity.PrisonWatcher
 import me.ihdeveloper.humans.core.entity.PrisonWitch
-import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.system.GAME_MENU
 import me.ihdeveloper.humans.core.system.PlayerSystem
 import me.ihdeveloper.humans.core.util.GameLogger
@@ -140,10 +139,13 @@ class IntroScene(
 
                 sendMessage("§7§oThe door seems to be broken...")
 
-                watcher.spawnToPlayer(toNMS())
-                watcher.startAnimation()
+                toNMS().also {
+                    watcher.spawnToPlayer(it)
+                    watcher.startAnimation()
+
+                    witch.spawnToPlayer(it)
+                }
             }
-            spawnEntity(witch, false, logger)
 
             // TODO hide entity from the player
 
@@ -182,6 +184,7 @@ class IntroScene(
 
             witch.equipment[0] = ItemStack(Items.POTION)
             witch.playerName = player.name
+            witch.updateInventory(player.toNMS())
         }
 
         frame(232) {

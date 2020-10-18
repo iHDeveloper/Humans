@@ -237,4 +237,27 @@ class PrisonWitch(
         return potion
     }
 
+
+    /** Methods that deals with the packet layer */
+
+
+    fun spawnToPlayer(player: EntityPlayer) {
+        player.connection.also {
+            it.sendPacket(PacketPlayOutSpawnEntityLiving(this))
+            val pitch = MathHelper.d(location.pitch * 256.0f / 360.0f).toByte()
+            val yaw = MathHelper.d(location.yaw * 256.0f / 360.0f).toByte()
+            it.sendPacket(PacketPlayOutEntity.PacketPlayOutEntityLook(id, yaw, pitch, false))
+            it.sendPacket(PacketPlayOutEntityHeadRotation(this, yaw))
+            it.sendPacket(PacketPlayOutUpdateEntityNBT(id, NBTTagCompound().apply { b(this) }))
+        }
+    }
+
+    fun updateInventory(player: EntityPlayer) {
+        player.connection.also {
+            for (slot in 0..4) {
+                it.sendPacket(PacketPlayOutEntityEquipment(id, slot, equipment[slot]))
+            }
+        }
+    }
+
 }
