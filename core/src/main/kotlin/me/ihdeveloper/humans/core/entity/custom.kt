@@ -194,7 +194,7 @@ open class CustomNPC(
     /**
      * Check if the NPC should track this player or not
      */
-    fun shouldTrack(player: Player) = (location.distance(player.location) <= NPC_RENDER_DISTANCE)
+    fun shouldTrack(location: Location) = (this.location.distance(location) <= NPC_RENDER_DISTANCE)
 
     /**
      * Spawns the NPC to the player. And, adds it to the tracking set

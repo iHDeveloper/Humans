@@ -21,6 +21,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerMoveEvent
+import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scoreboard.NameTagVisibility
 
@@ -72,7 +73,7 @@ class NPCSystem : System("Core/NPC"), Listener {
 
             Bukkit.getOnlinePlayers().forEach {
                 for (npc in npcList) {
-                    if (!npc.shouldTrack(it))
+                    if (!npc.shouldTrack(it.location))
                         continue
 
                     npc.spawn(toNMSPlayer(it))
@@ -116,7 +117,7 @@ class NPCSystem : System("Core/NPC"), Listener {
             }
 
             for (npc in npcList) {
-                if (!npc.shouldTrack(player))
+                if (!npc.shouldTrack(player.location))
                     continue
 
                 npc.spawn(toNMSPlayer(player))
@@ -128,11 +129,11 @@ class NPCSystem : System("Core/NPC"), Listener {
     @Suppress("UNUSED")
     fun onMove(event: PlayerMoveEvent) {
         for (npc in npcList) {
-            if (npc.location.world.name != event.player.location.world.name)
+            if (npc.location.world.name != event.to.world.name)
                 continue
 
             if (npc.trackedPlayers.contains(event.player.entityId)) {
-                if (!npc.shouldTrack(event.player)) {
+                if (!npc.shouldTrack(event.to)) {
                     npc.despawn(toNMSPlayer(event.player))
                     logger.debug("[NPC Tracker] Despawning ${event.player.name}...")
                 }
@@ -141,6 +142,26 @@ class NPCSystem : System("Core/NPC"), Listener {
 
             npc.spawn(toNMSPlayer(event.player))
             logger.debug("[NPC Tracker] Spawning ${event.player.name}...")
+        }
+    }
+
+    @EventHandler
+    @Suppress("UNUSED")
+    fun onTeleport(event: PlayerTeleportEvent) {
+        for (npc in npcList) {
+            if (npc.location.world.name != event.to.world.name)
+                continue
+
+            if (npc.trackedPlayers.contains(event.player.entityId)) {
+                if (!npc.shouldTrack(event.to)) {
+                    npc.despawn(toNMSPlayer(event.player))
+                    logger.debug("[NPC Tracker] Despawning ${event.player.name} (teleportation)...")
+                }
+                continue
+            }
+
+            npc.spawn(toNMSPlayer(event.player))
+            logger.debug("[NPC Tracker] Spawning ${event.player.name} (teleportation)...")
         }
     }
 
