@@ -467,7 +467,7 @@ class PlayerSystem : System("Core/Player"), Listener {
             if (!player.isOp)
                 continue
 
-            player.sendMessage("§8[§e@§8] §c- §9${player.displayName}")
+            player.sendMessage("§8[§e@§8] §c- §9${event.player.displayName}")
         }
 
         event.player.inventory.clear()
@@ -530,7 +530,7 @@ class PlayerSystem : System("Core/Player"), Listener {
             if (spawn != null) entity.teleport(spawn)
 
             Bukkit.getOnlinePlayers().forEach {
-                it.sendMessage("${it.displayName} §edied.")
+                it.sendMessage("${entity.displayName} §edied.")
             }
         }
     }

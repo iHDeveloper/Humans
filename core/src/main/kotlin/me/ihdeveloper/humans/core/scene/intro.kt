@@ -13,6 +13,7 @@ import me.ihdeveloper.humans.core.util.freeze
 import me.ihdeveloper.humans.core.util.toNMS
 import me.ihdeveloper.humans.core.util.toNMSWorld
 import me.ihdeveloper.humans.core.util.unfreeze
+import net.minecraft.server.v1_8_R3.Entity
 import net.minecraft.server.v1_8_R3.ItemStack
 import net.minecraft.server.v1_8_R3.Items
 import org.bukkit.Location
@@ -53,6 +54,8 @@ class IntroScene(
     private val witchSpawn = config.get<Location?>("witch")
     private val end = config.get<Location>("end")
 
+    private val entitiesToHide = arrayListOf<Entity>()
+
     /** Scenario 1 */
     private val pos1 = config.get<Location>("pos1")
     private val pos2 = config.get<Location>("pos2")
@@ -91,6 +94,10 @@ class IntroScene(
 
         everyFrame {
             player.run {
+                if (currentFrame >= 41 && watcher.isAnimating) {
+                    watcher.updateMove(toNMS())
+                }
+
                 if (scenario == 0 && location.between(pos1, pos2)) {
                     scenario++
                     resume()
@@ -132,9 +139,10 @@ class IntroScene(
                 addPotionEffect(PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 1, false, false))
 
                 sendMessage("§7§oThe door seems to be broken...")
-            }
 
-            spawnEntity(watcher, false, logger)
+                watcher.spawnToPlayer(toNMS())
+                watcher.startAnimation()
+            }
             spawnEntity(witch, false, logger)
 
             // TODO hide entity from the player

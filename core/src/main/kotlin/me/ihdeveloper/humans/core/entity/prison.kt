@@ -13,7 +13,15 @@ import net.minecraft.server.v1_8_R3.EntityHuman
 import net.minecraft.server.v1_8_R3.EntityLiving
 import net.minecraft.server.v1_8_R3.EntityPlayer
 import net.minecraft.server.v1_8_R3.Items
+import net.minecraft.server.v1_8_R3.MathHelper
 import net.minecraft.server.v1_8_R3.MovingObjectPosition
+import net.minecraft.server.v1_8_R3.NBTTagCompound
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntity
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityEquipment
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityHeadRotation
+import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntity
+import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntityLiving
+import net.minecraft.server.v1_8_R3.PacketPlayOutUpdateEntityNBT
 import net.minecraft.server.v1_8_R3.PathfinderGoalLookAtPlayer
 import net.minecraft.server.v1_8_R3.Vec3D
 import org.bukkit.Bukkit
@@ -57,11 +65,16 @@ class PrisonGuard(
 class PrisonWatcher(
     location: Location
 ) : CustomArmorStand(location), Runnable {
+    var isAnimating = false
+
     private val maxY = location.y + WATCHER_Y_RANGE
     private val minY = location.y - WATCHER_Y_RANGE
 
     /** up = false, down = true */
     private var direction = false
+
+    /** Used to calculate the Y difference for sending packets */
+    private var diffY: Double = 0.0
 
     init {
         customName = "§cPrison Watcher"
@@ -73,8 +86,10 @@ class PrisonWatcher(
         (getBukkitEntity() as ArmorStand).run {
             helmet = ItemStack(Material.SKULL_ITEM)
         }
-        Bukkit.getScheduler().runTaskTimer(corePlugin, this, 0L, 1L)
     }
+
+    /** Starts the loop for the animation */
+    fun startAnimation() = Bukkit.getScheduler().runTaskTimer(corePlugin, this, 0L, 1L)
 
     /** Move the body down and up every 1 tick */
     override fun run() {
@@ -82,12 +97,14 @@ class PrisonWatcher(
             if (location.y <= minY) {
                 direction = false
             } else {
+                diffY = -WATCHER_Y_SPEED
                 location.add(0.0, -WATCHER_Y_SPEED,0.0)
             }
         } else {
             if (location.y >= maxY) {
                 direction = true
             } else {
+                diffY = WATCHER_Y_SPEED
                 location.add(0.0, WATCHER_Y_SPEED,0.0)
             }
         }
@@ -112,6 +129,31 @@ class PrisonWatcher(
     /** Prevent the prison watcher from getting damaged */
     override fun damageEntity(damagesource: DamageSource?, f: Float): Boolean {
         return false
+    }
+
+
+    /** Methods that deals with the packet layer */
+
+
+    fun spawnToPlayer(player: EntityPlayer) {
+        player.connection.also {
+            it.sendPacket(PacketPlayOutSpawnEntityLiving(this))
+            val pitch = MathHelper.d(location.pitch).toByte()
+            val yaw = aK.toInt().toByte()
+            it.sendPacket(PacketPlayOutEntity.PacketPlayOutEntityLook(id, yaw, pitch, true))
+            it.sendPacket(PacketPlayOutEntityHeadRotation(this, yaw))
+            it.sendPacket(PacketPlayOutUpdateEntityNBT(id, NBTTagCompound().apply { b(this) }))
+
+            for (slot in 0..4) {
+                it.sendPacket(PacketPlayOutEntityEquipment(id, slot, if (slot == 4) NMSItemStack(Items.SKULL) else null))
+            }
+        }
+    }
+
+    fun updateMove(player: EntityPlayer) {
+        player.connection.also {
+            it.sendPacket(PacketPlayOutEntity.PacketPlayOutRelEntityMove(id, 0.toByte(), diffY.toInt().toByte(), 0.toByte(), false))
+        }
     }
 
 }
@@ -167,7 +209,7 @@ class PrisonWitch(
         spawnHologram()
     }
 
-    fun shoot(target: EntityLiving) {
+    fun shoot(target: EntityLiving): Potion {
         val potion = Potion(location.world, this, playerName)
         val targetY = target.locY + target.headHeight.toDouble() - 1.100000023841858
         potion.pitch -= -20F
@@ -178,6 +220,7 @@ class PrisonWitch(
 
         potion.shoot(x, y + (distance * 0.2F), z, 0.75F, 0.75F)
         spawnEntity(potion, true, null)
+        return potion
     }
 
 }

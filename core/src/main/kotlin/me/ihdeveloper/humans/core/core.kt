@@ -198,7 +198,7 @@ open class Scene(
     /** A frame is something that happens at a certain time since the scene started */
     private val frames = mutableMapOf<Long, () -> Unit>()
 
-    private var currentTick: Long = 0
+    protected var currentFrame: Long = 0
     private var cancelThisTick = false
 
     open fun start() {
@@ -207,7 +207,7 @@ open class Scene(
 
         frames[0L]?.invoke()
 
-        currentTick = 1
+        currentFrame = 1
         schedule()
     }
 
@@ -221,8 +221,8 @@ open class Scene(
 
         state = SceneState.RUNNING
 
-        frames[currentTick]?.invoke()
-        currentTick++
+        frames[currentFrame]?.invoke()
+        currentFrame++
     }
 
     open fun stop() {
@@ -250,8 +250,8 @@ open class Scene(
         }
 
         frames[-2L]?.invoke()
-        frames[currentTick]?.invoke()
-        currentTick++
+        frames[currentFrame]?.invoke()
+        currentFrame++
 
         schedule()
     }
