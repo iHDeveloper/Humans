@@ -108,11 +108,23 @@ class IntroScene(
                 foodLevel = 0
                 health = 0.5
             }
+        }
+
+        frame(20) {
+            player.sendMessage("§7§oYou are in unknown location")
+        }
+
+        frame(30) {
+            player.sendMessage("§7You don't remember what happened to you.")
+        }
+
+        frame(40) {
+            player.sendMessage("§7You seem to be in a suspicious place.")
             pause()
         }
 
         /** Apply scenario 2 */
-        frame(2) {
+        frame(41) {
             player.run {
                 addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 1, false, false))
                 addPotionEffect(PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 1, false, false))
@@ -129,7 +141,7 @@ class IntroScene(
         }
 
         /** Apply scenario 3 */
-        frame(3) {
+        frame(42) {
             player.run {
                 removePotionEffect(PotionEffectType.BLINDNESS)
                 removePotionEffect(PotionEffectType.SLOW)
@@ -138,35 +150,35 @@ class IntroScene(
             }
         }
 
-        frame(30) {
+        frame(72) {
             player.freeze()
             player.teleport(end)
         }
 
-        frame(60) {
+        frame(102) {
             player.sendMessage("§cPrison Watcher: §fYou shouldn't die this easily.")
         }
 
-        frame(90) {
+        frame(132) {
             player.sendMessage("§cPrison Watcher: §fYou need to suffer living in this prison!")
         }
 
-        frame(120) {
+        frame(162) {
             player.sendMessage("§cPrison Watcher: §fWitch, send this human somewhere unsafe!")
         }
 
-        frame(160) {
+        frame(202) {
             player.sendMessage("§cPrison Witch: §fYessir!")
 
             witch.equipment[0] = ItemStack(Items.POTION)
             witch.playerName = player.name
         }
 
-        frame(190) {
+        frame(232) {
             player.sendMessage("§cPrison Witch: §fI'm going to send you to...")
         }
 
-        frame (210) {
+        frame (262) {
             player.sendMessage("§cPrison Witch: §eHumans Prison")
 
             witch.shoot(player.toNMS())
@@ -174,7 +186,7 @@ class IntroScene(
             pause()
         }
 
-        frame(211) {
+        frame(263) {
             player.run {
                 foodLevel = 20
                 health = 20.0
@@ -182,7 +194,7 @@ class IntroScene(
             }
         }
 
-        frame(301) {
+        frame(353) {
             player.run {
                 for (i in 1 until 3)
                     sendMessage("")
@@ -194,7 +206,7 @@ class IntroScene(
             }
         }
 
-        frame(305) {
+        frame(357) {
             stop()
         }
 

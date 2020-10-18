@@ -41,7 +41,6 @@ import me.ihdeveloper.humans.core.registry.registerEntity
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.registry.summonedEntities
 import me.ihdeveloper.humans.core.registry.summonedEntitiesInfo
-import me.ihdeveloper.humans.core.util.Conversation
 import me.ihdeveloper.humans.core.util.toNMS
 import me.ihdeveloper.humans.core.util.toNMSWorld
 import net.minecraft.server.v1_8_R3.EntityArmorStand
@@ -402,13 +401,6 @@ class MenuSystem : System("Core/Menu"), Listener {
 class PlayerSystem : System("Core/Player"), Listener {
     companion object {
         var spawn: Location? = null
-
-        private val messages = arrayOf(
-            "§7You are in unknown location.",
-            "§7You don't remember what happened to you.",
-            "§7You seem to be in a disclosed place.",
-            "§7There's a suspicious door. Try to open it!"
-        )
     }
     private val config = Configuration("players")
 
@@ -436,7 +428,6 @@ class PlayerSystem : System("Core/Player"), Listener {
             val profile = ProfileSystem.profiles[name]
 
             if (profile!!.new) {
-                Conversation(player, messages).start()
                 // TODO start a special scene for the new players!
             } else {
                 sendMessage("§eWelcome back, §7Human§e!")
