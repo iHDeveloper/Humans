@@ -12,6 +12,7 @@ import net.minecraft.server.v1_8_R3.EntityLiving
 import net.minecraft.server.v1_8_R3.EntityPlayer
 import net.minecraft.server.v1_8_R3.Items
 import net.minecraft.server.v1_8_R3.MovingObjectPosition
+import net.minecraft.server.v1_8_R3.PathfinderGoalLookAtPlayer
 import net.minecraft.server.v1_8_R3.Vec3D
 import org.bukkit.Location
 import org.bukkit.Material
@@ -56,6 +57,7 @@ class PrisonWatcher(
         customNameVisible = true
         isInvisible = true
         setGravity(false)
+        setLocation()
 
         (getBukkitEntity() as ArmorStand).run {
             helmet = ItemStack(Material.SKULL_ITEM)
@@ -99,7 +101,7 @@ class PrisonWitch(
     ) : CustomPotion(world, witch, 32696 /* Weakness Potion */) {
 
         override fun a(movingobjectposition: MovingObjectPosition?) {
-            val boundingBox = boundingBox.grow(2.0, 2.0, 2.0)
+            val boundingBox = boundingBox.grow(4.0, 4.0, 4.0)
 
             if (playerName != null) {
                 val entities = world.findEntities(EntityPlayer::class, boundingBox)
@@ -127,6 +129,8 @@ class PrisonWitch(
 
         clearPathfinderSelector(goalSelector)
         clearPathfinderSelector(targetSelector)
+
+        goalSelector.a(0, PathfinderGoalLookAtPlayer(this, EntityHuman::class.java, 2F))
 
         nameHologram.text = "§cPrison Witch"
         spawnHologram()

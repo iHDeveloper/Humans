@@ -8,4 +8,4 @@ import net.minecraft.server.v1_8_R3.WorldServer
 
 fun World.toServer(): WorldServer = (this as WorldServer)
 
-fun <T : Entity> World.findEntities(entityClass: KClass<T>, boundingBox: AxisAlignedBB) = a(entityClass.java, boundingBox)
+fun <T : Entity> World.findEntities(entityClass: KClass<T>, boundingBox: AxisAlignedBB): MutableList<T> = a(entityClass.java, boundingBox)

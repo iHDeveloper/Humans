@@ -41,8 +41,20 @@ private const val NPC_RENDER_DISTANCE = 48
 /**
  * An custom entity for armor stand
  */
-open class CustomArmorStand(location: Location)
+open class CustomArmorStand(private val location: Location)
     : EntityArmorStand(toNMSWorld(location.world), location.x, location.y, location.z) {
+
+    /**
+     * Updates the location of the entity in the world
+     *
+     * Note: It should be used during the initialization of the final class
+     */
+    fun setLocation() {
+        location.run { setLocation(x, y, z, yaw, pitch) }
+
+        /** Change the head rotation of the entity */
+        super.aK = location.yaw
+    }
 
     /**
      * Fix: Gravity flag value is reversed
