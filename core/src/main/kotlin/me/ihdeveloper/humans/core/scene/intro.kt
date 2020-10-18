@@ -132,10 +132,12 @@ class IntroScene(
                 removePotionEffect(PotionEffectType.BLINDNESS)
                 removePotionEffect(PotionEffectType.SLOW)
 
-                teleport(end)
-
                 sendMessage("§cPrison Watcher: §fI have been watching you...")
             }
+        }
+
+        frame(30) {
+            player.teleport(end)
         }
 
         frame(60) {

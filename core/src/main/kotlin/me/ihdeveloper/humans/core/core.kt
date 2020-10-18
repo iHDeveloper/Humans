@@ -214,7 +214,6 @@ open class Scene(
     fun pause() {
         logger.debug("Pausing $name...")
         state = SceneState.PAUSED
-        logger.debug("Pausing $name with tick $currentTick...")
     }
 
     fun resume() {
@@ -222,8 +221,6 @@ open class Scene(
 
         state = SceneState.RUNNING
 
-        cancelThisTick = true
-        logger.debug("Resuming $name with tick (old=$currentTick, new=${currentTick + 1})...")
         frames[currentTick]?.invoke()
         currentTick++
     }
@@ -254,7 +251,6 @@ open class Scene(
 
         frames[-2L]?.invoke()
         frames[currentTick]?.invoke()
-        logger.debug("Executing tick (current=$currentTick, new=${currentTick + 1})")
         currentTick++
 
         schedule()

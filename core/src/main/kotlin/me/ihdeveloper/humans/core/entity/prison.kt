@@ -23,6 +23,9 @@ import org.bukkit.World
 import org.bukkit.entity.ArmorStand
 import org.bukkit.inventory.ItemStack
 
+private const val WATCHER_Y_RANGE = 0.5
+private const val WATCHER_Y_SPEED = 0.1
+
 /**
  * A guard that protects the prison
  *
@@ -54,8 +57,8 @@ class PrisonGuard(
 class PrisonWatcher(
     location: Location
 ) : CustomArmorStand(location), Runnable {
-    private val maxY = location.y + 1.0
-    private val minY = location.y - 1.0
+    private val maxY = location.y + WATCHER_Y_RANGE
+    private val minY = location.y - WATCHER_Y_RANGE
 
     /** up = false, down = true */
     private var direction = false
@@ -79,13 +82,13 @@ class PrisonWatcher(
             if (location.y <= minY) {
                 direction = false
             } else {
-                location.add(0.0, -0.10,0.0)
+                location.add(0.0, -WATCHER_Y_SPEED,0.0)
             }
         } else {
             if (location.y >= maxY) {
                 direction = true
             } else {
-                location.add(0.0, 0.10,0.0)
+                location.add(0.0, WATCHER_Y_SPEED,0.0)
             }
         }
         setLocation()
