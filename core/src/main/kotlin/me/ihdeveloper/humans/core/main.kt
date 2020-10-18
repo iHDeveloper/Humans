@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import kotlin.concurrent.thread
 import me.ihdeveloper.humans.core.system.ProfileSystem
+import me.ihdeveloper.humans.core.system.SceneSystem
 import me.ihdeveloper.humans.core.util.GameLogger
 
 /** Folder that contains data about the plugin */
@@ -84,6 +85,7 @@ class GameCore {
         WarpSystem(),
         ScoreboardSystem(),
         NPCSystem(),
+        SceneSystem(),
     )
 
     /** Represents other systems of the game */
