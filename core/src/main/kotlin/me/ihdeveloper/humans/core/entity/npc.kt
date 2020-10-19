@@ -60,7 +60,7 @@ class AgentDeveloper(
             "§7[NPC] §3HD: §eHello! I am an agent in the HG aka Humans Agency.",
             "§7[NPC] §3HD: §eIt's a secret agency for helping \"Humans\" stay alive in the prison",
             "§7[NPC] §3HD: §eI will provide some of the agency services.",
-            "§7[NPC] §3HD: §eThese services will improves your life in the prison.",
+            "§7[NPC] §3HD: §eThese services will improve your life in the prison.",
             "§7[NPC] §3HD: §eCome back later to use these services!"
         )
     }

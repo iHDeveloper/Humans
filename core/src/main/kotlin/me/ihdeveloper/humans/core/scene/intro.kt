@@ -125,7 +125,7 @@ class IntroScene(
         }
 
         frame(20) {
-            player.sendMessage("§7§oYou are in unknown location")
+            player.sendMessage("§7§oYou are in an unknown location")
         }
 
         frame(30) {
@@ -164,7 +164,7 @@ class IntroScene(
                 removePotionEffect(PotionEffectType.BLINDNESS)
                 removePotionEffect(PotionEffectType.SLOW)
 
-                sendMessage("§cPrison Watcher: §fI have been watching you...")
+                sendMessage("§cPrison Watcher: §fI have been watching you, Human.")
             }
         }
 
@@ -174,15 +174,15 @@ class IntroScene(
         }
 
         frame(102) {
-            player.sendMessage("§cPrison Watcher: §fYou shouldn't die this easily.")
+            player.sendMessage("§cPrison Watcher: §fYou shouldn't die peacefully.")
         }
 
         frame(132) {
-            player.sendMessage("§cPrison Watcher: §fYou need to suffer living in this prison!")
+            player.sendMessage("§cPrison Watcher: §fYou shall suffer living in this misery!")
         }
 
         frame(162) {
-            player.sendMessage("§cPrison Watcher: §fWitch, send this human somewhere unsafe!")
+            player.sendMessage("§cPrison Watcher: §fWitch, send this \"Human\" somewhere unsafe!")
         }
 
         frame(202) {
@@ -194,11 +194,11 @@ class IntroScene(
         }
 
         frame(232) {
-            player.sendMessage("§cPrison Witch: §fI'm going to send you to...")
+            player.sendMessage("§cPrison Witch: §fI'm going to send this \"Human\" to...")
         }
 
         frame (262) {
-            player.sendMessage("§cPrison Witch: §eHumans Prison")
+            player.sendMessage("§cPrison Witch: §e§lHumans Prison")
 
             player.toNMS().also {
                 thrownPotion = witch.shoot(it)
