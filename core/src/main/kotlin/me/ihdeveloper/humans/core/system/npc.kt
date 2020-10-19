@@ -16,6 +16,7 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
@@ -107,7 +108,7 @@ class NPCSystem : System("Core/NPC"), Listener {
         npcInfoList.clear()
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     @Suppress("UNUSED")
     fun onJoin(event: PlayerJoinEvent) {
         event.player.run {
@@ -118,7 +119,7 @@ class NPCSystem : System("Core/NPC"), Listener {
 
             for (npc in npcList) {
                 npc.run {
-                    if (shouldTrack(player.location))
+                    if (npc.location.world.name == player.location.world.name && shouldTrack(player.location))
                         spawn(toNMSPlayer(player))
                 }
             }

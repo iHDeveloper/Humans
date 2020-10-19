@@ -422,7 +422,7 @@ class PlayerSystem : System("Core/Player"), Listener {
      *
      * Prevent from the broadcasting the join message
      */
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOW)
     @Suppress("UNUSED")
     fun onJoin(event: PlayerJoinEvent) {
         event.player.run {
