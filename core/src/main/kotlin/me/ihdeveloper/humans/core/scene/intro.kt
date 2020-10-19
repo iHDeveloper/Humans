@@ -6,6 +6,7 @@ import me.ihdeveloper.humans.core.entity.PrisonWatcher
 import me.ihdeveloper.humans.core.entity.PrisonWitch
 import me.ihdeveloper.humans.core.system.GAME_MENU
 import me.ihdeveloper.humans.core.system.PlayerSystem
+import me.ihdeveloper.humans.core.system.ProfileSystem
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.util.between
 import me.ihdeveloper.humans.core.util.freeze
@@ -236,6 +237,8 @@ class IntroScene(
                 foodLevel = 20
                 health = 20.0
             }
+
+            ProfileSystem.profiles[player.name]?.new = false
         }
 
         frame(357) {
