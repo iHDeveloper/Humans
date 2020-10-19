@@ -117,10 +117,10 @@ class NPCSystem : System("Core/NPC"), Listener {
             }
 
             for (npc in npcList) {
-                if (!npc.shouldTrack(player.location))
-                    continue
-
-                npc.spawn(toNMSPlayer(player))
+                npc.run {
+                    if (shouldTrack(player.location))
+                        spawn(toNMSPlayer(player))
+                }
             }
         }
     }
@@ -149,8 +149,9 @@ class NPCSystem : System("Core/NPC"), Listener {
     @Suppress("UNUSED")
     fun onTeleport(event: PlayerTeleportEvent) {
         for (npc in npcList) {
-            if (npc.location.world.name != event.to.world.name)
+            if (npc.location.world.name != event.to.world.name) {
                 continue
+            }
 
             if (npc.trackedPlayers.contains(event.player.entityId)) {
                 if (!npc.shouldTrack(event.to)) {

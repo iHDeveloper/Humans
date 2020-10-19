@@ -401,9 +401,12 @@ class MenuSystem : System("Core/Menu"), Listener {
  */
 class PlayerSystem : System("Core/Player"), Listener {
     companion object {
+        private val config = Configuration("players")
+
         var spawn: Location? = null
+
+        fun save() = config.save()
     }
-    private val config = Configuration("players")
 
     override fun init(plugin: JavaPlugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin)
@@ -412,10 +415,7 @@ class PlayerSystem : System("Core/Player"), Listener {
         spawn = config.get<Location?>("spawn", null)
     }
 
-    override fun dispose() {
-        spawn?.let { config.set("spawn", it) }
-        config.save(logger)
-    }
+    override fun dispose() {}
 
     /**
      * Sends a welcome message to the players.
@@ -429,19 +429,17 @@ class PlayerSystem : System("Core/Player"), Listener {
             val profile = ProfileSystem.profiles[name]
 
             if (profile!!.new) {
-                // TODO start a special scene for the new players!
                 IntroScene(this).start()
             } else {
                 sendMessage("§eWelcome back, §7Human§e!")
                 sendMessage("")
                 sendMessage("")
+
+                foodLevel = 20
+                health = 20.0
             }
 
-            foodLevel = 20
-            health = 20.0
-
             if (!profile.new && spawn != null) {
-                toNMS().spawnIn(toNMSWorld(spawn!!.world))
                 teleport(spawn)
                 compassTarget = spawn
             }
