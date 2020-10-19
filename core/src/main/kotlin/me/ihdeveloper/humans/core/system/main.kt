@@ -41,6 +41,7 @@ import me.ihdeveloper.humans.core.registry.registerEntity
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.registry.summonedEntities
 import me.ihdeveloper.humans.core.registry.summonedEntitiesInfo
+import me.ihdeveloper.humans.core.scene.IntroScene
 import me.ihdeveloper.humans.core.util.toNMS
 import me.ihdeveloper.humans.core.util.toNMSWorld
 import net.minecraft.server.v1_8_R3.EntityArmorStand
@@ -429,6 +430,7 @@ class PlayerSystem : System("Core/Player"), Listener {
 
             if (profile!!.new) {
                 // TODO start a special scene for the new players!
+                IntroScene(this).start()
             } else {
                 sendMessage("§eWelcome back, §7Human§e!")
                 sendMessage("")
@@ -438,7 +440,7 @@ class PlayerSystem : System("Core/Player"), Listener {
             foodLevel = 20
             health = 20.0
 
-            if (spawn != null) {
+            if (!profile.new && spawn != null) {
                 toNMS().spawnIn(toNMSWorld(spawn!!.world))
                 teleport(spawn)
                 compassTarget = spawn

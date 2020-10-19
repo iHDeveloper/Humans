@@ -83,7 +83,6 @@ class IntroScene(
         initFrame {
             player.run {
                 inventory.setItem(8, null)
-                toNMS().spawnIn(toNMSWorld(location.world))
                 teleport(spawn)
                 compassTarget = spawn
             }
