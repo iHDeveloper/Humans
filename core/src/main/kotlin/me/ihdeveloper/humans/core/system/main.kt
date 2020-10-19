@@ -350,7 +350,7 @@ class MenuSystem : System("Core/Menu"), Listener {
     /**
      * Put the menu when the player joins the server
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     @Suppress("UNUSED")
     fun onJoin(event: PlayerJoinEvent) {
         event.player.inventory.setItem(8, GAME_MENU)
