@@ -27,7 +27,7 @@ private val byId = mutableMapOf<String, KClass<out GameItem>>()
         "§7unknown item.",
         "§0",
         "§7Please report this item",
-        "§7to §eAgent HD"
+        "§7to §eAgent H"
     ],
     material = Material.STONE,
     data = Short.MAX_VALUE,

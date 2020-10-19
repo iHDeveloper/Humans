@@ -57,17 +57,17 @@ class AgentDeveloper(
         }
 
         private val conversationMessages = arrayOf(
-            "§7[NPC] §3HD: §eHello! I am an agent in the HG aka Humans Agency.",
-            "§7[NPC] §3HD: §eIt's a secret agency for helping \"Humans\" stay alive in the prison",
-            "§7[NPC] §3HD: §eI will provide some of the agency services.",
-            "§7[NPC] §3HD: §eThese services will improve your life in the prison.",
-            "§7[NPC] §3HD: §eCome back later to use these services!"
+            "§7[NPC] §3Agent H: §eHello! I am an agent in the HA aka Humans Agency.",
+            "§7[NPC] §3Agent H: §eIt's a secret agency for helping \"Humans\" stay alive in the prison",
+            "§7[NPC] §3Agent H: §eI will provide some of the agency services.",
+            "§7[NPC] §3Agent H: §eThese services will improve your life in the prison.",
+            "§7[NPC] §3Agent H: §eCome back later to use these services!"
         )
     }
 
     init {
         initNPC()
-        initHologram("§3HD", "§7Prison Agent", "§e§lCOMING SOON")
+        initHologram("§3Agent H", "§7Prison Agent", "§e§lCOMING SOON")
 
         val itemSkull = ItemStack(Material.SKULL_ITEM, 1, 3.toShort())
         itemSkull.apply {

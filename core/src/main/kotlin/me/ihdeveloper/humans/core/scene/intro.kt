@@ -11,9 +11,11 @@ import me.ihdeveloper.humans.core.util.between
 import me.ihdeveloper.humans.core.util.freeze
 import me.ihdeveloper.humans.core.util.toNMS
 import me.ihdeveloper.humans.core.util.toNMSWorld
+import me.ihdeveloper.humans.core.util.toServer
 import me.ihdeveloper.humans.core.util.unfreeze
 import net.minecraft.server.v1_8_R3.ItemStack
 import net.minecraft.server.v1_8_R3.Items
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -101,6 +103,11 @@ class IntroScene(
                     val delta = thrownPotion?.run { Vector(locX, locY, locZ) }
                     delta?.subtract(oldLoc)
                     delta?.run { thrownPotion?.updatePos(it, x, y, z) }
+                }
+
+                world.players.forEach {
+                    if (canSee(it) && toNMS() !== it.toNMS() )
+                        hidePlayer(it)
                 }
 
                 if (scenario == 0 && location.between(pos1, pos2)) {
@@ -232,12 +239,19 @@ class IntroScene(
         }
 
         frame(357) {
+            Bukkit.getOnlinePlayers().forEach {
+                if (!player.canSee(it) && player.toNMS() !== it.toNMS())
+                    player.showPlayer(it)
+            }
+
             stop()
         }
 
         disposeFrame {
-            watcher.bukkitEntity.remove()
-            witch.bukkitEntity.remove()
+            player.toNMS().run {
+                watcher.destroy(this)
+                witch.destroy(this)
+            }
         }
     }
 

@@ -166,9 +166,11 @@ class PrisonWatcher(
     }
 
     fun updateMove(player: EntityPlayer) {
-        player.connection.also {
-            it.sendPacket(PacketPlayOutEntityTeleport(this))
-        }
+        player.connection.sendPacket(PacketPlayOutEntityTeleport(this))
+    }
+
+    fun destroy(player: EntityPlayer) {
+        player.connection.sendPacket(PacketPlayOutEntityDestroy(id))
     }
 
 }
@@ -287,6 +289,10 @@ class PrisonWitch(
                 it.sendPacket(PacketPlayOutEntityEquipment(id, slot, equipment[slot]))
             }
         }
+    }
+
+    fun destroy(player: EntityPlayer) {
+        player.connection.sendPacket(PacketPlayOutEntityDestroy(id))
     }
 
 }
