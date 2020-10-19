@@ -35,6 +35,7 @@ import org.bukkit.craftbukkit.v1_8_R3.CraftServer
 import org.bukkit.craftbukkit.v1_8_R3.util.UnsafeList
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
+import org.bukkit.scoreboard.NameTagVisibility
 
 private const val NPC_RENDER_DISTANCE = 48
 
@@ -201,7 +202,10 @@ open class CustomNPC(
      */
     fun spawn(player: EntityPlayer) {
         player.bukkitEntity.scoreboard.apply {
-            getTeam(TEAM_NPC).addEntry(profile.name)
+            (getTeam(TEAM_NPC) ?: registerNewTeam(TEAM_NPC).apply {
+                prefix = "§8[NPC] "
+                nameTagVisibility = NameTagVisibility.HIDE_FOR_OTHER_TEAMS
+            }).addEntry(profile.name)
         }
 
         trackedPlayers.add(player.id)
