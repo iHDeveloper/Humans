@@ -149,22 +149,24 @@ class NPCSystem : System("Core/NPC"), Listener {
     @EventHandler
     @Suppress("UNUSED")
     fun onTeleport(event: PlayerTeleportEvent) {
-        for (npc in npcList) {
-            if (npc.location.world.name != event.to.world.name) {
-                continue
-            }
-
-            if (npc.trackedPlayers.contains(event.player.entityId)) {
-                if (!npc.shouldTrack(event.to)) {
-                    npc.despawn(toNMSPlayer(event.player))
-                    logger.debug("[NPC Tracker] Despawning ${event.player.name} (teleportation)...")
+        Bukkit.getScheduler().runTaskLater(plugin, {
+            for (npc in npcList) {
+                if (npc.location.world.name != event.to.world.name) {
+                    continue
                 }
-                continue
-            }
 
-            npc.spawn(toNMSPlayer(event.player))
-            logger.debug("[NPC Tracker] Spawning ${event.player.name} (teleportation)...")
-        }
+                if (npc.trackedPlayers.contains(event.player.entityId)) {
+                    if (!npc.shouldTrack(event.to)) {
+                        npc.despawn(toNMSPlayer(event.player))
+                        logger.debug("[NPC Tracker] Despawning ${event.player.name} (teleportation)...")
+                    }
+                    continue
+                }
+
+                npc.spawn(toNMSPlayer(event.player))
+                logger.debug("[NPC Tracker] Spawning ${event.player.name} (teleportation)...")
+            }
+        }, 2L)
     }
 
     @EventHandler
