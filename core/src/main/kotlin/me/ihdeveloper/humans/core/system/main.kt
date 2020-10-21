@@ -425,25 +425,25 @@ class PlayerSystem : System("Core/Player"), Listener {
     @Suppress("UNUSED")
     fun onJoin(event: PlayerJoinEvent) {
         event.player.run {
-            val profile = ProfileSystem.profiles[name]
+            val profile = ProfileSystem.profiles[name]!!
 
-            if (profile!!.new) {
+            if (profile.new) {
+                /** Initialize the intro scene for the player and start it */
                 IntroScene(this).start()
             } else {
-                sendMessage("§eWelcome back, §7Human§e!")
+                sendMessage("§eWelcome back, §7\"Human\"§e!")
                 sendMessage("")
                 sendMessage("")
 
                 foodLevel = 20
                 health = 20.0
+                if (spawn != null) {
+                    teleport(spawn)
+                    compassTarget = spawn
+                } else {
+                    logger.warn("Spawn location is not set!")
+                }
             }
-
-            if (!profile.new && spawn != null) {
-                teleport(spawn)
-                compassTarget = spawn
-            }
-            else
-                logger.warn("Spawn location is not set!")
 
             for (player in Bukkit.getOnlinePlayers()) {
                 if (!player.isOp)
