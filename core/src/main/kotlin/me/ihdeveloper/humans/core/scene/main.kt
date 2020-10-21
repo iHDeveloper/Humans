@@ -18,13 +18,13 @@ open class IndividualScene(
     override fun start() {
         super.start()
 
-        SceneSystem.players[player.name] = this
+        SceneSystem.individuals[player.name] = this
     }
 
     override fun stop() {
         super.stop()
 
-        SceneSystem.players.remove(player.name)
+        SceneSystem.individuals.remove(player.name)
     }
 
 }

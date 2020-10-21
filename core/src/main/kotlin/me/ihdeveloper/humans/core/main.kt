@@ -17,6 +17,7 @@ import me.ihdeveloper.humans.service.GameTime
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import kotlin.concurrent.thread
+import me.ihdeveloper.humans.core.system.ChatSystem
 import me.ihdeveloper.humans.core.system.FreezeSystem
 import me.ihdeveloper.humans.core.system.ProfileSystem
 import me.ihdeveloper.humans.core.system.SceneSystem
@@ -88,6 +89,7 @@ class GameCore {
         NPCSystem(),
         SceneSystem(),
         FreezeSystem(),
+        ChatSystem(),
     )
 
     /** Represents other systems of the game */

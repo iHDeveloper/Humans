@@ -12,7 +12,8 @@ class SceneSystem : System("Core/Scene") {
     companion object {
         lateinit var plugin: JavaPlugin
 
-        val players = mutableMapOf<String, IndividualScene>()
+        /** A set of players who are watching individual scenes */
+        val individuals = mutableMapOf<String, IndividualScene>()
     }
 
     override fun init(plugin: JavaPlugin) {

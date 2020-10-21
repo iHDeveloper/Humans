@@ -209,7 +209,7 @@ class PrisonWitch(
                     if (entity.name != playerName)
                         continue
 
-                    val scene = SceneSystem.players[playerName] ?: break
+                    val scene = SceneSystem.individuals[playerName] ?: break
 
                     if (scene !is IntroScene)
                         break

@@ -42,8 +42,6 @@ import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.registry.summonedEntities
 import me.ihdeveloper.humans.core.registry.summonedEntitiesInfo
 import me.ihdeveloper.humans.core.scene.IntroScene
-import me.ihdeveloper.humans.core.util.toNMS
-import me.ihdeveloper.humans.core.util.toNMSWorld
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntityGiantZombie
 import net.minecraft.server.v1_8_R3.EntityMinecartRideable
@@ -83,6 +81,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryMoveItemEvent
+import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
@@ -512,7 +511,7 @@ class PlayerSystem : System("Core/Player"), Listener {
     @Suppress("UNUSED")
     fun onFoodLevel(event: FoodLevelChangeEvent) {
         event.run {
-            if (SceneSystem.players.contains(entity.name))
+            if (SceneSystem.individuals.contains(entity.name))
                 return
 
             isCancelled = true
@@ -614,6 +613,42 @@ class ScoreboardSystem : System("Core/Scoreboard"), Listener {
                     "iSDeveloper" -> buildTeam
                     else -> memberTeam
                 }.addEntry(it.name)
+            }
+        }
+    }
+}
+
+/**
+ * A system for handling chat messages
+ */
+class ChatSystem : System("Core/Chat"), Listener {
+
+    override fun init(plugin: JavaPlugin) {
+        Bukkit.getPluginManager().registerEvents(this, plugin)
+    }
+
+    override fun dispose() {}
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    @Suppress("UNUSED")
+    fun onChat(event: AsyncPlayerChatEvent) {
+        event.run {
+            event.isCancelled = true
+
+            if (SceneSystem.individuals.containsKey(player.name)) {
+                player.sendMessage("§cYou can't send a message during a scene!")
+                return
+            }
+
+            val prefix = player.run { scoreboard.getEntryTeam(name)?.prefix ?: "§9" }
+            val message = "$prefix${player.name} » §r${message}"
+
+            /** Optimize the broadcasting without formatting */
+            for (player in Bukkit.getOnlinePlayers()) {
+                if (SceneSystem.individuals.containsKey(player.name))
+                    continue
+
+                player.sendMessage(message)
             }
         }
     }
