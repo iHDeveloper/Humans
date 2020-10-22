@@ -79,7 +79,7 @@ class BlocksAPI : GameAPI {
                     { data ->
                         if (data == "{}") {
                             Profile(
-                                skills = Skills(0),
+                                skills = Skills(),
                                 inventory = mapOf(),
                                 new = true
                             )

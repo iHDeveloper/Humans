@@ -17,5 +17,5 @@ data class Profile (
  * Represents the player's skills in the game
  */
 data class Skills (
-    val miningLuckChance: Int
+    var miningLuckChance: Int = 1
 )

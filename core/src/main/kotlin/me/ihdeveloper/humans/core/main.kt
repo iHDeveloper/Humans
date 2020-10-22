@@ -1,28 +1,29 @@
 package me.ihdeveloper.humans.core
 
 import com.google.gson.Gson
+import java.io.File
+import kotlin.concurrent.thread
 import me.ihdeveloper.humans.core.api.GameAPI
 import me.ihdeveloper.humans.core.system.BlockSystem
+import me.ihdeveloper.humans.core.system.ChatSystem
 import me.ihdeveloper.humans.core.system.CommandSystem
 import me.ihdeveloper.humans.core.system.CustomEntitySystem
+import me.ihdeveloper.humans.core.system.FreezeSystem
+import me.ihdeveloper.humans.core.system.GUISystem
 import me.ihdeveloper.humans.core.system.ItemSystem
 import me.ihdeveloper.humans.core.system.LoginSystem
 import me.ihdeveloper.humans.core.system.MenuSystem
 import me.ihdeveloper.humans.core.system.NPCSystem
 import me.ihdeveloper.humans.core.system.PlayerSystem
-import me.ihdeveloper.humans.core.system.ScoreboardSystem
-import me.ihdeveloper.humans.core.system.TimeSystem
-import me.ihdeveloper.humans.core.system.WarpSystem
-import me.ihdeveloper.humans.service.GameTime
-import org.bukkit.plugin.java.JavaPlugin
-import java.io.File
-import kotlin.concurrent.thread
-import me.ihdeveloper.humans.core.system.ChatSystem
-import me.ihdeveloper.humans.core.system.FreezeSystem
 import me.ihdeveloper.humans.core.system.ProfileSystem
 import me.ihdeveloper.humans.core.system.RegionSystem
 import me.ihdeveloper.humans.core.system.SceneSystem
+import me.ihdeveloper.humans.core.system.ScoreboardSystem
+import me.ihdeveloper.humans.core.system.TimeSystem
+import me.ihdeveloper.humans.core.system.WarpSystem
 import me.ihdeveloper.humans.core.util.GameLogger
+import me.ihdeveloper.humans.service.GameTime
+import org.bukkit.plugin.java.JavaPlugin
 
 /** Folder that contains data about the plugin */
 val dataFolder = File("plugins/Humans").also { it.mkdir() }
@@ -92,6 +93,7 @@ class GameCore {
         FreezeSystem(),
         ChatSystem(),
         RegionSystem(),
+        GUISystem(),
     )
 
     /** Represents other systems of the game */

@@ -4,8 +4,6 @@ import me.ihdeveloper.humans.core.Configuration
 import me.ihdeveloper.humans.core.ConfigurationDeserialize
 import me.ihdeveloper.humans.core.ConfigurationSerialize
 import me.ihdeveloper.humans.core.GameRegion
-import me.ihdeveloper.humans.core.util.GameLogger
-import me.ihdeveloper.humans.core.util.ITEMSTACK_AIR
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.command.CreateWarpCommand
 import me.ihdeveloper.humans.core.command.GiveCommand
@@ -40,13 +38,19 @@ import me.ihdeveloper.humans.core.entity.PrisonWatcher
 import me.ihdeveloper.humans.core.entity.PrisonWitch
 import me.ihdeveloper.humans.core.entity.WarpCart
 import me.ihdeveloper.humans.core.entity.fromEntityType
+import me.ihdeveloper.humans.core.gui.GUIImage
+import me.ihdeveloper.humans.core.gui.GUIOverview
+import me.ihdeveloper.humans.core.gui.GUIScreen
 import me.ihdeveloper.humans.core.registry.overrideEntity
 import me.ihdeveloper.humans.core.registry.registerEntity
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.registry.summonedEntities
 import me.ihdeveloper.humans.core.registry.summonedEntitiesInfo
 import me.ihdeveloper.humans.core.scene.IntroScene
+import me.ihdeveloper.humans.core.util.GameLogger
+import me.ihdeveloper.humans.core.util.ITEMSTACK_AIR
 import me.ihdeveloper.humans.core.util.between
+import me.ihdeveloper.humans.core.util.profile
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntityGiantZombie
 import net.minecraft.server.v1_8_R3.EntityMinecartRideable
@@ -402,9 +406,54 @@ class MenuSystem : System("Core/Menu"), Listener {
      * Opens the menu
      */
     private fun open(player: Player) {
-        // TODO opens the menu to the player
-        player.sendMessage("§cCurrently the game menu is disabled!")
-        player.sendMessage("§cIt's under heavy development.")
+        val screen = GUIScreen(4, "§8» Game Menu").apply {
+            player.run {
+                val prefix = scoreboard.getEntryTeam(name).prefix
+                setItem(4, 1, GUIOverview(prefix, name, profile!!))
+            }
+
+            /** Skills button */
+            setItem(3, 2, GUIImage(
+                Material.STONE_PICKAXE,
+                1,
+                0,
+                "§8» §eSkills",
+                arrayListOf(
+                    "§7Used to improve your abilities",
+                    "§7such as mining luck chance...",
+                    "§0",
+                    "§cComing Soon"
+                )
+            ))
+
+            /** Collections button */
+            setItem(5, 2, GUIImage(
+                Material.BOOKSHELF,
+                1,
+                0,
+                "§8» §eCollections",
+                arrayListOf(
+                    "§7Check the available crafting recipies.",
+                    "§7Each collection has its own!",
+                    "§0",
+                    "§cComing Soon"
+                )
+            ))
+
+            setItem(8, 3, GUIImage(
+                Material.SKULL_ITEM,
+                1,
+                1.toShort(),
+                "§8» §ePrison Status",
+                arrayListOf(
+                    "§cThe game is under heavy development!",
+                    "§0",
+                    "§eVersion: §70.0B"
+                )
+            ))
+        }
+
+        player.openInventory(screen)
     }
 }
 
