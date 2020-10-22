@@ -12,10 +12,10 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 var instance: WarpInfo? = null
-var displayName: String? = null
-var center: Location? = null
-var start: Location? = null
-var end: Location? = null
+private var displayName: String? = null
+private var center: Location? = null
+private var start: Location? = null
+private var end: Location? = null
 
 class CreateWarpCommand : AdminCommand("create-warp") {
 

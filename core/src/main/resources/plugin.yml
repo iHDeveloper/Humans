@@ -48,3 +48,12 @@ commands:
   save-scene:
     usage: "save-scene <name>"
     description: "Saves a scene configuration"
+  region-new:
+    usage: "region-new"
+    description: "Creates a new region instance with provided info"
+  region-set:
+    usage: "region-set <name/displayName/from/to> [value]"
+    description: "Stores information about the new region"
+  region-save:
+    usage: "region-save"
+    description: "Saves the regions configuration"

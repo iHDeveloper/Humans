@@ -14,6 +14,7 @@ import kotlin.reflect.KClass
 import me.ihdeveloper.humans.core.system.SceneSystem
 import me.ihdeveloper.humans.core.util.GameLogger
 import org.bukkit.Bukkit
+import org.bukkit.Location
 
 /**
  * Represents a system in the game.
@@ -287,4 +288,30 @@ open class Scene(
  */
 interface SceneMeta {
     val config: Configuration
+}
+
+/**
+ * Represents a region in the game
+ */
+data class GameRegion(
+    val name: String,
+    val displayName: String,
+    val from: Location,
+    val to: Location,
+) : ConfigurationSerialize {
+    companion object : ConfigurationDeserialize<GameRegion> {
+        override fun deserialize(data: Map<String, Any>) = GameRegion(
+            name = data["name"] as String,
+            displayName = data["displayName"] as String,
+            from = data["from"] as Location,
+            to = data["to"] as Location
+        )
+    }
+
+    override fun serialize(): Map<String, Any> = mapOf(
+        "name" to name,
+        "displayName" to displayName,
+        "from" to from,
+        "to" to to
+    )
 }

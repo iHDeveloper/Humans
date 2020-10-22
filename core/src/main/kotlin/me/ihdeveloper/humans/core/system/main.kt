@@ -3,6 +3,7 @@ package me.ihdeveloper.humans.core.system
 import me.ihdeveloper.humans.core.Configuration
 import me.ihdeveloper.humans.core.ConfigurationDeserialize
 import me.ihdeveloper.humans.core.ConfigurationSerialize
+import me.ihdeveloper.humans.core.GameRegion
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.util.ITEMSTACK_AIR
 import me.ihdeveloper.humans.core.System
@@ -12,6 +13,9 @@ import me.ihdeveloper.humans.core.command.ItemInfoCommand
 import me.ihdeveloper.humans.core.command.NPCSaveCommand
 import me.ihdeveloper.humans.core.command.NPCSummonCommand
 import me.ihdeveloper.humans.core.command.PlaySceneCommand
+import me.ihdeveloper.humans.core.command.RegionNewCommand
+import me.ihdeveloper.humans.core.command.RegionSaveCommand
+import me.ihdeveloper.humans.core.command.RegionSetCommand
 import me.ihdeveloper.humans.core.command.SaveSceneCommand
 import me.ihdeveloper.humans.core.command.SceneSetLocationCommand
 import me.ihdeveloper.humans.core.command.SetSpawnCommand
@@ -42,6 +46,7 @@ import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.registry.summonedEntities
 import me.ihdeveloper.humans.core.registry.summonedEntitiesInfo
 import me.ihdeveloper.humans.core.scene.IntroScene
+import me.ihdeveloper.humans.core.util.between
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntityGiantZombie
 import net.minecraft.server.v1_8_R3.EntityMinecartRideable
@@ -85,6 +90,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerPickupItemEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.server.ServerListPingEvent
@@ -96,6 +102,8 @@ import org.bukkit.scoreboard.DisplaySlot
 const val TEAM_DEV = "@1dev"
 const val TEAM_BUILD = "@2build"
 const val TEAM_MEMBER = "@9member"
+
+const val TEAM_REGION = "@region"
 
 /**
  * A system for registering the entities of the game core
@@ -239,6 +247,11 @@ class CommandSystem : System("Core/Command") {
         SceneSetLocationCommand(),
         PlaySceneCommand(),
         SaveSceneCommand(),
+
+        /** Region commands */
+        RegionNewCommand(),
+        RegionSetCommand(),
+        RegionSaveCommand(),
     )
 
     override fun init(plugin: JavaPlugin) {
@@ -584,7 +597,7 @@ class ScoreboardSystem : System("Core/Scoreboard"), Listener {
 
     override fun dispose() {}
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     fun onJoin(event: PlayerJoinEvent) {
         event.player.scoreboard = Bukkit.getScoreboardManager().newScoreboard.apply {
             val sidebar = registerNewObjective("sidebar", "dummy").apply {
@@ -607,12 +620,26 @@ class ScoreboardSystem : System("Core/Scoreboard"), Listener {
                 prefix = "§9"
             }
 
-            Bukkit.getOnlinePlayers().forEach {
-                when (it.name) {
+            val thisPlayerTeam = when (event.player.name) {
+                "iHDeveloper" -> devTeam
+                "iSDeveloper" -> buildTeam
+                else -> memberTeam
+            }
+
+            Bukkit.getOnlinePlayers().forEach { player ->
+                when (player.name) {
                     "iHDeveloper" -> devTeam
                     "iSDeveloper" -> buildTeam
                     else -> memberTeam
-                }.addEntry(it.name)
+                }.also {
+                    it.addEntry(player.name)
+
+                    /** Adds our player to the other player's team */
+                    val thisPlayerName = event.player.name
+                    if (player.name != thisPlayerName) {
+                        player.scoreboard.getTeam(thisPlayerTeam.name).addEntry(thisPlayerName)
+                    }
+                }
             }
         }
     }
@@ -652,4 +679,94 @@ class ChatSystem : System("Core/Chat"), Listener {
             }
         }
     }
+}
+
+/**
+ * A system for handling regions
+ */
+class RegionSystem : System("Core/Location"), Listener {
+    companion object {
+        private val config = Configuration("regions")
+        private val emptyLocation = Location(null, 0.0, 0.0, 0.0)
+
+        private val unknown = GameRegion(
+            "unknown",
+            "§7Unknown",
+            emptyLocation,
+            emptyLocation,
+        )
+
+        val players = mutableMapOf<String, GameRegion>()
+        val regions = mutableListOf<GameRegion>()
+
+        fun save() {
+            config.run {
+                set("regions", arrayListOf<Map<String, Any>>().apply {
+                    for (region in regions)
+                        add(region.serialize())
+                })
+                save()
+            }
+        }
+    }
+
+    override fun init(plugin: JavaPlugin) {
+        Bukkit.getPluginManager().registerEvents(this, plugin)
+
+        config.load(logger)
+        for (data in config.get("regions", arrayListOf<Map<String, Any>>())) {
+            regions.add(GameRegion.deserialize(data))
+        }
+    }
+
+    override fun dispose() {}
+
+    @EventHandler
+    @Suppress("UNUSED")
+    fun onJoin(event: PlayerJoinEvent) {
+        event.player.scoreboard.run {
+            event.player.region = unknown
+            val sidebar = getObjective(DisplaySlot.SIDEBAR)!!
+            registerNewTeam(TEAM_REGION).apply {
+                prefix = "§8➤ "
+                suffix = "§7Unknown"
+
+                "§r".also {
+                    addEntry(it)
+                    sidebar.getScore(it).score = 7
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    @Suppress("UNUSED")
+    fun onMove(event: PlayerMoveEvent) {
+        event.player.run {
+            regions.forEach {
+                if (location.between(it.from, it.to)) {
+                    if (it !== region) {
+                        region = it
+                        scoreboard.getTeam(TEAM_REGION).suffix = it.displayName
+                    }
+                    return
+                }
+            }
+
+            if (region != unknown) {
+                scoreboard.getTeam(TEAM_REGION).suffix = "§7Unknown"
+                region = unknown
+            }
+            return
+        }
+    }
+
+    /**
+     * Represents information about the region of the player's location
+     */
+    private var Player.region: GameRegion
+        set(value) {
+            players[name] = value
+        }
+        get() = players[name] ?: unknown
 }

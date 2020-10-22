@@ -6,8 +6,8 @@ import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scoreboard.DisplaySlot
 
-private const val SCORE_DATE = "§1 §8» §eDate "
-private const val SCORE_DAY = "§2 §8» §eDay "
+private const val SCORE_DATE = "§1§8» §eDate "
+private const val SCORE_DAY = "§2§8» §eDay "
 private const val SCORE_TIME = "§3"
 private const val TEAM_DATE = "@date"
 private const val TEAM_DAY = "@day"
@@ -71,7 +71,7 @@ class TimeSystem : System("Core/Time"), Runnable {
 
                 date.suffix = "§f${years}§8/§f${months}"
                 day.suffix = "§f${gameTime.days}"
-                time.prefix = "§8 » §f${hours}"
+                time.prefix = "§8» §f${hours}"
                 time.suffix = "§6:§f${minutes} §e${am}"
             }
         }

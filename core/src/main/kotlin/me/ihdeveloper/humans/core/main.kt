@@ -20,6 +20,7 @@ import kotlin.concurrent.thread
 import me.ihdeveloper.humans.core.system.ChatSystem
 import me.ihdeveloper.humans.core.system.FreezeSystem
 import me.ihdeveloper.humans.core.system.ProfileSystem
+import me.ihdeveloper.humans.core.system.RegionSystem
 import me.ihdeveloper.humans.core.system.SceneSystem
 import me.ihdeveloper.humans.core.util.GameLogger
 
@@ -90,6 +91,7 @@ class GameCore {
         SceneSystem(),
         FreezeSystem(),
         ChatSystem(),
+        RegionSystem(),
     )
 
     /** Represents other systems of the game */
