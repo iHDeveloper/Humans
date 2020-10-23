@@ -480,7 +480,10 @@ class PlayerSystem : System("Core/Player"), Listener {
 
         var spawn: Location? = null
 
-        fun save() = config.save()
+        fun save() {
+            spawn?.run { config.set("spawn", this) }
+            config.save()
+        }
     }
 
     override fun init(plugin: JavaPlugin) {
