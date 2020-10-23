@@ -1,6 +1,8 @@
 package me.ihdeveloper.humans.core.util
 
+import me.ihdeveloper.humans.core.gui.GUIScreen
 import me.ihdeveloper.humans.core.system.FreezeSystem
+import me.ihdeveloper.humans.core.system.GUISystem
 import me.ihdeveloper.humans.core.system.ProfileSystem
 import me.ihdeveloper.humans.service.api.Profile
 import org.bukkit.entity.Player
@@ -31,3 +33,20 @@ fun Player.unfreeze() {
     oldVelocity.remove(name)
     FreezeSystem.players.remove(name)
 }
+
+/**
+ * Opens the [GUIScreen] to the player
+ */
+fun Player.openScreen(screen: GUIScreen) {
+    if (GUISystem.screens.containsKey(name)) {
+        closeScreen()
+    }
+
+    GUISystem.screens[name] = screen
+    openInventory(screen)
+}
+
+/**
+ * Closes the [GUIScreen] from the player
+ */
+fun Player.closeScreen() = closeInventory()

@@ -50,6 +50,7 @@ import me.ihdeveloper.humans.core.scene.IntroScene
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.util.ITEMSTACK_AIR
 import me.ihdeveloper.humans.core.util.between
+import me.ihdeveloper.humans.core.util.openScreen
 import me.ihdeveloper.humans.core.util.profile
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntityGiantZombie
@@ -100,6 +101,7 @@ import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerPickupItemEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.server.ServerListPingEvent
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
 import org.bukkit.plugin.java.JavaPlugin
@@ -439,6 +441,9 @@ class MenuSystem : System("Core/Menu"), Listener {
                     "§7such as mining luck chance...",
                     "§0",
                     "§cComing Soon"
+                ),
+                arrayOf(
+                    ItemFlag.HIDE_ATTRIBUTES
                 )
             ))
 
@@ -469,7 +474,7 @@ class MenuSystem : System("Core/Menu"), Listener {
             ))
         }
 
-        player.openInventory(screen)
+        player.openScreen(screen)
     }
 }
 
