@@ -40,6 +40,10 @@ class WarpSystem : System("Core/Warp"), Listener {
 
     override fun init(plugin: JavaPlugin) {
         Companion.logger = logger
+        Bukkit.getPluginManager().registerEvents(this, plugin)
+    }
+
+    override fun lateInit(plugin: JavaPlugin) {
         config.load(logger)
 
         val rawWarps: ArrayList<Map<String, Any?>> = config.get("warps", arrayListOf())
@@ -53,8 +57,6 @@ class WarpSystem : System("Core/Warp"), Listener {
             warp.init()
             warps.add(warp)
         }
-
-        Bukkit.getPluginManager().registerEvents(this, plugin)
     }
 
     override fun dispose() {

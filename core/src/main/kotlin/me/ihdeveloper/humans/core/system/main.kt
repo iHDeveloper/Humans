@@ -89,8 +89,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.entity.PlayerDeathEvent
+import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerAchievementAwardedEvent
 import org.bukkit.event.player.PlayerDropItemEvent
@@ -361,24 +361,17 @@ class MenuSystem : System("Core/Menu"), Listener {
     @EventHandler
     @Suppress("UNUSED")
     fun onClick(event: InventoryClickEvent) {
-        if (event.clickedInventory !is PlayerInventory)
-            return
-        if (event.slot != 8)
-            return
+        event.run {
+            if (clickedInventory !is PlayerInventory)
+                return
+            if (slot != 8)
+                return
 
-        event.isCancelled = true
-        open(event.whoClicked as Player)
-    }
+            isCancelled = true
 
-    /**
-     * Prevent the player from moving the item
-     */
-    @EventHandler
-    @Suppress("UNUSED")
-    fun onMoveItem(event: InventoryMoveItemEvent) {
-        if (event.item.type !== Material.NETHER_STAR)
-            return
-        event.isCancelled = true
+            if(action === InventoryAction.PICKUP_ONE)
+                open(whoClicked as Player)
+        }
     }
 
     /**

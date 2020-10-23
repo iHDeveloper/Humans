@@ -10,8 +10,6 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
-import org.bukkit.event.inventory.InventoryMoveItemEvent
-import org.bukkit.event.inventory.InventoryOpenEvent
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
@@ -39,14 +37,6 @@ class GUISystem : System("Core/GUI"), Listener {
             if (component is GUIImage || component is GUIOverview) {
                 isCancelled = true
             }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGH)
-    @Suppress("UNUSED")
-    fun onComponentMove(event: InventoryMoveItemEvent) {
-        event.run {
-            isCancelled = true
         }
     }
 
