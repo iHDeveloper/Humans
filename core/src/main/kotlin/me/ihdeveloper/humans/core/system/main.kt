@@ -91,6 +91,7 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.event.player.AsyncPlayerChatEvent
+import org.bukkit.event.player.PlayerAchievementAwardedEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
@@ -622,6 +623,12 @@ class PlayerSystem : System("Core/Player"), Listener {
 
             isCancelled = true
         }
+    }
+
+    @EventHandler()
+    @Suppress("UNUSED")
+    fun onAchievement(event: PlayerAchievementAwardedEvent) {
+        event.isCancelled = true
     }
 
 }

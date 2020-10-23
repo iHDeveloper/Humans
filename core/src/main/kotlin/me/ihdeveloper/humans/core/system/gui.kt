@@ -27,7 +27,6 @@ class GUISystem : System("Core/GUI"), Listener {
     fun onComponentClick(event: InventoryClickEvent) {
         event.run {
             if (clickedInventory !is GUIScreen) {
-                isCancelled = true
                 return
             }
 
