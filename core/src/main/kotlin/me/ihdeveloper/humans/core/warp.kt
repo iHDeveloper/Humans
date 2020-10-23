@@ -4,6 +4,7 @@ import me.ihdeveloper.humans.core.entity.Hologram
 import me.ihdeveloper.humans.core.entity.WarpCart
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.util.between
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
@@ -18,22 +19,27 @@ data class WarpInfo(
     val displayName: String,
     val center: Location,
     val start: Location,
-    val end: Location
-): ConfigurationSerialize {
-    companion object: ConfigurationDeserialize<WarpInfo> {
-        override fun deserialize(data: Map<String, Any>): WarpInfo = WarpInfo(
+    val end: Location,
+
+    /** The server to transfer the player to */
+    val server: String? = null,
+) {
+    companion object {
+        fun deserialize(data: Map<String, Any?>): WarpInfo = WarpInfo(
             displayName = data["displayName"] as String,
             center = data["center"] as Location,
             start = data["start"] as Location,
-            end = data["end"] as Location
+            end = data["end"] as Location,
+            server = if (data["server"] != null) data["server"] as String else null,
         )
     }
 
-    override fun serialize(): Map<String, Any> = mapOf(
+    fun serialize(): Map<String, Any?> = mapOf(
         "displayName" to displayName,
         "center" to center,
         "start" to start,
-        "end" to end
+        "end" to end,
+        "server" to server,
     )
 }
 
@@ -44,14 +50,16 @@ class Warp(
     private val displayName: String,
     private val center: Location,
     val start: Location,
-    val end: Location
+    val end: Location,
+    private val server: String? = null
 ) {
     companion object {
         fun fromInfo(info: WarpInfo) = Warp(
             displayName = info.displayName,
             center = info.center,
             start = info.start,
-            end = info.end
+            end = info.end,
+            server = info.server
         )
     }
 
@@ -100,6 +108,12 @@ class Warp(
 
             // Fix: Cart doesn't move on the start
             bukkitEntity.velocity = Vector(0.45, 0.0, 0.0)
+        }
+
+        server?.run {
+            Bukkit.getScheduler().runTaskLater(corePlugin, {
+                core.api!!.sendTo(player, this)
+            }, 30L)
         }
     }
 }

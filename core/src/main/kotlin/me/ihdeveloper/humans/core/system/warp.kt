@@ -1,11 +1,11 @@
 package me.ihdeveloper.humans.core.system
 
 import me.ihdeveloper.humans.core.Configuration
-import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.Warp
 import me.ihdeveloper.humans.core.WarpInfo
 import me.ihdeveloper.humans.core.entity.WarpCart
+import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.warps
 import me.ihdeveloper.humans.core.warpsInfo
 import org.bukkit.Bukkit
@@ -28,7 +28,7 @@ class WarpSystem : System("Core/Warp"), Listener {
         private var logger: GameLogger? = null
 
         fun save() {
-            val rawWarps = arrayListOf<Map<String, Any>>()
+            val rawWarps = arrayListOf<Map<String, Any?>>()
             for (info in warpsInfo) {
                 rawWarps.add(info.serialize())
             }
@@ -42,7 +42,7 @@ class WarpSystem : System("Core/Warp"), Listener {
         Companion.logger = logger
         config.load(logger)
 
-        val rawWarps: ArrayList<Map<String, Any>> = config.get("warps", arrayListOf())
+        val rawWarps: ArrayList<Map<String, Any?>> = config.get("warps", arrayListOf())
         rawWarps.forEach {
             val info = WarpInfo.deserialize(it)
             val warp = Warp.fromInfo(info)
