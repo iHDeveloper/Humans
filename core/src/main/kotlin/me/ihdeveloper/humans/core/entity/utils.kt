@@ -1,5 +1,6 @@
 package me.ihdeveloper.humans.core.entity
 
+import me.ihdeveloper.humans.core.core
 import me.ihdeveloper.humans.core.entity.npc.PrisonerType
 import me.ihdeveloper.humans.core.entity.npc.newPrisoner
 import net.minecraft.server.v1_8_R3.Entity
@@ -24,7 +25,7 @@ fun fromEntityType(type: String, location: Location): Entity? = when(type) {
     "pickaxe_hologram" -> ItemHologram(location, ItemStack(Material.STONE_PICKAXE).apply {
         addEnchantment(Enchantment.DIG_SPEED, 1)
     })
-    else -> null
+    else -> core.integratedPart?.fromEntityType(type, location)
 }
 
 /**
@@ -40,7 +41,7 @@ fun fromNPCType(type: String, location: Location): CustomNPC? = when(type) {
     "prisoner_idhoom" -> newPrisoner(location, PrisonerType.IDHOOM)
     "prisoner_almond" -> newPrisoner(location, PrisonerType.ALMOND)
     "prisoner_brhom" -> newPrisoner(location, PrisonerType.BRHOM)
-    else -> null
+    else -> core.integratedPart?.fromNPCType(type, location)
 }
 
 var EntityPlayer.connection: PlayerConnection

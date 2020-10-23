@@ -1,20 +1,20 @@
 package me.ihdeveloper.humans.core
 
-import org.bukkit.ChatColor
-import org.bukkit.Material
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
-import org.bukkit.command.CommandSender
-import org.bukkit.configuration.file.YamlConfiguration
-import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.ItemFlag
-import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import kotlin.reflect.KClass
 import me.ihdeveloper.humans.core.system.SceneSystem
 import me.ihdeveloper.humans.core.util.GameLogger
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.Location
+import org.bukkit.Material
+import org.bukkit.command.Command
+import org.bukkit.command.CommandExecutor
+import org.bukkit.command.CommandSender
+import org.bukkit.configuration.file.YamlConfiguration
+import org.bukkit.inventory.ItemFlag
+import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.java.JavaPlugin
 
 /**
  * Represents a system in the game.
@@ -28,6 +28,11 @@ abstract class System(val name: String) {
      * Initialize the system
      */
     abstract fun init(plugin: JavaPlugin)
+
+    /**
+     * Initialized after the integrated part systems has been initialized
+     */
+    open fun lateInit(plugin: JavaPlugin) {}
 
     /**
      * Dispose the system

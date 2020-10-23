@@ -93,7 +93,9 @@ class NPCSystem : System("Core/NPC"), Listener {
     override fun init(plugin: JavaPlugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin)
         Companion.plugin = plugin
+    }
 
+    override fun lateInit(plugin: JavaPlugin) {
         config.load(logger)
         val rawNPCs = config.get<ArrayList<Map<String, Any>>>("npcs", arrayListOf())
 

@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import java.io.File
 import kotlin.concurrent.thread
 import me.ihdeveloper.humans.core.api.GameAPI
+import me.ihdeveloper.humans.core.api.IntegrationAPI
 import me.ihdeveloper.humans.core.system.BlockSystem
 import me.ihdeveloper.humans.core.system.ChatSystem
 import me.ihdeveloper.humans.core.system.CommandSystem
@@ -69,6 +70,9 @@ class GameCore {
     /** An instance to use the game service API */
     var api: GameAPI? = null
 
+    /** An integrated part to the game to add more customizations */
+    var integratedPart: IntegrationAPI? = null
+
     /** Global time of the game */
     var time = GameTime()
 
@@ -110,6 +114,13 @@ class GameCore {
             logger.warn("----------------------------------------------")
         }
 
+        if (integratedPart == null) {
+            logger.warn("----------------------------------------------")
+            logger.warn("   THE CORE HAS NO INTEGRATED PART INCLUDED   ")
+            logger.warn("  DON'T ALLOW THIS IN PRODUCTION ENVIRONMENT! ")
+            logger.warn("----------------------------------------------")
+        }
+
         if (api == null) {
             logger.error("NO GAME SERVICE API INSTANCE FOUND!")
             return
@@ -129,6 +140,16 @@ class GameCore {
         systems.forEach {
             logger.info("Initializing ${it.name.toLowerCase()} system...")
             it.init(plugin)
+        }
+
+        integratedPart?.systems?.forEach {
+            logger.info("Initializing ${it.name.toLowerCase()} system (integrated)...")
+            it.init(plugin)
+        }
+
+        systems.forEach {
+            logger.info("Late initializing ${it.name.toLowerCase()} system...")
+            it.lateInit(plugin)
         }
 
         otherSystems.forEach {

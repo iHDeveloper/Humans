@@ -1,7 +1,7 @@
 package me.ihdeveloper.humans.hub
 
-import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.core
+import me.ihdeveloper.humans.core.util.GameLogger
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
@@ -17,6 +17,7 @@ class Main : JavaPlugin() {
         logger.info("Initializing core...")
 
         core.serverName = "Hub"
+        core.integratedPart = HubIntegrationAPI()
         core.init(this)
     }
 

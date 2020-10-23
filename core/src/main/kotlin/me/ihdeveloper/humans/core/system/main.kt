@@ -175,7 +175,9 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
         registerEntity(PrisonWatcher::class, CustomArmorStand::class, logger)
         registerEntity(PrisonWitch::class, CustomWitch::class, logger)
         registerEntity(PrisonWitch.Potion::class, CustomPotion::class, logger)
+    }
 
+    override fun lateInit(plugin: JavaPlugin) {
         /** Loads the entities  */
         config.load(logger)
         val rawEntities = config.get<ArrayList<Map<String, Any>>>("entities", arrayListOf())
@@ -196,7 +198,6 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
             summonedEntities.add(entity)
             summonedEntitiesInfo.add(info)
         }
-
     }
 
     override fun dispose() {

@@ -1,20 +1,16 @@
 package me.ihdeveloper.humans.blocks
 
 import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.core.awaitResponseResult
-import com.github.kittinunf.fuel.coroutines.awaitResponseResult
-import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.github.kittinunf.fuel.coroutines.awaitStringResult
 import com.google.gson.Gson
 import kotlinx.coroutines.runBlocking
-import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.api.GameAPI
 import me.ihdeveloper.humans.core.core
+import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.service.GameTime
 import me.ihdeveloper.humans.service.api.Profile
 import me.ihdeveloper.humans.service.api.Skills
-import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
 val logger = GameLogger("API/Blocks")
@@ -36,8 +32,10 @@ class Main : JavaPlugin() {
 
 class APISystem : System("API") {
     override fun init(plugin: JavaPlugin) {
+
         /** Register the plugin to be able to send outgoing messages to the BungeeCord */
         plugin.server.messenger.registerOutgoingPluginChannel(plugin, "BungeeCord")
+        logger.info("Registering outgoing channel: BungeeCord")
     }
 
     override fun dispose() {}
