@@ -509,7 +509,8 @@ class PlayerSystem : System("Core/Player"), Listener {
                 /** Initialize the intro scene for the player and start it */
                 IntroScene(this).start()
             } else {
-                sendMessage("§eWelcome back, §7\"Human\"§e!")
+                if (core.serverName == "Hub")
+                    sendMessage("§eWelcome back, §7\"Human\"§e!")
                 sendMessage("")
                 sendMessage("")
 

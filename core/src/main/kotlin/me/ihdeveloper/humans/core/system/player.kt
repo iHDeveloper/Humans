@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
@@ -31,5 +32,11 @@ class FreezeSystem : System("Core/Freeze"), Listener {
 
             isCancelled = true
         }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    @Suppress("UNUSED")
+    fun onQuit(event: PlayerQuitEvent) {
+        players.remove(event.player.name)
     }
 }
