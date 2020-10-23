@@ -1,8 +1,10 @@
 package me.ihdeveloper.humans.core
 
+import kotlin.random.Random
 import me.ihdeveloper.humans.core.entity.Hologram
 import me.ihdeveloper.humans.core.entity.WarpCart
 import me.ihdeveloper.humans.core.registry.spawnEntity
+import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.util.between
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -54,6 +56,8 @@ class Warp(
     private val server: String? = null
 ) {
     companion object {
+        private var nextId = 0
+
         fun fromInfo(info: WarpInfo) = Warp(
             displayName = info.displayName,
             center = info.center,
@@ -68,8 +72,9 @@ class Warp(
     private val to = center.clone().add(-2.0, 4.0, 0.0)
     private val carts = arrayListOf<WarpCart>()
     private var holograms: Array<Hologram>? = null
+    private val random = Random(nextId.also { nextId++ })
 
-    fun init() {
+    fun init(logger: GameLogger?) {
         center.clone().apply {
             add(0.5, 1.0, 0.5)
 
@@ -78,8 +83,8 @@ class Warp(
             subtract(0.0, 0.25, 0.0)
             val destination = Hologram(this, displayName)
 
-            spawnEntity(title, false, null)
-            spawnEntity(destination, false, null)
+            spawnEntity(title, false, logger)
+            spawnEntity(destination, false, logger)
 
             holograms = arrayOf(title, destination)
         }
@@ -113,7 +118,7 @@ class Warp(
         server?.run {
             Bukkit.getScheduler().runTaskLater(corePlugin, {
                 core.api!!.sendTo(player, this)
-            }, 30L)
+            }, 30L + random.nextInt(5, 15))
         }
     }
 }

@@ -54,7 +54,7 @@ class WarpSystem : System("Core/Warp"), Listener {
             warpsInfo.add(info)
 
             logger.info("Initializing warp with destination ${info.displayName}")
-            warp.init()
+            warp.init(logger)
             warps.add(warp)
         }
     }

@@ -51,7 +51,7 @@ class IntroScene(
         config.run { if (!isLoaded) load() }
     }
 
-    private val spawn = config.get<Location>("spawn")
+    val spawn = config.get<Location>("spawn")
     private val watcherSpawn = config.get<Location?>("watcher")
     private val witchSpawn = config.get<Location?>("witch")
     private val end = config.get<Location>("end")
@@ -86,8 +86,6 @@ class IntroScene(
         initFrame {
             player.run {
                 inventory.setItem(8, null)
-                teleport(spawn)
-                compassTarget = spawn
             }
             pause()
         }

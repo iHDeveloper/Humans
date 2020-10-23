@@ -53,7 +53,7 @@ class CreateWarpCommand : AdminCommand("create-warp") {
 
         warpsInfo.add(instance!!)
         Warp.fromInfo(instance!!).run {
-            init()
+            init(null)
             warps.add(this)
         }
         return true

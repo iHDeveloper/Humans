@@ -106,6 +106,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scoreboard.DisplaySlot
+import org.spigotmc.event.player.PlayerSpawnLocationEvent
 
 const val TEAM_DEV = "@1dev"
 const val TEAM_BUILD = "@2build"
@@ -116,7 +117,7 @@ const val TEAM_REGION = "@region"
 /**
  * A system for registering the entities of the game core
  */
-class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
+class CustomEntitySystem : System("Core/Custom-Entity"), Listener, Runnable {
     data class EntityInfo(
         val type: String,
         val location: Location
@@ -197,10 +198,16 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
                 logger.warn("Entity type not found: $type")
                 continue
             }
-
-            spawnEntity(entity, false, logger)
             summonedEntities.add(entity)
             summonedEntitiesInfo.add(info)
+        }
+
+        plugin.server.scheduler.runTaskLater(plugin, this, 1L)
+    }
+
+    override fun run() {
+        summonedEntities.forEach {
+            spawnEntity(it, false, logger)
         }
     }
 
@@ -216,13 +223,17 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
     /**
      * Prevent the game from spawning entities naturally
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     @Suppress("UNUSED")
     fun onSpawn(event: CreatureSpawnEvent) {
-        if (event.spawnReason === CreatureSpawnEvent.SpawnReason.CUSTOM)
-            return
+        event.run {
+            if (spawnReason === CreatureSpawnEvent.SpawnReason.CUSTOM) {
+                isCancelled = false
+                return
+            }
 
-        event.isCancelled = true
+            isCancelled = true
+        }
     }
 }
 
@@ -486,6 +497,8 @@ class PlayerSystem : System("Core/Player"), Listener {
         }
     }
 
+    private val introScenes = mutableMapOf<String, IntroScene>()
+
     override fun init(plugin: JavaPlugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin)
 
@@ -494,6 +507,30 @@ class PlayerSystem : System("Core/Player"), Listener {
     }
 
     override fun dispose() {}
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    @Suppress("UNUSED")
+    fun onSpawnLocation(event: PlayerSpawnLocationEvent) {
+        event.run {
+            player.profile!!.run {
+                if (core.serverName == "Hub" && new) {
+                    val scene = IntroScene(player)
+
+                    spawnLocation = scene.spawn
+                    introScenes[player.name] = scene
+                    return
+                }
+            }
+
+            player.run {
+                if (spawn != null) {
+                    spawnLocation = spawn
+                } else {
+                    logger.warn("Spawn location is not set!")
+                }
+            }
+        }
+    }
 
     /**
      * Sends a welcome message to the players.
@@ -504,11 +541,14 @@ class PlayerSystem : System("Core/Player"), Listener {
     @Suppress("UNUSED")
     fun onJoin(event: PlayerJoinEvent) {
         event.player.run {
-            val profile = ProfileSystem.profiles[name]!!
+            val profile = player.profile!!
 
             if (profile.new) {
                 /** Initialize the intro scene for the player and start it */
-                IntroScene(this).start()
+                if (core.serverName == "Hub") {
+                    introScenes[name]!!.start()
+                    introScenes.remove(name)
+                }
             } else {
                 if (core.serverName == "Hub")
                     sendMessage("§eWelcome back, §7\"Human\"§e!")
@@ -517,12 +557,6 @@ class PlayerSystem : System("Core/Player"), Listener {
 
                 foodLevel = 20
                 health = 20.0
-                if (spawn != null) {
-                    teleport(spawn)
-                    compassTarget = spawn
-                } else {
-                    logger.warn("Spawn location is not set!")
-                }
             }
 
             for (player in Bukkit.getOnlinePlayers()) {

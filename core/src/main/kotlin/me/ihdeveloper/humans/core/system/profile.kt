@@ -70,7 +70,6 @@ class ProfileSystem : System("Core/Profile"), Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     @Suppress("UNUSED")
     fun onJoin(event: PlayerJoinEvent) {
-        // TODO Read inventory data and load it into the player
         event.run {
             player.run {
                 logger.info("Loading $name...")
