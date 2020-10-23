@@ -272,6 +272,19 @@ class CommandSystem : System("Core/Command") {
         }
     }
 
+    override fun lateInit(plugin: JavaPlugin) {
+        logger.info("Registering command executors (late-init)...")
+        core.integratedPart?.commands?.forEach {
+            logger.debug("Registering command executor for /${it.name} (late-init)...")
+
+            when {
+                plugin.getCommand(it.name) != null -> plugin.getCommand(it.name).executor = it
+                corePlugin!!.getCommand(it.name) != null -> corePlugin!!.getCommand(it.name).executor = it
+                else -> logger.error("Failed to register command /${it.name}! It's not found in the plugin.yml!")
+            }
+        }
+    }
+
     override fun dispose() {}
 }
 

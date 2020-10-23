@@ -1,4 +1,4 @@
-package me.ihdeveloper.humans.hub
+package me.ihdeveloper.humans.mine
 
 import me.ihdeveloper.humans.core.Command
 import me.ihdeveloper.humans.core.System
@@ -10,7 +10,7 @@ import org.bukkit.Location
 /**
  * Integrates game's hub with the game's core
  */
-class HubIntegrationAPI : IntegrationAPI {
+class MineIntegrationAPI : IntegrationAPI {
     override val commands = arrayOf<Command>()
 
     override val systems = arrayOf<System>()
