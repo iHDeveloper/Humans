@@ -95,6 +95,7 @@ import org.bukkit.event.player.PlayerAchievementAwardedEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerPickupItemEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -648,12 +649,31 @@ class LoginSystem : System("Core/Login"), Listener {
 
     override fun dispose() {}
 
-    // TODO Handle login event for loading profiles
-
     @EventHandler
     @Suppress("UNUSED")
     fun onPing(event: ServerListPingEvent) {
         event.motd = SERVER_MOTD
+    }
+
+    @EventHandler
+    @Suppress("UNUSED")
+    fun onLogin(event: PlayerLoginEvent) {
+        core.integratedPart?.run {
+            val profile = event.player.profile
+
+            if (profile == null)  {
+                event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "§cFailed to connect to ${core.serverName}! §7(PROFILE_NOT_FOUND_2)")
+                return
+            }
+
+            if (profile.new) {
+                if (allowNewPlayers) {
+                    event.allow()
+                } else {
+                    event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "§cFailed to connect to ${core.serverName}! §7(NEW_PLAYER)")
+                }
+            }
+        }
     }
 }
 

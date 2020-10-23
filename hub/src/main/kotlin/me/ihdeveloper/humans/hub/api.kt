@@ -11,6 +11,8 @@ import org.bukkit.Location
  * Integrates game's hub with the game's core
  */
 class HubIntegrationAPI : IntegrationAPI {
+    override val allowNewPlayers = true
+
     override val commands = arrayOf<Command>()
 
     override val systems = arrayOf<System>()

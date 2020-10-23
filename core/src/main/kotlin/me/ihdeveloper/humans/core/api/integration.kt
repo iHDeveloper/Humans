@@ -11,6 +11,11 @@ import org.bukkit.Location
  */
 interface IntegrationAPI {
     /**
+     * Returns if the integrated part supports new players situations or not
+     */
+    val allowNewPlayers: Boolean
+
+    /**
      * Systems of the integrated part
      */
     val systems: Array<System>
