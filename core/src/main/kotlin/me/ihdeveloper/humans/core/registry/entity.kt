@@ -7,6 +7,9 @@ import net.minecraft.server.v1_8_R3.EntityTypes
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity
 import org.bukkit.event.entity.CreatureSpawnEvent
 import kotlin.reflect.KClass
+import net.minecraft.server.v1_8_R3.EntityLiving
+import net.minecraft.server.v1_8_R3.MathHelper
+import org.bukkit.craftbukkit.v1_8_R3.event.CraftEventFactory
 
 /**
  * A list of all the summoned entities to keep track of them
@@ -70,10 +73,25 @@ fun registerEntity(customClass: KClass<out Entity>, overrideClass: KClass<out En
  */
 fun spawnEntity(entity: Entity, logger: GameLogger?): Boolean = spawnEntity(entity, true, logger)
 fun spawnEntity(entity: Entity, removeWhenFarAway: Boolean, logger: GameLogger?): Boolean {
-    val result = entity.world.addEntity(entity, CreatureSpawnEvent.SpawnReason.CUSTOM)
+    entity.bukkitEntity.run {
+        if (this is CraftLivingEntity)
+            this.removeWhenFarAway = removeWhenFarAway
+    }
+    val result = entity.world.run {
+        val chunkX = MathHelper.floor(entity.locX / 16.0)
+        val chunkY = MathHelper.floor(entity.locY / 16.0)
+
+        /** Get the craft world and load the chunks from it */
+        if (!world.isChunkLoaded(chunkX, chunkY)) {
+            logger?.debug("Loading chunk at [chunkX=$chunkX, chunkY=$chunkY]...")
+            if (!world.loadChunk(chunkX, chunkY, false)) {
+                logger?.error("Failed to load chunk at [chunkX=$chunkX, chunkY=$chunkY]!")
+            }
+        }
+
+        addEntity(entity, CreatureSpawnEvent.SpawnReason.CUSTOM)
+    }
     logger?.debug("Spawning ${entity::class.qualifiedName} [result=$result]")
-    if (removeWhenFarAway && entity is CraftLivingEntity)
-        entity.removeWhenFarAway = false
     return result
 }
 

@@ -12,6 +12,7 @@ import org.bukkit.Bukkit
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftMinecart
 import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -70,7 +71,8 @@ class WarpSystem : System("Core/Warp"), Listener {
     /**
      * Check if the player is going through a warp gate
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
+    @Suppress("UNUSED")
     fun onMove(event: PlayerMoveEvent) {
         warps.forEach {
             event.run {

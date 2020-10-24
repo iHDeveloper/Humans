@@ -117,7 +117,7 @@ const val TEAM_REGION = "@region"
 /**
  * A system for registering the entities of the game core
  */
-class CustomEntitySystem : System("Core/Custom-Entity"), Listener, Runnable {
+class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
     data class EntityInfo(
         val type: String,
         val location: Location
@@ -198,16 +198,9 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener, Runnable {
                 logger.warn("Entity type not found: $type")
                 continue
             }
+            spawnEntity(entity, false, logger)
             summonedEntities.add(entity)
             summonedEntitiesInfo.add(info)
-        }
-
-        plugin.server.scheduler.runTaskLater(plugin, this, 1L)
-    }
-
-    override fun run() {
-        summonedEntities.forEach {
-            spawnEntity(it, false, logger)
         }
     }
 
