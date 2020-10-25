@@ -184,12 +184,12 @@ class GameCore {
         }
 
         integratedPart?.systems!!.forEach {
-            logger.info("Late Initializing ${it.name.toLowerCase()} system (other)...")
+            logger.info("Disposing ${it.name.toLowerCase()} system (other)...")
             it.dispose()
         }
 
         otherSystems.forEach {
-            logger.info("Late Initializing ${it.name.toLowerCase()} system (other)...")
+            logger.info("Disposing ${it.name.toLowerCase()} system (other)...")
             it.dispose()
         }
     }

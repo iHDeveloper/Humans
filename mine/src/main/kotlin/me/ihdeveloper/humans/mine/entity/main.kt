@@ -2,6 +2,7 @@ package me.ihdeveloper.humans.mine.entity
 
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
 import me.ihdeveloper.humans.core.entity.spawnNPCHologram
+import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.util.setTexture
 import org.bukkit.Color
 import org.bukkit.Location
@@ -21,6 +22,9 @@ class PrisonMineWizard(
 ) : CustomArmorStand(location) {
 
     private val holograms = spawnNPCHologram(location, "§cOscar", "§7Prison Mine Wizard", "§e§lCLICK")
+    private val table = location.clone().subtract(2.0, 0.0, 0.0).block
+
+    private val crystal = PrisonMineCrystal(table.location.clone().add(0.5, 0.25, 0.5))
 
     init {
         customName = "§cPrison Mine Wizard"
@@ -47,11 +51,17 @@ class PrisonMineWizard(
                 }
             }
         }
+
+        if (table.type != Material.ENDER_PORTAL_FRAME)
+            table.type = Material.ENDER_PORTAL_FRAME
+
+        spawnEntity(crystal, false, null)
     }
 
     override fun die() {
         super.die()
 
+        crystal.die()
         holograms.forEach { it.die() }
     }
 
