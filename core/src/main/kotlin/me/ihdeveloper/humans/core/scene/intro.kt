@@ -24,6 +24,8 @@ import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.Vector
 
+private const val SECOND = 20L
+
 /**
  * Making the new player trying to escape a mysterious place in the game
  * called "Humans slaughter".
@@ -130,21 +132,21 @@ class IntroScene(
             }
         }
 
-        frame(20) {
+        frame(SECOND) {
             player.sendMessage("§7§oYou are in an unknown location")
         }
 
-        frame(30) {
+        frame(SECOND + 10) {
             player.sendMessage("§7§oYou don't remember what happened to you.")
         }
 
-        frame(40) {
+        frame(SECOND * 2) {
             player.sendMessage("§7§oYou seem to be in a suspicious place.")
             pause()
         }
 
         /** Apply scenario 2 */
-        frame(41) {
+        frame((SECOND * 2) + 1) {
             player.run {
                 addPotionEffect(PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 1, false, false))
                 addPotionEffect(PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 1, false, false))
@@ -165,7 +167,7 @@ class IntroScene(
         }
 
         /** Apply scenario 3 */
-        frame(42) {
+        frame((SECOND * 2) + 2) {
             player.run {
                 removePotionEffect(PotionEffectType.BLINDNESS)
                 removePotionEffect(PotionEffectType.SLOW)
@@ -174,24 +176,24 @@ class IntroScene(
             }
         }
 
-        frame(72) {
+        frame((SECOND * 4) + 2) {
             player.teleport(end)
             player.freeze()
         }
 
-        frame(102) {
+        frame((SECOND * 6) + 2) {
             player.sendMessage("§cPrison Watcher: §fYou shouldn't die peacefully.")
         }
 
-        frame(132) {
+        frame((SECOND * 8) + 2) {
             player.sendMessage("§cPrison Watcher: §fYou shall suffer living in this misery!")
         }
 
-        frame(162) {
+        frame((SECOND * 10) + 2) {
             player.sendMessage("§cPrison Watcher: §fWitch, send this \"Human\" somewhere unsafe!")
         }
 
-        frame(202) {
+        frame((SECOND * 12) + 2) {
             player.sendMessage("§cPrison Witch: §fYessir!")
 
             witch.equipment[0] = ItemStack(Items.POTION)
@@ -199,11 +201,11 @@ class IntroScene(
             witch.updateInventory(player.toNMS())
         }
 
-        frame(232) {
+        frame((SECOND * 14) + 2) {
             player.sendMessage("§cPrison Witch: §fI'm going to send this \"Human\" to...")
         }
 
-        frame (262) {
+        frame ((SECOND * 16) + 2) {
             player.sendMessage("§cPrison Witch: §e§lHumans Prison")
 
             player.toNMS().also {
@@ -216,7 +218,7 @@ class IntroScene(
             pause()
         }
 
-        frame(263) {
+        frame((SECOND * 16) + 3) {
             player.run {
                 foodLevel = 20
                 health = 20.0
@@ -224,7 +226,7 @@ class IntroScene(
             }
         }
 
-        frame(353) {
+        frame((SECOND * 20) + 3) {
             player.run {
                 for (i in 1 until 3)
                     sendMessage("")
@@ -239,7 +241,7 @@ class IntroScene(
             ProfileSystem.profiles[player.name]?.new = false
         }
 
-        frame(357) {
+        frame((SECOND * 20) + 5) {
             Bukkit.getOnlinePlayers().forEach {
                 if (!player.canSee(it) && player.toNMS() !== it.toNMS())
                     player.showPlayer(it)
