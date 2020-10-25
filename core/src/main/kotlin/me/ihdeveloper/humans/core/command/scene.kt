@@ -1,6 +1,7 @@
 package me.ihdeveloper.humans.core.command
 
 import me.ihdeveloper.humans.core.AdminCommand
+import me.ihdeveloper.humans.core.core
 import me.ihdeveloper.humans.core.scene.IntroScene
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
@@ -28,7 +29,13 @@ class SceneSetLocationCommand : AdminCommand("set-scene-loc") {
         when (name) {
             "intro" -> IntroScene.config.set(key, sender.location)
             else -> {
-                failed = true
+                val meta = core.integratedPart!!.fromSceneName(name)
+
+                if (meta != null) {
+                    meta.config.set(key, sender.location)
+                } else {
+                    failed = true
+                }
             }
         }
 
@@ -57,7 +64,15 @@ class SaveSceneCommand : AdminCommand("save-scene") {
         var failed = false
         when (name) {
             "intro" -> IntroScene.save()
-            else -> failed = true
+            else -> {
+                val meta = core.integratedPart!!.fromSceneName(name)
+
+                if (meta != null) {
+                    meta.save()
+                } else {
+                    failed = true
+                }
+            }
         }
 
         sender.run {
@@ -92,7 +107,11 @@ class PlaySceneCommand : AdminCommand("play-scene") {
         var failed = false
         when (name) {
             "intro" -> IntroScene(sender).start()
-            else -> failed = true
+            else -> {
+                if (!core.integratedPart!!.playScene(sender, name)) {
+                    failed = true
+                }
+            }
         }
 
         sender.run {

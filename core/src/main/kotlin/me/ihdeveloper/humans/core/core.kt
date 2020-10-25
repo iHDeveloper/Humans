@@ -293,6 +293,8 @@ open class Scene(
  */
 interface SceneMeta {
     val config: Configuration
+
+    fun save()
 }
 
 /**

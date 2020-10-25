@@ -46,7 +46,7 @@ class IntroScene(
     companion object: SceneMeta {
         override val config = Configuration("scene-intro")
 
-        fun save() = config.save()
+        override fun save() = config.save()
     }
 
     init {
