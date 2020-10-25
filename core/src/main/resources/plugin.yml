@@ -1,0 +1,59 @@
+name: Humans-Core
+version: 0.0
+main: me.ihdeveloper.humans.core.Main
+author: iHDeveloper
+
+commands:
+  summon:
+    usage: "summon <type>"
+    description: "Summons a custom entity of the game"
+    permission: "humans"
+    permission-message: "You don't have the permission to do this!"
+  create-warp:
+    usage: "create-warp"
+    description: "Creates a warp info instance"
+  set-warp-name:
+    usage: "set-warp-name <name> [more]"
+    description: "Sets the warp name"
+  set-warp-loc:
+    usage: "set-warp-loc <center|start|end>"
+    description: "Sets the warp location"
+  set-spawn:
+    usage: "set-spawn"
+    description: "Sets the spawn location"
+  npc-summon:
+    usage: "npc-summon <type>"
+    description: "Summons an NPC with specified type"
+  npc-save:
+    usage: "npc-save"
+    description: "Saves the NPC configuration"
+  summon-save:
+    usage: "summon-save"
+    description: "Saves the entities configuration"
+  warps-save:
+    usage: "warps-save"
+    description: "Saves the warps configuration"
+  give:
+    usage: "give <id> [amount]"
+    description: "Gives the player a game item"
+  item-info:
+    usage: "item-info"
+    description: "Describes information about the item in your hand"
+  set-scene-loc:
+    usage: "set-scene-loc <name> <key>"
+    description: "Sets an location using key in the scene metadata"
+  play-scene:
+    usage: "play-scene <name>"
+    description: "Run a scene of the game"
+  save-scene:
+    usage: "save-scene <name>"
+    description: "Saves a scene configuration"
+  region-new:
+    usage: "region-new"
+    description: "Creates a new region instance with provided info"
+  region-set:
+    usage: "region-set <name/displayName/from/to> [value]"
+    description: "Stores information about the new region"
+  region-save:
+    usage: "region-save"
+    description: "Saves the regions configuration"

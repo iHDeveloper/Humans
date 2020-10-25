@@ -1,0 +1,7 @@
+name: Humans-Mine
+version: 0.0
+main: me.ihdeveloper.humans.mine.Main
+author: iHDeveloper
+depend:
+  - Humans-Core
+  - Humans-BlocksAPI
