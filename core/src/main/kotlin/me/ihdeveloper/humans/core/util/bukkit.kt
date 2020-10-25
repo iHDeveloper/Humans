@@ -6,6 +6,7 @@ import me.ihdeveloper.humans.core.system.GUISystem
 import me.ihdeveloper.humans.core.system.ProfileSystem
 import me.ihdeveloper.humans.service.api.Profile
 import org.bukkit.entity.Player
+import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.util.Vector
 
 private val oldVelocity = mutableMapOf<String, Vector>()
@@ -50,3 +51,19 @@ fun Player.openScreen(screen: GUIScreen) {
  * Closes the [GUIScreen] from the player
  */
 fun Player.closeScreen() = closeInventory()
+
+/**
+ * Sets a random game profile with texture data and signature. And, apply it to the skull item
+ */
+fun SkullMeta.setTexture(data: String, signature: String) {
+    val gameProfile = randomGameProfile().apply {
+        applyTexture(
+            texture = data,
+            signature = signature
+        )
+    }
+
+    val field = javaClass.getDeclaredField("profile")
+    field.isAccessible = true
+    field.set(this, gameProfile)
+}

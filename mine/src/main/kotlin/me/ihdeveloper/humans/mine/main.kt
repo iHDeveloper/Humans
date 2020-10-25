@@ -17,8 +17,10 @@ class Main : JavaPlugin() {
     override fun onEnable() {
         logger.info("Initializing core...")
 
+        val integratedPart = MineIntegrationAPI()
+
         core.serverName = "Mine"
-        core.integratedPart = MineIntegrationAPI()
+        core.integratedPart = integratedPart
         core.init(this)
     }
 
