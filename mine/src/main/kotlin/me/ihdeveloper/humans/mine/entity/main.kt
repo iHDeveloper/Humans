@@ -1,10 +1,14 @@
 package me.ihdeveloper.humans.mine.entity
 
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
 import me.ihdeveloper.humans.core.entity.spawnNPCHologram
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.util.setTexture
 import org.bukkit.Color
+import org.bukkit.Effect
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
@@ -13,6 +17,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta
 import org.bukkit.inventory.meta.SkullMeta
 
 private const val CRYSTAL_YAW_SPEED = 3.5F
+private const val WIZARD_TABLE_RADIUS = 1F
 
 /**
  * A monster that manages the mine crystals
@@ -24,7 +29,18 @@ class PrisonMineWizard(
     private val holograms = spawnNPCHologram(location, "§cOscar", "§7Prison Mine Wizard", "§e§lCLICK")
     private val table = location.clone().subtract(2.0, 0.0, 0.0).block
 
-    private val crystal = PrisonMineCrystal(table.location.clone().add(0.5, 0.25, 0.5))
+    private val tableCrystalLocation = table.location.clone().add(0.5, 0.25, 0.5)
+    private val tableParticleLocation = table.location.clone().add(0.5, 0.15, 0.5)
+
+    private val crystals = mutableListOf(
+        PrisonMineCrystal(tableCrystalLocation.clone()),
+        PrisonMineCrystal(tableCrystalLocation.clone()),
+        PrisonMineCrystal(tableCrystalLocation.clone()),
+        PrisonMineCrystal(tableCrystalLocation.clone()),
+    )
+
+    /** Represents the current angle */
+    private var angle = 0.0
 
     init {
         customName = "§cPrison Mine Wizard"
@@ -55,14 +71,47 @@ class PrisonMineWizard(
         if (table.type != Material.ENDER_PORTAL_FRAME)
             table.type = Material.ENDER_PORTAL_FRAME
 
-        spawnEntity(crystal, false, null)
+        updateCrystals()
+
+        crystals.forEach { spawnEntity(it, false, null) }
+    }
+
+    override fun t_() {
+        super.t_()
+
+        world.world.spigot().playEffect(tableParticleLocation, Effect.WITCH_MAGIC)
+
+        updateCrystals()
+
+        angle += 3
+        if (angle >= 360.0)
+            angle = 0.0
     }
 
     override fun die() {
         super.die()
 
-        crystal.die()
+        crystals.forEach { it.die() }
         holograms.forEach { it.die() }
+    }
+
+    private fun updateCrystals() {
+        val anglePerCrystal = 360 / crystals.size
+
+        var currentAngle = angle
+
+        for (crystal in crystals) {
+            val newLoc = crystal.crystalLocation.apply {
+                val radian = (currentAngle * PI) / 180
+
+                x = tableCrystalLocation.x + (WIZARD_TABLE_RADIUS * cos(radian))
+                z = tableCrystalLocation.z + (WIZARD_TABLE_RADIUS * sin(radian))
+                yaw += CRYSTAL_YAW_SPEED
+            }
+
+            crystal.updateLocation(newLoc)
+            currentAngle += anglePerCrystal
+        }
     }
 
 }
@@ -73,6 +122,9 @@ class PrisonMineWizard(
 class PrisonMineCrystal(
     location: Location
 ) : CustomArmorStand(location) {
+
+    internal val crystalLocation: Location
+        get() = super.location
 
     init {
         customName = "§ePrison Mine Crystal"
@@ -93,8 +145,14 @@ class PrisonMineCrystal(
         }
     }
 
-    override fun t_() {
-        location.yaw += CRYSTAL_YAW_SPEED
+    fun updateLocation(location: Location) {
+        this.location.run {
+            x = location.x
+            y = location.y
+            z = location.z
+            yaw = location.yaw
+            pitch = location.pitch
+        }
         setLocation()
     }
 }
