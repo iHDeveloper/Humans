@@ -6,11 +6,13 @@ import me.ihdeveloper.humans.core.setPrivateField
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.system.NPCSystem
 import me.ihdeveloper.humans.core.system.TEAM_NPC
+import me.ihdeveloper.humans.core.util.NMSItemStack
 import me.ihdeveloper.humans.core.util.toNMSWorld
 import net.minecraft.server.v1_8_R3.DamageSource
 import net.minecraft.server.v1_8_R3.Entity
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntityGiantZombie
+import net.minecraft.server.v1_8_R3.EntityHuman
 import net.minecraft.server.v1_8_R3.EntityLiving
 import net.minecraft.server.v1_8_R3.EntityMinecartRideable
 import net.minecraft.server.v1_8_R3.EntityPlayer
@@ -27,6 +29,7 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo
 import net.minecraft.server.v1_8_R3.PathfinderGoalSelector
 import net.minecraft.server.v1_8_R3.PlayerConnection
 import net.minecraft.server.v1_8_R3.PlayerInteractManager
+import net.minecraft.server.v1_8_R3.Vec3D
 import net.minecraft.server.v1_8_R3.WorldServer
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -64,6 +67,25 @@ open class CustomArmorStand(protected val location: Location)
         super.setGravity(!flag)
     }
 
+    /** Prevent the player from putting any item to the prison watcher */
+    override fun d(i: Int, itemstack: NMSItemStack?): Boolean {
+        return false
+    }
+
+    /** Prevent the prison watcher from colliding with the mine cart */
+    override fun bL() {
+        return
+    }
+
+    /** Prevent the player from manipulating the prison watcher */
+    override fun a(entityhuman: EntityHuman?, vec3d: Vec3D?): Boolean {
+        return false
+    }
+
+    /** Prevent the prison watcher from getting damaged */
+    override fun damageEntity(damagesource: DamageSource?, f: Float): Boolean {
+        return false
+    }
 }
 
 /**

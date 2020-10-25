@@ -120,26 +120,6 @@ class PrisonWatcher(
         setLocation()
     }
 
-    /** Prevent the player from putting any item to the prison watcher */
-    override fun d(i: Int, itemstack: NMSItemStack?): Boolean {
-        return false
-    }
-
-    /** Prevent the prison watcher from colliding with the mine cart */
-    override fun bL() {
-        return
-    }
-
-    /** Prevent the player from manipulating the prison watcher */
-    override fun a(entityhuman: EntityHuman?, vec3d: Vec3D?): Boolean {
-        return false
-    }
-
-    /** Prevent the prison watcher from getting damaged */
-    override fun damageEntity(damagesource: DamageSource?, f: Float): Boolean {
-        return false
-    }
-
     override fun die() {
         super.die()
 

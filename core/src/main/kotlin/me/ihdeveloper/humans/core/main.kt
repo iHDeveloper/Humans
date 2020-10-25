@@ -137,24 +137,40 @@ class GameCore {
             }
         }
 
+        logger.info("Initializing ${systems.size} core systems...")
         systems.forEach {
             logger.info("Initializing ${it.name.toLowerCase()} system...")
             it.init(plugin)
         }
 
-        integratedPart?.systems?.forEach {
+        logger.info("Initializing ${integratedPart?.systems!!.size} integrated systems...")
+        integratedPart?.systems!!.forEach {
             logger.info("Initializing ${it.name.toLowerCase()} system (integrated)...")
             it.init(plugin)
         }
 
+        logger.info("Initializing ${otherSystems.size} other systems...")
+        otherSystems.forEach {
+            logger.info("Initializing ${it.name.toLowerCase()} system (other)...")
+            it.init(plugin)
+        }
+
+        logger.info("Late Initializing ${systems.size} core systems...")
         systems.forEach {
             logger.info("Late initializing ${it.name.toLowerCase()} system...")
             it.lateInit(plugin)
         }
 
+        logger.info("Late Initializing ${integratedPart?.systems!!.size} integrated systems...")
+        integratedPart?.systems!!.forEach {
+            logger.info("Late Initializing ${it.name.toLowerCase()} system (integrated)...")
+            it.lateInit(plugin)
+        }
+
+        logger.info("Late Initializing ${otherSystems.size} other systems...")
         otherSystems.forEach {
-            logger.info("Initializing ${it.name.toLowerCase()} system (other)...")
-            it.init(plugin)
+            logger.info("Late Initializing ${it.name.toLowerCase()} system (other)...")
+            it.lateInit(plugin)
         }
     }
 
@@ -164,6 +180,16 @@ class GameCore {
     fun dispose() {
         systems.forEach {
             logger.info("Disposing ${it.name.toLowerCase()} system...")
+            it.dispose()
+        }
+
+        integratedPart?.systems!!.forEach {
+            logger.info("Late Initializing ${it.name.toLowerCase()} system (other)...")
+            it.dispose()
+        }
+
+        otherSystems.forEach {
+            logger.info("Late Initializing ${it.name.toLowerCase()} system (other)...")
             it.dispose()
         }
     }

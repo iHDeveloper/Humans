@@ -33,26 +33,6 @@ class Hologram (
         isSmall = true
         setGravity(false)
     }
-
-    /** Prevent the player from putting any item to the hologram */
-    override fun d(i: Int, itemstack: NMSItemStack?): Boolean {
-        return false
-    }
-
-    /** Prevent the hologram from colliding with the mine cart */
-    override fun bL() {
-        return
-    }
-
-    /** Prevent the player from manipulating the hologram */
-    override fun a(entityhuman: EntityHuman?, vec3d: Vec3D?): Boolean {
-        return false
-    }
-
-    /** Prevent the hologram from getting damaged */
-    override fun damageEntity(damagesource: DamageSource?, f: Float): Boolean {
-        return false
-    }
 }
 
 /**
@@ -86,7 +66,7 @@ class ItemHologram(
  * @param type The type of the npc (e.g. Prison Guard, Prisoner)
  * @param state The state of the npc (e.g. Click, Coming soon)
  */
-fun spawnNPCHologram(location: Location, name: String, type: String, state: String): Array<Hologram> = spawnNPCHologram(location, name, type, state)
+fun spawnNPCHologram(location: Location, name: String, type: String, state: String): Array<Hologram> = spawnNPCHologram(location, name, type, state, null)
 fun spawnNPCHologram(location: Location, name: String, type: String, state: String, logger: GameLogger?): Array<Hologram> {
     location.clone().apply {
         y += 1.0
