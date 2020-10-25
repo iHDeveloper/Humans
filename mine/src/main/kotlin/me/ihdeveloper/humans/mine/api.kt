@@ -5,6 +5,7 @@ import me.ihdeveloper.humans.core.SceneMeta
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.api.IntegrationAPI
 import me.ihdeveloper.humans.core.entity.CustomNPC
+import me.ihdeveloper.humans.mine.entity.PrisonMineCrystal
 import me.ihdeveloper.humans.mine.entity.PrisonMineWizard
 import me.ihdeveloper.humans.mine.system.EntitySystem
 import net.minecraft.server.v1_8_R3.Entity
@@ -25,6 +26,7 @@ class MineIntegrationAPI : IntegrationAPI {
 
     override fun fromEntityType(type: String, location: Location): Entity? = when (type) {
         "prison_mine_wizard" -> PrisonMineWizard(location)
+        "prison_mine_crystal" -> PrisonMineCrystal(location)
         else -> null
     }
 
