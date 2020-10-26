@@ -6,6 +6,7 @@ import kotlin.concurrent.thread
 import me.ihdeveloper.humans.core.api.GameAPI
 import me.ihdeveloper.humans.core.api.IntegrationAPI
 import me.ihdeveloper.humans.core.system.BlockSystem
+import me.ihdeveloper.humans.core.system.BossBarSystem
 import me.ihdeveloper.humans.core.system.ChatSystem
 import me.ihdeveloper.humans.core.system.CommandSystem
 import me.ihdeveloper.humans.core.system.CustomEntitySystem
@@ -98,6 +99,7 @@ class GameCore {
         ChatSystem(),
         RegionSystem(),
         GUISystem(),
+        BossBarSystem()
     )
 
     /** Represents other systems of the game */

@@ -1,6 +1,8 @@
 package me.ihdeveloper.humans.core.util
 
+import me.ihdeveloper.humans.core.BossBar
 import me.ihdeveloper.humans.core.gui.GUIScreen
+import me.ihdeveloper.humans.core.system.BossBarSystem
 import me.ihdeveloper.humans.core.system.FreezeSystem
 import me.ihdeveloper.humans.core.system.GUISystem
 import me.ihdeveloper.humans.core.system.ProfileSystem
@@ -51,6 +53,10 @@ fun Player.openScreen(screen: GUIScreen) {
  * Closes the [GUIScreen] from the player
  */
 fun Player.closeScreen() = closeInventory()
+
+fun Player.showBossBar(bossBar: BossBar) = BossBarSystem.spawn(bossBar, this)
+
+fun Player.hideBossBar() = BossBarSystem.destroy(this)
 
 /**
  * Sets a random game profile with texture data and signature. And, apply it to the skull item
