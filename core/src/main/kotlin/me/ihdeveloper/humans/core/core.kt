@@ -322,3 +322,12 @@ data class GameRegion(
         "to" to to
     )
 }
+
+/**
+ * Represents the boss bar on top of the player's screen
+ */
+data class BossBar(
+    var title: String,
+    var current: Int = 0,
+    var max: Int = 100,
+)
