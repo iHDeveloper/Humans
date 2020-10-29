@@ -1,6 +1,6 @@
 package me.ihdeveloper.humans.core.command
 
-import me.ihdeveloper.humans.core.Command
+import me.ihdeveloper.humans.core.AdminCommand
 import me.ihdeveloper.humans.core.GameRegion
 import me.ihdeveloper.humans.core.system.RegionSystem
 import org.bukkit.Location
@@ -15,7 +15,7 @@ private var to: Location? = null
 /**
  * Creates a new instance of the game region with the provided information from [RegionSetCommand]
  */
-class RegionNewCommand : Command("region-new") {
+class RegionNewCommand : AdminCommand("region-new") {
     override fun execute(
         sender: CommandSender?,
         cmd: org.bukkit.command.Command?,
@@ -25,34 +25,29 @@ class RegionNewCommand : Command("region-new") {
         when {
             regionName == null -> {
                 sender!!.sendMessage("§cNo name found for the region!")
-                return true
             }
             displayName == null -> {
                 sender!!.sendMessage("§cNo display name found for the region!")
-                return true
             }
             from == null -> {
                 sender!!.sendMessage("§cNo from[Location] found for the region!")
-                return true
             }
             to == null -> {
                 sender!!.sendMessage("§cNo to[Location] found for the region!")
-                return true
             }
             else -> {
                 RegionSystem.regions.add(GameRegion(regionName!!, displayName!!, from!!, to!!))
                 sender!!.sendMessage("§aSuccess! §eCreated region §9${regionName ?: "§7unknown"}")
-                return true
             }
         }
-
+        return true
     }
 }
 
 /**
  * Sets information about the region
  */
-class RegionSetCommand : Command("region-set") {
+class RegionSetCommand : AdminCommand("region-set") {
     override fun execute(
         sender: CommandSender?,
         cmd: org.bukkit.command.Command?,
@@ -99,7 +94,7 @@ class RegionSetCommand : Command("region-set") {
 /**
  * Saves the region configuration
  */
-class RegionSaveCommand : Command("region-save") {
+class RegionSaveCommand : AdminCommand("region-save") {
 
     override fun execute(
         sender: CommandSender?,

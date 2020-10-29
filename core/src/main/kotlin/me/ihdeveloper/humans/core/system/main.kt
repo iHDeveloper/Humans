@@ -52,6 +52,7 @@ import me.ihdeveloper.humans.core.util.ITEMSTACK_AIR
 import me.ihdeveloper.humans.core.util.between
 import me.ihdeveloper.humans.core.util.openScreen
 import me.ihdeveloper.humans.core.util.profile
+import me.ihdeveloper.humans.core.util.region
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntityGiantZombie
 import net.minecraft.server.v1_8_R3.EntityMinecartRideable
@@ -808,7 +809,7 @@ class RegionSystem : System("Core/Location"), Listener {
         private val config = Configuration("regions")
         private val emptyLocation = Location(null, 0.0, 0.0, 0.0)
 
-        private val unknown = GameRegion(
+        val unknown = GameRegion(
             "unknown",
             "§7Unknown",
             emptyLocation,
@@ -879,13 +880,4 @@ class RegionSystem : System("Core/Location"), Listener {
             return
         }
     }
-
-    /**
-     * Represents information about the region of the player's location
-     */
-    private var Player.region: GameRegion
-        set(value) {
-            players[name] = value
-        }
-        get() = players[name] ?: unknown
 }
