@@ -5,6 +5,7 @@ import me.ihdeveloper.humans.core.ConfigurationDeserialize
 import me.ihdeveloper.humans.core.ConfigurationSerialize
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.util.GameLogger
+import me.ihdeveloper.humans.core.util.between
 import me.ihdeveloper.humans.core.util.hideBossBar
 import me.ihdeveloper.humans.core.util.region
 import me.ihdeveloper.humans.core.util.showBossBar
@@ -123,7 +124,7 @@ class Mine(
         "wizardSpawn" to wizardSpawn,
     )
 
-    fun contains(block: Block): Boolean = false
+    fun contains(block: Block): Boolean = block.location.betweenBlock(pos1, pos2)
 
     fun onMine(player: Player) {
         minedBlocks++
@@ -136,7 +137,6 @@ class Mine(
         if (!players.contains(player.name))
             return
 
-        player.hideBossBar()
         players.remove(player.name)
     }
 
@@ -177,5 +177,20 @@ class Mine(
         minutes %= 60
 
         return "${if(minutes <= 9) "0$minutes" else minutes}:${if(seconds <= 9) "0$seconds" else seconds}"
+    }
+
+    private fun Location.betweenBlock(from: Location, to: Location): Boolean {
+        logger.debug("------------------------------------")
+        logger.debug("From: x=${from.blockX}, y=${from.blockY}, z=${from.blockZ}")
+        logger.debug("Current: x=${blockX}, y=${blockY}, z=${blockZ}")
+        logger.debug("To: x=${to.blockX}, y=${to.blockY}, z=${to.blockZ}")
+        logger.debug("------------------------------------")
+        if (from.blockY > blockY || blockY > to.blockY)
+            return false
+        if (from.blockX < blockX || blockX < to.blockX)
+            return false
+        if (from.blockZ > blockZ || blockZ > to.blockZ)
+            return false
+        return true
     }
 }
