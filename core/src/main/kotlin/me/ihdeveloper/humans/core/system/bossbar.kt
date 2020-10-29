@@ -77,7 +77,7 @@ class BossBarSystem : System("Core/Boss-Bar"), Listener  {
 
                         /** Entity living flags */
                         add(CUSTOM_NAME_VISIBLE_KEY, 1.toByte())
-                        with (bossBar) { add(HEALTH_KEY, max(((current * 300) / max).toFloat(), 1F)) }
+                        with (bossBar) { add(HEALTH_KEY, percentage()) }
                         /** Maximum length in a name is 64 characters */
                         add(CUSTOM_NAME_KEY, bossBar.title)
 
@@ -121,7 +121,7 @@ class BossBarSystem : System("Core/Boss-Bar"), Listener  {
 
                 meta.dataWatcher.run {
                     update(CUSTOM_NAME_KEY, bossBar.title)
-                    with (bossBar) { update(HEALTH_KEY, ((current * 300F) / max)) }
+                    with (bossBar) { update(HEALTH_KEY, percentage()) }
                 }
             }
         }
@@ -168,6 +168,12 @@ class BossBarSystem : System("Core/Boss-Bar"), Listener  {
 
         private fun DataWatcher.update(key: Int, value: Any) {
             ReflectUtil.NMSDataWatcher.update(this, key, value)
+        }
+
+        private fun BossBar.percentage(): Float {
+            if (current == max)
+                return 300F
+            return max(((current * 300F) / max), 1F)
         }
     }
 

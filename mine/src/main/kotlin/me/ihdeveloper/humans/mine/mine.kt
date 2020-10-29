@@ -43,7 +43,7 @@ class Mine(
             pos2 = data["pos2"] as Location,
             blocks = data["blocks"].run {
                 mutableListOf<Material>().let {
-                    if (this is Array<*>) {
+                    if (this is ArrayList<*>) {
                         for (rawBlock in this) {
                             if (rawBlock !is String)
                                 continue
@@ -76,6 +76,7 @@ class Mine(
 
     init {
         logger.debug("Initializing...")
+        blocks.forEach { logger.debug("Loaded block: $it") }
         spawnEntity(wizard, false, logger)
 
         reset()

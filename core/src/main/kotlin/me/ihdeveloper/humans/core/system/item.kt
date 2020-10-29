@@ -1,7 +1,7 @@
 package me.ihdeveloper.humans.core.system
 
 import me.ihdeveloper.humans.core.System
-import me.ihdeveloper.humans.core.item.PrisonPickaxe
+import me.ihdeveloper.humans.core.item.PrisonCursedPickaxe
 import me.ihdeveloper.humans.core.item.PrisonStone
 import me.ihdeveloper.humans.core.registry.NullGameItem
 import me.ihdeveloper.humans.core.registry.registerItem
@@ -16,7 +16,7 @@ class ItemSystem : System("Core/Item") {
         registerItem(PrisonStone::class, logger)
 
         /** Prison Tool Items */
-        registerItem(PrisonPickaxe::class, logger)
+        registerItem(PrisonCursedPickaxe::class, logger)
     }
 
     override fun dispose() {}

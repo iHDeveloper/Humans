@@ -163,6 +163,13 @@ annotation class GameItemInfo(
 )
 
 /**
+ * Represents that the item is a pickaxe
+ */
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class GameItemPickaxe
+
+/**
  * Represents an instance of an item in the game
  *
  * The instance performs stateless operations fired from events in the game
