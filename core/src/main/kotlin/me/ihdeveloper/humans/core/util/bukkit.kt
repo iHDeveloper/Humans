@@ -1,11 +1,13 @@
 package me.ihdeveloper.humans.core.util
 
 import me.ihdeveloper.humans.core.BossBar
+import me.ihdeveloper.humans.core.GameRegion
 import me.ihdeveloper.humans.core.gui.GUIScreen
 import me.ihdeveloper.humans.core.system.BossBarSystem
 import me.ihdeveloper.humans.core.system.FreezeSystem
 import me.ihdeveloper.humans.core.system.GUISystem
 import me.ihdeveloper.humans.core.system.ProfileSystem
+import me.ihdeveloper.humans.core.system.RegionSystem
 import me.ihdeveloper.humans.service.api.Profile
 import org.bukkit.entity.Player
 import org.bukkit.inventory.meta.SkullMeta
@@ -18,6 +20,15 @@ private val oldVelocity = mutableMapOf<String, Vector>()
  */
 val Player.profile: Profile?
     get() = ProfileSystem.profiles[name]
+
+/**
+ * Represents information about the region of the player's location
+ */
+var Player.region: GameRegion
+    set(value) {
+        RegionSystem.players[name] = value
+    }
+    get() = RegionSystem.players[name] ?: RegionSystem.unknown
 
 /**
  * Freezes a player's position
