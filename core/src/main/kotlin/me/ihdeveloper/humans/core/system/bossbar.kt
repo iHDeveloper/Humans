@@ -1,10 +1,13 @@
 package me.ihdeveloper.humans.core.system
 
+import kotlin.math.max
 import kotlin.random.Random
 import me.ihdeveloper.humans.core.BossBar
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.entity.connection
 import me.ihdeveloper.humans.core.setPrivateField
+import me.ihdeveloper.humans.core.util.GameLogger
+import me.ihdeveloper.humans.core.util.ReflectUtil
 import me.ihdeveloper.humans.core.util.toNMS
 import net.minecraft.server.v1_8_R3.DataWatcher
 import net.minecraft.server.v1_8_R3.MathHelper
@@ -41,8 +44,9 @@ internal class BossBarMeta(
     internal var dataWatcher = DataWatcher(null)
 }
 
-class BossBarSystem : System("Core/Boss-Bar"), Listener {
+class BossBarSystem : System("Core/Boss-Bar"), Listener  {
     companion object {
+        private lateinit var logger: GameLogger
         private val players = mutableMapOf<String, BossBar>()
 
         private val random = Random(2030)
@@ -66,6 +70,27 @@ class BossBarSystem : System("Core/Boss-Bar"), Listener {
                 metas[player.name] = meta
 
                 player.toNMS().connection.run {
+                    meta.dataWatcher.run {
+                        logger.debug("Initializing data watcher for the boss bar...")
+                        /** Entity Flag */
+                        add(0, (0 or 1 shl 5).toByte())
+
+                        /** Entity living flags */
+                        add(CUSTOM_NAME_VISIBLE_KEY, 1.toByte())
+                        with (bossBar) { add(HEALTH_KEY, max(((current * 300) / max).toFloat(), 1F)) }
+                        /** Maximum length in a name is 64 characters */
+                        add(CUSTOM_NAME_KEY, bossBar.title)
+
+                        /** Entity wither flags */
+                        add(17, Integer(0))
+                        add(18, Integer(0))
+                        add(19, Integer(0))
+
+                        add(WITHER_INVULNERABILITY_KEY, Integer(1000))
+
+                        logger.debug("Initialized! The data watcher for the boss bar...")
+                    }
+
                     sendPacket(PacketPlayOutSpawnEntityLiving().apply {
                         setPrivateField(this, "a", meta.id)
                         setPrivateField(this, "b", WITHER_ID)
@@ -86,29 +111,23 @@ class BossBarSystem : System("Core/Boss-Bar"), Listener {
 
                         setPrivateField(this, "l", meta.dataWatcher)
                     })
+                }
+            }
+        }
 
-                    meta.dataWatcher.run {
-                        /** Entity Flag */
-                        a(0, (0 or 1 shl 5).toByte())
+        fun update(player: Player) {
+            players[player.name]?.let { bossBar ->
+                val meta = metas[player.name]!!
 
-                        /** Entity living flags */
-                        a(CUSTOM_NAME_VISIBLE_KEY, 1.toByte())
-                        with (bossBar) { a(HEALTH_KEY, (current * 300F) / max) }
-                        /** Maximum length in a name is 64 characters */
-                        a(CUSTOM_NAME_KEY, bossBar.title)
-
-                        /** Entity wither flags */
-                        a(17, Integer(0))
-                        a(18, Integer(0))
-                        a(19, Integer(0))
-
-                        a(WITHER_INVULNERABILITY_KEY, Integer(1000))
-                    }
+                meta.dataWatcher.run {
+                    update(CUSTOM_NAME_KEY, bossBar.title)
+                    with (bossBar) { update(HEALTH_KEY, ((current * 300F) / max)) }
                 }
             }
         }
 
         fun destroy(player: Player) {
+            logger.debug("Destroying boss bar for ${player.name}...")
             metas[player.name]?.let { meta ->
                 players.remove(player.name)
                 metas.remove(player.name)
@@ -141,9 +160,20 @@ class BossBarSystem : System("Core/Boss-Bar"), Listener {
                 }
             }
         }
+
+        private fun DataWatcher.add(key: Int, value: Any) {
+            logger.debug("Adding data watcher with key $key (value=$value) [${value::class.qualifiedName}]...")
+            a(key, value)
+        }
+
+        private fun DataWatcher.update(key: Int, value: Any) {
+            ReflectUtil.NMSDataWatcher.update(this, key, value)
+        }
     }
 
     override fun init(plugin: JavaPlugin) {
+        Companion.logger = logger
+
         plugin.server.pluginManager.registerEvents(this, plugin)
     }
 

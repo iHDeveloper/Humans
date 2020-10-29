@@ -452,7 +452,7 @@ class MenuSystem : System("Core/Menu"), Listener {
                 0,
                 "§8» §eCollections",
                 arrayListOf(
-                    "§7Check the available crafting recipies.",
+                    "§7Check the available crafting recipes.",
                     "§7Each collection has its own!",
                     "§0",
                     "§cComing Soon"
@@ -637,7 +637,7 @@ class PlayerSystem : System("Core/Player"), Listener {
             if (spawn != null) entity.teleport(spawn)
 
             Bukkit.getOnlinePlayers().forEach {
-                it.sendMessage("${entity.displayName} §edied.")
+                it.sendMessage("${entity.displayName} §died.")
             }
         }
     }
@@ -656,7 +656,7 @@ class PlayerSystem : System("Core/Player"), Listener {
         }
     }
 
-    @EventHandler()
+    @EventHandler
     @Suppress("UNUSED")
     fun onAchievement(event: PlayerAchievementAwardedEvent) {
         event.isCancelled = true
@@ -718,6 +718,7 @@ class ScoreboardSystem : System("Core/Scoreboard"), Listener {
     override fun dispose() {}
 
     @EventHandler(priority = EventPriority.LOW)
+    @Suppress("UNUSED")
     fun onJoin(event: PlayerJoinEvent) {
         event.player.scoreboard = Bukkit.getScoreboardManager().newScoreboard.apply {
             val sidebar = registerNewObjective("sidebar", "dummy").apply {
@@ -804,7 +805,7 @@ class ChatSystem : System("Core/Chat"), Listener {
 /**
  * A system for handling regions
  */
-class RegionSystem : System("Core/Location"), Listener {
+class RegionSystem : System("Core/Region"), Listener {
     companion object {
         private val config = Configuration("regions")
         private val emptyLocation = Location(null, 0.0, 0.0, 0.0)
@@ -845,11 +846,25 @@ class RegionSystem : System("Core/Location"), Listener {
     @Suppress("UNUSED")
     fun onJoin(event: PlayerJoinEvent) {
         event.player.scoreboard.run {
-            event.player.region = unknown
+            event.player.run {
+                for (gameRegion in regions) {
+                    if (!location.between(gameRegion.from, gameRegion.to))
+                        continue
+
+                    if (gameRegion !== region) {
+                        region = gameRegion
+                    }
+                }
+
+                if (region != unknown) {
+                    region = unknown
+                }
+            }
+
             val sidebar = getObjective(DisplaySlot.SIDEBAR)!!
             registerNewTeam(TEAM_REGION).apply {
                 prefix = "§8➤ "
-                suffix = "§7Unknown"
+                suffix = event.player.region.displayName
 
                 "§r".also {
                     addEntry(it)

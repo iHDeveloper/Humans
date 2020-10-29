@@ -5,3 +5,14 @@ author: iHDeveloper
 depend:
   - Humans-Core
   - Humans-BlocksAPI
+
+commands:
+  mine-create:
+    usage: "mine-create"
+    description: "Generates the mine using the current data"
+  mine-set:
+    usage: "mine-set <name/region/pos1/pos2/wizard> [value]"
+    description: "Sets data for the mine to be generated of them"
+  mine-save:
+    usage: "mine-save"
+    description: "Saves the mines configuration"

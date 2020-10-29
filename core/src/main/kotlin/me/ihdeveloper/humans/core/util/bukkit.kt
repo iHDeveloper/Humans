@@ -67,6 +67,8 @@ fun Player.closeScreen() = closeInventory()
 
 fun Player.showBossBar(bossBar: BossBar) = BossBarSystem.spawn(bossBar, this)
 
+fun Player.updateBossBar() = BossBarSystem.update(this)
+
 fun Player.hideBossBar() = BossBarSystem.destroy(this)
 
 /**
