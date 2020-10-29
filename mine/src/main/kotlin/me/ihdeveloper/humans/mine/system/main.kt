@@ -5,12 +5,16 @@ import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
 import me.ihdeveloper.humans.core.registry.registerEntity
 import me.ihdeveloper.humans.core.util.GameLogger
+import me.ihdeveloper.humans.core.util.getGameItem
 import me.ihdeveloper.humans.mine.Mine
 import me.ihdeveloper.humans.mine.entity.PrisonMineCrystal
 import me.ihdeveloper.humans.mine.entity.PrisonMineWizard
+import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockDamageEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -52,6 +56,11 @@ class MineSystem : System("Mine"), Listener {
         Companion.logger = logger
 
         config.load(logger)
+
+        plugin.server.pluginManager.registerEvents(this, plugin)
+    }
+
+    override fun lateInit(plugin: JavaPlugin) {
         val rawMines = config.get("mines", arrayListOf<Map<String, Any>>())
         for (rawMine in rawMines) {
             mines.add(Mine.deserialize(rawMine))
@@ -60,8 +69,61 @@ class MineSystem : System("Mine"), Listener {
 
     override fun dispose() {}
 
+    @EventHandler(priority = EventPriority.HIGHEST)
+    @Suppress("UNUSED")
+    fun onDamage(event: BlockDamageEvent) {
+        event.run {
+            mines.forEach {
+                if (it.contains(block)) {
+                    isCancelled = false
+                    return
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    @Suppress("UNUSED")
+    fun onBreak(event: BlockBreakEvent) {
+        logger.debug("Block breaking event is fired and being handled!")
+        event.run {
+            mines.forEach {
+                logger.debug("Block has been broken searching in mine ${it.name}...")
+                if (it.contains(block)) {
+                    logger.debug("Block is in mine ${it.name}")
+                    if (player.itemInHand.type === Material.AIR) {
+                        isCancelled = true
+                        return
+                    }
+
+                    block.type = Material.BEDROCK
+
+                    val gameItemStack = player.inventory.getGameItem(player.inventory.heldItemSlot)
+
+                    if (gameItemStack === null) {
+                        isCancelled = true
+                        return
+                    }
+
+                    if (!gameItemStack.isPickaxe) {
+                        logger.debug("The item is not pickaxe!")
+                        logger.debug("$gameItemStack")
+                        isCancelled = true
+                        return
+                    }
+
+                    logger.debug("WE DID IT!")
+
+                    it.onMine(player)
+                    isCancelled = true
+                    return
+                }
+            }
+        }
+    }
+
     @EventHandler(priority = EventPriority.LOWEST)
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNUSED")
     fun onQuit(event: PlayerQuitEvent) {
         mines.forEach { it.onQuit(event.player) }
     }

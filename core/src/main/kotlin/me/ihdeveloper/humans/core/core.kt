@@ -185,7 +185,20 @@ open class GameItem {
 open class GameItemStack(
     val type: KClass<out GameItem>,
     val amount: Int = 1,
-)
+) {
+    val isPickaxe: Boolean
+        get() {
+            for (annotation in type.annotations) {
+                if (annotation.annotationClass === GameItemPickaxe::class)
+                    return true
+            }
+            return false
+        }
+
+    override fun toString(): String {
+        return "GameItemStack[type=${type.simpleName}, amount=$amount, isPickaxe=$isPickaxe]"
+    }
+}
 
 /**
  * Represents the state of the scene
