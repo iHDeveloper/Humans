@@ -22,8 +22,10 @@ public final class ReflectUtil {
             DataWatcher.WatchableObject watchableObject = (DataWatcher.WatchableObject) dataWatcher$getWatchedObject.invoke(dataWatcher, key);
 
             Object currentValue = watchableObject.b();
-            if (value != currentValue && !value.equals(currentValue))
+            if (value == currentValue) {
+                System.out.println("[ReflectUtil] (NMSDataWatcher) Ignoring the update...");
                 return;
+            }
 
             watchableObject.a(value);
             watchableObject.a(true);

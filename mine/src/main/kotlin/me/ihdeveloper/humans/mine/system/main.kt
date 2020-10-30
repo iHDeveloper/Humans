@@ -85,12 +85,9 @@ class MineSystem : System("Mine"), Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     @Suppress("UNUSED")
     fun onBreak(event: BlockBreakEvent) {
-        logger.debug("Block breaking event is fired and being handled!")
         event.run {
             mines.forEach {
-                logger.debug("Block has been broken searching in mine ${it.name}...")
                 if (it.contains(block)) {
-                    logger.debug("Block is in mine ${it.name}")
                     if (player.itemInHand.type === Material.AIR) {
                         isCancelled = true
                         return
@@ -112,7 +109,6 @@ class MineSystem : System("Mine"), Listener {
                         return
                     }
 
-                    logger.debug("WE DID IT!")
 
                     it.onMine(player)
                     isCancelled = true
