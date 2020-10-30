@@ -167,6 +167,7 @@ class BossBarSystem : System("Core/Boss-Bar"), Listener  {
         }
 
         private fun DataWatcher.update(key: Int, value: Any) {
+            logger.debug("Updating key($key) with value ($value) [${value::class.qualifiedName}...")
             ReflectUtil.NMSDataWatcher.update(this, key, value)
         }
 

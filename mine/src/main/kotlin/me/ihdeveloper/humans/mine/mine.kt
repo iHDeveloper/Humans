@@ -1,5 +1,6 @@
 package me.ihdeveloper.humans.mine
 
+import kotlin.random.Random
 import me.ihdeveloper.humans.core.BossBar
 import me.ihdeveloper.humans.core.ConfigurationDeserialize
 import me.ihdeveloper.humans.core.ConfigurationSerialize
@@ -143,26 +144,43 @@ class Mine(
     private fun reset() {
         minersCount.clear()
 
+        rebuildBlocks()
         calculateBlocks()
+    }
+
+    private fun rebuildBlocks() {
+        val random = Random(Random(1000).nextInt())
+
+        val size = blocks.size
+        forEach {
+            if (it.type === Material.BEDROCK) {
+                it.type = blocks[random.nextInt(size)]
+            }
+        }
     }
 
     private fun calculateBlocks() {
         blocksSize = 0
 
+        // TODO we can optimize this using a math calculation
+        forEach {
+            if (it.type !== org.bukkit.Material.AIR) {
+                for (blockType in blocks) {
+                    if (blockType === it.type) {
+                        blocksSize++
+                        break
+                    }
+                }
+            }
+        }
+    }
+
+    private fun forEach(block: (block: Block) -> Unit) {
         for (y in pos1.blockY..pos2.blockY) {
             for (x in pos2.blockX..pos1.blockX) {
                 for (z in pos1.blockZ..pos2.blockZ) {
                     pos1.world.run {
-                        val type = getBlockAt(x, y, z).type
-
-                        if (type !== Material.AIR) {
-                            for (blockType in blocks) {
-                                if (blockType === type) {
-                                    blocksSize++
-                                    break
-                                }
-                            }
-                        }
+                       block(getBlockAt(x, y, z))
                     }
                 }
             }
@@ -180,11 +198,6 @@ class Mine(
     }
 
     private fun Location.betweenBlock(from: Location, to: Location): Boolean {
-        logger.debug("------------------------------------")
-        logger.debug("From: x=${from.blockX}, y=${from.blockY}, z=${from.blockZ}")
-        logger.debug("Current: x=${blockX}, y=${blockY}, z=${blockZ}")
-        logger.debug("To: x=${to.blockX}, y=${to.blockY}, z=${to.blockZ}")
-        logger.debug("------------------------------------")
         if (from.blockY > blockY || blockY > to.blockY)
             return false
         if (from.blockX < blockX || blockX < to.blockX)
