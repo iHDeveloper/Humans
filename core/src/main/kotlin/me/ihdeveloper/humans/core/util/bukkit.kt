@@ -2,6 +2,7 @@ package me.ihdeveloper.humans.core.util
 
 import me.ihdeveloper.humans.core.BossBar
 import me.ihdeveloper.humans.core.GameRegion
+import me.ihdeveloper.humans.core.core
 import me.ihdeveloper.humans.core.gui.GUIScreen
 import me.ihdeveloper.humans.core.system.BossBarSystem
 import me.ihdeveloper.humans.core.system.FreezeSystem
@@ -70,6 +71,17 @@ fun Player.showBossBar(bossBar: BossBar) = BossBarSystem.spawn(bossBar, this)
 fun Player.updateBossBar() = BossBarSystem.update(this)
 
 fun Player.hideBossBar() = BossBarSystem.destroy(this)
+
+/**
+ * Used to crash the player's connection to avoid "error consequences"
+ *
+ * The player should report the error code in order for the admins to fix the bug
+ */
+fun Player.crash(error: String) = kickPlayer(arrayOf(
+    "§cConnection crashed! §7($error)",
+    "§cSomething wrong happened! §7[${core.serverName}]",
+    "Please report the error to the admins.",
+).joinToString("\n"))
 
 /**
  * Sets a random game profile with texture data and signature. And, apply it to the skull item

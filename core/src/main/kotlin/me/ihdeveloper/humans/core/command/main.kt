@@ -8,6 +8,7 @@ import me.ihdeveloper.humans.core.registry.summonedEntities
 import me.ihdeveloper.humans.core.registry.summonedEntitiesInfo
 import me.ihdeveloper.humans.core.system.CustomEntitySystem
 import me.ihdeveloper.humans.core.system.PlayerSystem
+import me.ihdeveloper.humans.core.util.crash
 import net.minecraft.server.v1_8_R3.Entity
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
@@ -76,6 +77,18 @@ class SetSpawnCommand : AdminCommand("set-spawn") {
         PlayerSystem.spawn = sender.location
         PlayerSystem.save()
         sender.sendMessage("§aSuccess! §ePlayer spawn has been set! :D")
+        return true
+    }
+}
+
+class CrashCommand : AdminCommand("crash") {
+    override fun execute(sender: CommandSender?, cmd: Command?, label: String?, args: Array<out String>?): Boolean {
+        if (sender !is Player) {
+            sender!!.sendMessage("You have to be a player to execute this command!")
+            return true
+        }
+
+        sender.crash("NO_REASON_AT_ALL")
         return true
     }
 }

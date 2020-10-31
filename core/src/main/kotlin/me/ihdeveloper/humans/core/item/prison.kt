@@ -17,7 +17,9 @@ import org.bukkit.potion.PotionEffectType
     name = "Prison Stone",
     description = [],
     rarity = GameItemRarity.COMMON,
-    material = Material.STONE
+    material = Material.STONE,
+
+    stackable = true,
 )
 class PrisonStone : NaturalItem()
 

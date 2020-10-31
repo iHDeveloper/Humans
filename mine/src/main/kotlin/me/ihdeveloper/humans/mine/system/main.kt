@@ -90,12 +90,13 @@ class MineSystem : System("Mine"), Listener {
         event.run {
             mines.forEach {
                 if (it.contains(block)) {
+                    val blockType = block.type
+                    block.type = Material.BEDROCK
+
                     if (player.itemInHand.type === Material.AIR) {
                         isCancelled = true
                         return
                     }
-
-                    block.type = Material.BEDROCK
 
                     val gameItemStack = player.inventory.getGameItem(player.inventory.heldItemSlot)
 
@@ -116,7 +117,7 @@ class MineSystem : System("Mine"), Listener {
                             onBreak(player)
                     }
 
-                    it.onMine(player)
+                    it.onMine(player, blockType)
                     isCancelled = true
                     return
                 }

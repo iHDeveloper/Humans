@@ -161,6 +161,7 @@ annotation class GameItemInfo(
     val data: Short = 0,
     val flags: Array<ItemFlag> = [],
     val unbreakable: Boolean = false,
+    val stackable: Boolean = false,
 )
 
 /**
@@ -185,7 +186,7 @@ open class GameItem {
  */
 open class GameItemStack(
     val type: KClass<out GameItem>,
-    val amount: Int = 1,
+    var amount: Int = 1,
 ) {
     val isPickaxe: Boolean
         get() {
