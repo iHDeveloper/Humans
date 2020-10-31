@@ -12,6 +12,7 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
@@ -198,6 +199,13 @@ open class GameItemStack(
     override fun toString(): String {
         return "GameItemStack[type=${type.simpleName}, amount=$amount, isPickaxe=$isPickaxe]"
     }
+}
+
+/**
+ * Handles the item on break event on the [GameItem]
+ */
+interface GameItemOnBreak {
+    fun onBreak(player: Player)
 }
 
 /**
