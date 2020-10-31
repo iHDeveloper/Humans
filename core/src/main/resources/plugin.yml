@@ -57,3 +57,6 @@ commands:
   region-save:
     usage: "region-save"
     description: "Saves the regions configuration"
+  crash:
+    usage: "crash"
+    description: "Crashes the player's connection"

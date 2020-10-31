@@ -50,6 +50,11 @@ fun getItemClass(id: String): KClass<out GameItem>? = byId[id]
 fun getItemInstance(type: KClass<out GameItem>): GameItem? = instances[type]
 
 /**
+ * Returns information about the game item
+ */
+fun getItemInfo(type: KClass<out GameItem>): GameItemInfo? = infos[type]
+
+/**
  * Register a game item in the item registry
  */
 fun registerItem(itemClass: KClass<out GameItem>, logger: GameLogger?) {

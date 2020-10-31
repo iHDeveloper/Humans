@@ -8,6 +8,8 @@ import me.ihdeveloper.humans.core.registry.NullGameItemStack
 import me.ihdeveloper.humans.core.util.getNMSItem
 import me.ihdeveloper.humans.core.registry.createItem
 import me.ihdeveloper.humans.core.registry.getItemClass
+import me.ihdeveloper.humans.core.registry.getItemInfo
+import me.ihdeveloper.humans.core.util.addGameItem
 import me.ihdeveloper.humans.core.util.setGameItem
 import me.ihdeveloper.humans.core.util.setNMSItem
 import net.minecraft.server.v1_8_R3.NBTTagCompound
@@ -37,7 +39,7 @@ class GiveCommand : AdminCommand("give") {
 
         if (args.size == 2) {
             try {
-                amount = Integer.parseInt(args[0])
+                amount = Integer.parseInt(args[1])
             } catch (e: NumberFormatException) {
                 sender.sendMessage("§cFailed to parse the amount.")
                 return true
@@ -51,20 +53,19 @@ class GiveCommand : AdminCommand("give") {
             return true
         }
 
-        if (sender.itemInHand.type !== Material.AIR) {
-            sender.sendMessage("§cYour hand is full with an item!")
-            return true
-        }
-
         sender.inventory.apply {
-            setGameItem(
-                heldItemSlot,
+            if (!addGameItem(
                 if (type === NullGameItem::class)
                     NullGameItemStack(NBTTagCompound().apply {
                         CraftItemStack.asNMSCopy(ItemStack(Material.STONE, 1, 2.toShort())).save(this)
                     })
                 else
-                    GameItemStack(type, amount))
+                    GameItemStack(type, amount)
+            )) {
+                sender.sendMessage("§cYour inventory is full to collect the mined item!")
+                return true
+            }
+            sender.sendMessage("§aSuccess! §eYou got ${getItemInfo(type)?.name ?: "§7NULL"}")
         }
         return true
     }

@@ -4,9 +4,13 @@ import kotlin.random.Random
 import me.ihdeveloper.humans.core.BossBar
 import me.ihdeveloper.humans.core.ConfigurationDeserialize
 import me.ihdeveloper.humans.core.ConfigurationSerialize
+import me.ihdeveloper.humans.core.GameItemStack
+import me.ihdeveloper.humans.core.item.PrisonStone
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.util.GameLogger
+import me.ihdeveloper.humans.core.util.addGameItem
 import me.ihdeveloper.humans.core.util.between
+import me.ihdeveloper.humans.core.util.crash
 import me.ihdeveloper.humans.core.util.hideBossBar
 import me.ihdeveloper.humans.core.util.region
 import me.ihdeveloper.humans.core.util.showBossBar
@@ -90,6 +94,7 @@ class Mine(
     override fun run() {
         var reset = false
         if (resetTime < 0) {
+            logger.info("Mine($name) invoked the auto reset! ($minedBlocks/$blocksSize)")
             reset()
 
             reset = true
@@ -141,7 +146,21 @@ class Mine(
 
     fun contains(block: Block): Boolean = block.location.betweenBlock(pos1, pos2)
 
-    fun onMine(player: Player) {
+    fun onMine(player: Player, type: Material) {
+        // TODO requires rewrite since some items have the same material
+        // TODO write a method to get the item type from based on the material
+        when (type) {
+            Material.STONE -> {
+                if (!player.inventory.addGameItem(GameItemStack(PrisonStone::class, 1))) {
+                    player.sendMessage("§c§lYour inventory is full to collect the mined item!")
+                }
+            }
+            else -> {
+                logger.error("Unknown block has been mined (type=$type). (Issued By ${player.name})")
+                player.crash("UNKNOWN_MINE_MAT_TYPE")
+            }
+        }
+
         minedBlocks++
 
         val count = minersCount[player.name] ?: 0

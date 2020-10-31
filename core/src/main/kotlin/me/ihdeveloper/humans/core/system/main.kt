@@ -5,6 +5,7 @@ import me.ihdeveloper.humans.core.ConfigurationDeserialize
 import me.ihdeveloper.humans.core.ConfigurationSerialize
 import me.ihdeveloper.humans.core.GameRegion
 import me.ihdeveloper.humans.core.System
+import me.ihdeveloper.humans.core.command.CrashCommand
 import me.ihdeveloper.humans.core.command.CreateWarpCommand
 import me.ihdeveloper.humans.core.command.GiveCommand
 import me.ihdeveloper.humans.core.command.ItemInfoCommand
@@ -236,6 +237,8 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
  */
 class CommandSystem : System("Core/Command") {
     private val commands = arrayOf(
+        CrashCommand(),
+
         /** Item Commands */
         GiveCommand(),
         ItemInfoCommand(),
