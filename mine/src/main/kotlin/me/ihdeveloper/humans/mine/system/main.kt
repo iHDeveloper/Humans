@@ -1,8 +1,10 @@
 package me.ihdeveloper.humans.mine.system
 
 import me.ihdeveloper.humans.core.Configuration
+import me.ihdeveloper.humans.core.GameItemOnBreak
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
+import me.ihdeveloper.humans.core.registry.getItemInstance
 import me.ihdeveloper.humans.core.registry.registerEntity
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.util.getGameItem
@@ -109,6 +111,10 @@ class MineSystem : System("Mine"), Listener {
                         return
                     }
 
+                    getItemInstance(gameItemStack.type)?.run {
+                        if (this is GameItemOnBreak)
+                            onBreak(player)
+                    }
 
                     it.onMine(player)
                     isCancelled = true
