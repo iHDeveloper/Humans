@@ -13,27 +13,35 @@ public final class ReflectUtil {
      */
     public static final class NMSDataWatcher {
 
-        public static void update(DataWatcher dataWatcher, int key, Object value) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
+        public static boolean update(DataWatcher dataWatcher, int key, Object value) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
             Class<? extends DataWatcher> dataWatcherClass = dataWatcher.getClass();
 
             // Execute our custom update method
             Method dataWatcher$getWatchedObject = dataWatcherClass.getDeclaredMethod("j", int.class);
             dataWatcher$getWatchedObject.setAccessible(true);
-            DataWatcher.WatchableObject watchableObject = (DataWatcher.WatchableObject) dataWatcher$getWatchedObject.invoke(dataWatcher, key);
+            Object watchableObject = dataWatcher$getWatchedObject.invoke(dataWatcher, key);
+            Class<?> watchableObjectClass = watchableObject.getClass();
 
-            Object currentValue = watchableObject.b();
-            if (value == currentValue) {
-                System.out.println("[ReflectUtil] (NMSDataWatcher) Ignoring the update...");
-                return;
-            }
+            Method watchableObject$getObject = watchableObjectClass.getMethod("b");
+            watchableObject$getObject.setAccessible(true);
+            Object currentValue = watchableObject$getObject.invoke(watchableObject);
+            if (value == currentValue)
+                return false;
 
-            watchableObject.a(value);
-            watchableObject.a(true);
+            Method watchableObject$setObject = watchableObjectClass.getMethod("a", Object.class);
+            watchableObject$setObject.setAccessible(true);
+            watchableObject$setObject.invoke(watchableObject, value);
+
+            Method watchableObject$setWatched = watchableObjectClass.getMethod("a", boolean.class);
+            watchableObject$setWatched.setAccessible(true);
+            watchableObject$setWatched.invoke(watchableObject, true);
 
             // Invoke the object change event
             Field dataWatcher$objectChanged = dataWatcherClass.getDeclaredField("e");
             dataWatcher$objectChanged.setAccessible(true);
             dataWatcher$objectChanged.set(dataWatcher, true);
+
+            return true;
         }
     }
 
