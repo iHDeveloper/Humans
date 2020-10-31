@@ -88,6 +88,13 @@ class Mine(
     }
 
     override fun run() {
+        var reset = false
+        if (resetTime < 0) {
+            reset()
+
+            reset = true
+        }
+
         if (minedBlocks == 0) {
             resetTime = RESET_TIME
         }
@@ -110,6 +117,13 @@ class Mine(
                 players.add(player.name)
             } else {
                 player.updateBossBar()
+            }
+
+            if (reset) {
+                player.sendMessage(arrayOf(
+                    "§eAuto reset has been invoked!",
+                    "§cNo awards to the miners since they didn't finish the mine!"
+                ))
             }
         }
 
@@ -142,6 +156,7 @@ class Mine(
     }
 
     private fun reset() {
+        minedBlocks = 0
         minersCount.clear()
 
         rebuildBlocks()
