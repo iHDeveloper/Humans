@@ -12,6 +12,7 @@ import me.ihdeveloper.humans.core.util.toNMS
 import net.minecraft.server.v1_8_R3.DataWatcher
 import net.minecraft.server.v1_8_R3.MathHelper
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityMetadata
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityTeleport
 import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntityLiving
 import org.bukkit.Location
@@ -119,9 +120,17 @@ class BossBarSystem : System("Core/Boss-Bar"), Listener  {
             players[player.name]?.let { bossBar ->
                 val meta = metas[player.name]!!
 
-                meta.dataWatcher.run {
-                    update(CUSTOM_NAME_KEY, bossBar.title)
-                    with (bossBar) { update(HEALTH_KEY, percentage()) }
+                meta.dataWatcher.let { dataWatcher ->
+                    with (bossBar) {
+                        val customNameUpdated = dataWatcher.update(CUSTOM_NAME_KEY, title)
+                        val healthUpdated = dataWatcher.update(HEALTH_KEY, percentage())
+
+
+                        if (customNameUpdated || healthUpdated) {
+                            player.toNMS().connection.sendPacket(PacketPlayOutEntityMetadata(meta.id, dataWatcher, true))
+                        }
+                    }
+
                 }
             }
         }
@@ -166,10 +175,7 @@ class BossBarSystem : System("Core/Boss-Bar"), Listener  {
             a(key, value)
         }
 
-        private fun DataWatcher.update(key: Int, value: Any) {
-            logger.debug("Updating key($key) with value ($value) [${value::class.qualifiedName}...")
-            ReflectUtil.NMSDataWatcher.update(this, key, value)
-        }
+        private fun DataWatcher.update(key: Int, value: Any) = ReflectUtil.NMSDataWatcher.update(this, key, value)
 
         private fun BossBar.percentage(): Float {
             if (current == max)
