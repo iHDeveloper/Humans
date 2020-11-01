@@ -7,9 +7,9 @@ import me.ihdeveloper.humans.core.ConfigurationSerialize
 import me.ihdeveloper.humans.core.GameItemStack
 import me.ihdeveloper.humans.core.item.PrisonStone
 import me.ihdeveloper.humans.core.registry.spawnEntity
+import me.ihdeveloper.humans.core.util.Conversation
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.util.addGameItem
-import me.ihdeveloper.humans.core.util.between
 import me.ihdeveloper.humans.core.util.crash
 import me.ihdeveloper.humans.core.util.hideBossBar
 import me.ihdeveloper.humans.core.util.region
@@ -42,6 +42,11 @@ class Mine(
     private val blocks: List<Material>,
 ) : Runnable, ConfigurationSerialize {
     companion object: ConfigurationDeserialize<Mine> {
+        private val autoResetMessages = arrayOf(
+            "§7[Wizard] §cOscar: §eAuto reset has been invoked!",
+            "§7[Wizard] §cOscar: §cNo awards to the miners since they didn't finish the mine!"
+        )
+
         override fun deserialize(data: Map<String, Any>) = Mine(
             name = data["name"] as String,
             regionName = data["regionName"] as String,
@@ -125,10 +130,7 @@ class Mine(
             }
 
             if (reset) {
-                player.sendMessage(arrayOf(
-                    "§eAuto reset has been invoked!",
-                    "§cNo awards to the miners since they didn't finish the mine!"
-                ))
+                Conversation(player, autoResetMessages, false, 20L).start()
             }
         }
 

@@ -7,7 +7,12 @@ import org.bukkit.entity.Player
 // TODO requires rewrite
 class Conversation(
     private val player: Player,
-    private val messages: Array<String>
+    private val messages: Array<String>,
+
+    /** If true stops any conversation the player is having right now */
+    private val overwrite: Boolean = true,
+
+    private val duration: Long = 2L * 20L,
 ): Runnable {
     companion object {
         val currentRunning = mutableMapOf<String, Conversation>()
@@ -17,14 +22,16 @@ class Conversation(
     private var stop = false
 
     fun start() {
-        val current = currentRunning[player.name]
-        current?.stop()
+        if (overwrite) {
+            val current = currentRunning[player.name]
+            current?.stop()
 
-        currentRunning[player.name] = this
+            currentRunning[player.name] = this
+        }
         sendChat()
     }
 
-    fun stop() {
+    private fun stop() {
         stop = true
         currentRunning.remove(player.name)
     }
@@ -47,7 +54,7 @@ class Conversation(
     }
 
     private fun schedule() {
-        Bukkit.getScheduler().runTaskLater(corePlugin, this, 2 * 20L)
+        Bukkit.getScheduler().runTaskLater(corePlugin, this, duration)
     }
 
 }
