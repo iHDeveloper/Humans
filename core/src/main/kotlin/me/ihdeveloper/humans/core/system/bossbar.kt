@@ -136,8 +136,8 @@ class BossBarSystem : System("Core/Boss-Bar"), Listener  {
         }
 
         fun destroy(player: Player) {
-            logger.debug("Destroying boss bar for ${player.name}...")
             metas[player.name]?.let { meta ->
+                logger.debug("Destroying boss bar for ${player.name}...")
                 players.remove(player.name)
                 metas.remove(player.name)
 
