@@ -1,6 +1,7 @@
 package me.ihdeveloper.humans.core.entity
 
 import com.mojang.authlib.GameProfile
+import me.ihdeveloper.humans.core.entity.event.EntityOnClick
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.setPrivateField
 import me.ihdeveloper.humans.core.registry.spawnEntity
@@ -84,6 +85,11 @@ open class CustomArmorStand(protected val location: Location)
 
     /** Prevent the prison watcher from getting damaged */
     override fun damageEntity(damagesource: DamageSource?, f: Float): Boolean {
+        if (this is EntityOnClick) {
+            if (damagesource!!.entity is EntityPlayer) {
+                return super.damageEntity(damagesource, f)
+            }
+        }
         return false
     }
 }

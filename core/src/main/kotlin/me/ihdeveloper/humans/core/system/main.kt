@@ -38,6 +38,8 @@ import me.ihdeveloper.humans.core.entity.PrisonGuard
 import me.ihdeveloper.humans.core.entity.PrisonWatcher
 import me.ihdeveloper.humans.core.entity.PrisonWitch
 import me.ihdeveloper.humans.core.entity.WarpCart
+import me.ihdeveloper.humans.core.entity.event.EntityOnClick
+import me.ihdeveloper.humans.core.entity.event.EntityOnInteract
 import me.ihdeveloper.humans.core.entity.fromEntityType
 import me.ihdeveloper.humans.core.gui.GUIImage
 import me.ihdeveloper.humans.core.gui.GUIOverview
@@ -63,7 +65,9 @@ import net.minecraft.server.v1_8_R3.EntityWitch
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer
+import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
@@ -96,6 +100,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerAchievementAwardedEvent
 import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerLoginEvent
@@ -152,9 +157,8 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
     }
 
     override fun init(plugin: JavaPlugin) {
-        Bukkit.getPluginManager().registerEvents(this, plugin)
         Companion.logger = logger
-
+        plugin.server.pluginManager.registerEvents(this, plugin)
 
          Bukkit.getWorlds().forEach { w ->
              w.entities.forEach {
@@ -230,6 +234,28 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
             isCancelled = true
         }
     }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    @Suppress("UNUSED")
+    fun onClick(event: EntityDamageByEntityEvent) {
+        val nmsEntity = event.entity.toNMS()
+        if (nmsEntity is EntityOnClick && event.damager.type === EntityType.PLAYER) {
+            nmsEntity.onClick(event.damager as Player)
+            event.isCancelled = true
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    @Suppress("UNUSED")
+    fun onInteract(event: PlayerInteractAtEntityEvent) {
+        val nmsEntity = event.rightClicked.toNMS()
+        if (nmsEntity is EntityOnInteract) {
+            nmsEntity.onInteract(event.player)
+            event.isCancelled = true
+        }
+    }
+
+    private fun Entity.toNMS() = (this as CraftEntity).handle!!
 }
 
 /**

@@ -4,14 +4,18 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
+import me.ihdeveloper.humans.core.entity.event.EntityOnClick
+import me.ihdeveloper.humans.core.entity.event.EntityOnInteract
 import me.ihdeveloper.humans.core.entity.spawnNPCHologram
 import me.ihdeveloper.humans.core.registry.spawnEntity
+import me.ihdeveloper.humans.core.util.Conversation
 import me.ihdeveloper.humans.core.util.setTexture
 import org.bukkit.Color
 import org.bukkit.Effect
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.LeatherArmorMeta
 import org.bukkit.inventory.meta.SkullMeta
@@ -24,7 +28,14 @@ private const val WIZARD_TABLE_RADIUS = 1F
  */
 class PrisonMineWizard(
     location: Location
-) : CustomArmorStand(location) {
+) : CustomArmorStand(location), EntityOnClick, EntityOnInteract {
+    companion object {
+        private val messages = arrayOf(
+            "§7[Wizard] §cOscar:§f My job is maintaining the mines in the prison",
+            "§7[Wizard] §cOscar:§f And, controls the access to those mines",
+            "§7[Wizard] §cOscar:§f You can get pass to other mines through me"
+        )
+    }
 
     private val holograms = spawnNPCHologram(location, "§cOscar", "§7Prison Mine Wizard", "§e§lCLICK")
     private val table = location.clone().subtract(2.0, 0.0, 0.0).block
@@ -86,6 +97,14 @@ class PrisonMineWizard(
         angle += 3
         if (angle >= 360.0)
             angle = 0.0
+    }
+
+    override fun onClick(player: Player) {
+        Conversation(player, messages).start()
+    }
+
+    override fun onInteract(player: Player) {
+        player.sendMessage("§7[Wizard] §cOscar:§f Come back later to get pass to other mines!")
     }
 
     override fun die() {
