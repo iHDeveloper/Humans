@@ -10,10 +10,19 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 import me.ihdeveloper.humans.core.GameItemRarity
 import me.ihdeveloper.humans.core.GameItemStack
+import me.ihdeveloper.humans.core.GameItemTexture
+import me.ihdeveloper.humans.core.GameItemWithTexture
+import me.ihdeveloper.humans.core.item.EnchantedNaturalItem
 import me.ihdeveloper.humans.core.util.NMSItemStack
+import me.ihdeveloper.humans.core.util.applyTexture
+import me.ihdeveloper.humans.core.util.gameProfile
+import me.ihdeveloper.humans.core.util.itemMeta
+import me.ihdeveloper.humans.core.util.randomGameProfile
 import net.minecraft.server.v1_8_R3.NBTTagCompound
 import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack
+import org.bukkit.enchantments.Enchantment
+import org.bukkit.inventory.meta.SkullMeta
 
 private val infos = mutableMapOf<KClass<out GameItem>, GameItemInfo>()
 private val instances = mutableMapOf<KClass<out GameItem>, GameItem>()
@@ -59,10 +68,13 @@ fun getItemInfo(type: KClass<out GameItem>): GameItemInfo? = infos[type]
  */
 fun registerItem(itemClass: KClass<out GameItem>, logger: GameLogger?) {
     var info: GameItemInfo? = null
+    var texture: GameItemTexture? = null
 
     for (it in itemClass.annotations) {
         if (it is GameItemInfo)
             info = it
+        else if (it is GameItemTexture)
+            texture = it
     }
 
     logger?.debug("Registering item ${itemClass.qualifiedName}...")
@@ -74,7 +86,16 @@ fun registerItem(itemClass: KClass<out GameItem>, logger: GameLogger?) {
 
     byId[info.id] = itemClass
     infos[itemClass] = info
-    instances[itemClass] = itemClass.primaryConstructor!!.call()
+    instances[itemClass] = if (texture == null) {
+        itemClass.primaryConstructor!!.call()
+    } else {
+        itemClass.primaryConstructor!!.call(randomGameProfile().apply {
+            applyTexture(
+                texture.texture,
+                texture.signature
+            )
+        })
+    }
 }
 
 
@@ -99,8 +120,18 @@ fun createItem(itemClass: KClass<out GameItem>, amount: Int = 1): NMSItemStack {
 
     val bukkitItem = ItemStack(info.material, amount, info.data)
 
+    if (instance is GameItemWithTexture) {
+        bukkitItem.apply {
+            itemMeta {
+                (this as SkullMeta).apply {
+                    gameProfile = instance.gameProfile
+                }
+            }
+        }
+    }
+
     bukkitItem.apply {
-        itemMeta = itemMeta.apply {
+        itemMeta {
             displayName = "${info.rarity.color}${info.name}"
             lore = mutableListOf<String>().apply {
                 addAll(info.description)
@@ -110,6 +141,11 @@ fun createItem(itemClass: KClass<out GameItem>, amount: Int = 1): NMSItemStack {
             }
 
             info.flags.forEach { if (it != ItemFlag.HIDE_UNBREAKABLE) addItemFlags(it) }
+
+            if (instance is EnchantedNaturalItem) {
+                addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, true)
+                addItemFlags(ItemFlag.HIDE_ENCHANTS)
+            }
 
             if (info.unbreakable) {
                 addItemFlags(ItemFlag.HIDE_UNBREAKABLE)

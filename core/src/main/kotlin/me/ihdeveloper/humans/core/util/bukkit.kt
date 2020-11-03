@@ -1,5 +1,6 @@
 package me.ihdeveloper.humans.core.util
 
+import com.mojang.authlib.GameProfile
 import me.ihdeveloper.humans.core.BossBar
 import me.ihdeveloper.humans.core.GameRegion
 import me.ihdeveloper.humans.core.core
@@ -32,6 +33,9 @@ var Player.region: GameRegion
         RegionSystem.players[name] = value
     }
     get() = RegionSystem.players[name] ?: RegionSystem.unknown
+
+val Player.gameName: String
+    get() = "${scoreboard.getEntryTeam(name).prefix ?: "§7"}$name"
 
 /**
  * Freezes a player's position
@@ -82,7 +86,7 @@ fun Player.hideBossBar() = BossBarSystem.destroy(this)
 fun Player.crash(error: String) = kickPlayer(arrayOf(
     "§cConnection crashed! §7($error)",
     "§cSomething wrong happened! §7[${core.serverName}]",
-    "Please report the error to the admins.",
+    "§cPlease report the error to the admins.",
 ).joinToString("\n"))
 
 /**
@@ -96,10 +100,20 @@ fun SkullMeta.setTexture(data: String, signature: String) {
         )
     }
 
-    val field = javaClass.getDeclaredField("profile")
-    field.isAccessible = true
-    field.set(this, gameProfile)
+    this.gameProfile = gameProfile
 }
+
+var SkullMeta.gameProfile: GameProfile
+    set(value) {
+        val field = javaClass.getDeclaredField("profile")
+        field.isAccessible = true
+        field.set(this, value)
+    }
+    get() {
+        val field = javaClass.getDeclaredField("profile")
+        field.isAccessible = true
+        return field.get(this) as GameProfile
+    }
 
 fun ItemStack.itemMeta(block: ItemMeta.() -> Unit) {
     itemMeta = itemMeta.apply {

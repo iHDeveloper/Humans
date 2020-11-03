@@ -11,6 +11,7 @@ import me.ihdeveloper.humans.core.util.Conversation
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.util.addGameItem
 import me.ihdeveloper.humans.core.util.crash
+import me.ihdeveloper.humans.core.util.gameName
 import me.ihdeveloper.humans.core.util.hideBossBar
 import me.ihdeveloper.humans.core.util.region
 import me.ihdeveloper.humans.core.util.showBossBar
@@ -70,6 +71,11 @@ class Mine(
         )
     }
 
+    val wizard = PrisonMineWizard(wizardSpawn, when (name) {
+        "stone-mine" -> PrisonMineWizard.ShopType.STONE
+        else -> PrisonMineWizard.ShopType.UNKNOWN
+    })
+
     private val logger = GameLogger("Mine/$name")
     private val bossBar = BossBar("§eReset Time:§f 00:00 §7§l| §eCrystals §7[§c0§7/§a4§7]")
 
@@ -78,10 +84,7 @@ class Mine(
 
     private val players = mutableSetOf<String>()
 
-    private val wizard = PrisonMineWizard(wizardSpawn, when (name) {
-        "stone-mine" -> PrisonMineWizard.ShopType.STONE
-        else -> PrisonMineWizard.ShopType.UNKNOWN
-    })
+
 
     private var resetTime = RESET_TIME
 
@@ -112,28 +115,13 @@ class Mine(
             resetTime = RESET_TIME
         }
 
-        bossBar.title = "§eReset Time:§f ${resetToString()} §7§l| §eCrystals §7[§c0§7/§a4§7]"
+        bossBar.title = "§eReset Time:§f ${resetToString()} §7§l| §eCrystals §7[${crystalsSizeToString()}§7/§a4§7]"
         bossBar.current = minedBlocks
         bossBar.max = blocksSize
 
-        for (player in pos1.world.players) {
-            if (player.region.name != regionName && player.region.name != "$regionName-wizard") {
-                if (players.contains(player.name)) {
-                    player.hideBossBar()
-                    players.remove(player.name)
-                }
-                continue
-            }
-
-            if (!players.contains(player.name)) {
-                player.showBossBar(bossBar)
-                players.add(player.name)
-            } else {
-                player.updateBossBar()
-            }
-
+        update {
             if (reset) {
-                Conversation(player, autoResetMessages, false, 20L).start()
+                Conversation(it, autoResetMessages, false, 20L).start()
             }
         }
 
@@ -177,6 +165,12 @@ class Mine(
             return
 
         players.remove(player.name)
+    }
+
+    fun broadcastCrystal(player: Player) {
+        update {
+            it.sendMessage("${player.gameName}§e placed the crystal in the wizard table §7[${crystalsSizeToString()}§7/§a4§7]")
+        }
     }
 
     private fun reset() {
@@ -226,6 +220,27 @@ class Mine(
         }
     }
 
+    private fun update(block: (player: Player) -> Unit) {
+        for (player in pos1.world.players) {
+            if (player.region.name != regionName && player.region.name != "$regionName-wizard") {
+                if (players.contains(player.name)) {
+                    player.hideBossBar()
+                    players.remove(player.name)
+                }
+                continue
+            }
+
+            if (!players.contains(player.name)) {
+                player.showBossBar(bossBar)
+                players.add(player.name)
+            } else {
+                player.updateBossBar()
+            }
+
+            block(player)
+        }
+    }
+
     private fun resetToString(): String {
         var seconds = resetTime / 20
         var minutes = seconds / 60
@@ -234,6 +249,17 @@ class Mine(
         minutes %= 60
 
         return "${if(minutes <= 9) "0$minutes" else minutes}:${if(seconds <= 9) "0$seconds" else seconds}"
+    }
+
+    private fun crystalsSizeToString(): String {
+        return when (wizard.table.size) {
+            4 -> "§a4"
+            3 -> "§63"
+            2 -> "§e2"
+            1 -> "§f1"
+            0 -> "§c0"
+            else -> "§7${wizard.table.size}"
+        }
     }
 
     private fun Location.betweenBlock(from: Location, to: Location): Boolean {

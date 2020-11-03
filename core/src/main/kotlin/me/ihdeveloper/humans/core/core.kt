@@ -1,5 +1,6 @@
 package me.ihdeveloper.humans.core
 
+import com.mojang.authlib.GameProfile
 import java.io.File
 import kotlin.reflect.KClass
 import me.ihdeveloper.humans.core.registry.getItemInfo
@@ -146,6 +147,7 @@ enum class GameItemRarity(
     COMMON(ChatColor.WHITE),
     UNCOMMON(ChatColor.GREEN),
     RARE(ChatColor.BLUE),
+    EPIC(ChatColor.DARK_PURPLE),
     SPECIAL(ChatColor.RED);
 }
 
@@ -165,6 +167,18 @@ annotation class GameItemInfo(
     val flags: Array<ItemFlag> = [],
     val unbreakable: Boolean = false,
     val stackable: Boolean = false,
+)
+
+/**
+ * Represents information about the skull texture.
+ *
+ * The item material should be [Material.SKULL_ITEM] with the data value of 3
+ */
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class GameItemTexture(
+    val texture: String,
+    val signature: String,
 )
 
 /**
@@ -188,6 +202,13 @@ open class GameItem {
         } ?: return "§7Unknown Item"
     }
 }
+
+/**
+ * Represents an instance of an item with texture in the game
+ */
+open class GameItemWithTexture(
+    val gameProfile: GameProfile
+) : GameItem()
 
 /**
  * A stateful instance of the game item to avoid using [ItemStack]
