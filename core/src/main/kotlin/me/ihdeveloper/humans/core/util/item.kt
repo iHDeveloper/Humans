@@ -1,7 +1,6 @@
 package me.ihdeveloper.humans.core.util
 
 import kotlin.math.abs
-import kotlin.math.max
 import me.ihdeveloper.humans.core.GameItemStack
 import me.ihdeveloper.humans.core.registry.NullGameItem
 import me.ihdeveloper.humans.core.registry.NullGameItemStack
@@ -18,7 +17,7 @@ typealias NMSItemStack = ItemStack
 /**
  * Sets a NMS item directly from inventory
  */
-fun Inventory.setNMSItem(index: Int, nmsItem: NMSItemStack) = (this as CraftInventory).inventory.setItem(index, nmsItem)
+fun Inventory.setNMSItem(index: Int, nmsItem: NMSItemStack?) = (this as CraftInventory).inventory.setItem(index, nmsItem)
 
 /**
  * Gets a NMS item directly from inventory
@@ -28,7 +27,12 @@ fun Inventory.getNMSItem(index: Int): ItemStack? = (this as CraftInventory).inve
 /**
  * Sets a game item in the inventory
  */
-fun Inventory.setGameItem(index: Int, item: GameItemStack) {
+fun Inventory.setGameItem(index: Int, item: GameItemStack?) {
+    if (item === null) {
+        setNMSItem(index, null)
+        return
+    }
+
     val nmsItem = createItem(item.type, item.amount)
 
     /** Include any state of the item in NBT */
@@ -142,5 +146,84 @@ fun Inventory.addGameItem(item: GameItemStack): Boolean {
         setGameItem(firstEmptySlot, item)
         return true
     }
+    return false
+}
+
+fun Inventory.hasGameItem(item: GameItemStack): Boolean {
+    val itemInfo = getItemInfo(item.type) ?: return false
+    var itemAmount = item.amount
+
+    for (slot in 0 until size) {
+        val current = getGameItem(slot)
+
+        if (current === null)
+            continue
+
+        if (current.type !== item.type)
+            continue
+
+        if (itemInfo.stackable) {
+            itemAmount -= current.amount
+
+            /** If we found enough amount of the given item then we assume that we found it */
+            if (itemAmount <= 0)
+                return true
+        } else {
+            /** Found unstackable item that matches the given item */
+            return true
+        }
+    }
+
+    /** The stackable items found total amount is smaller then the given item amount */
+    /** Or, we didn't find the unstackable item */
+    return false
+}
+
+fun Inventory.removeGameItem(item: GameItemStack): Boolean {
+    val itemInfo = getItemInfo(item.type) ?: return false
+    var itemAmount = item.amount
+    val removedSlots = arrayListOf<Int>()
+
+    for (slot in 0 until size) {
+        val current = getGameItem(slot)
+
+        if (current === null)
+            continue
+
+        if (current.type !== item.type)
+            continue
+
+        if (itemInfo.stackable) {
+            if (current.amount <= itemAmount) {
+                val same = current.amount == itemAmount
+                /** We found an item that has the same amount of our item or less */
+                itemAmount -= current.amount
+
+                removedSlots.add(slot)
+
+                /** Since the amount counter is zero we can skip going through the other items */
+                if (same)
+                    break
+            } else {
+                current.amount -= itemAmount
+
+                removedSlots.forEach { setGameItem(it, null) }
+                setGameItem(slot, current)
+                return true
+            }
+        } else {
+            /** If we found the unstackable item that equals to the given item we remove it immediately */
+            setGameItem(slot, null)
+            return true
+        }
+    }
+
+    if (itemAmount <= 0) {
+        removedSlots.forEach { setGameItem(it, null) }
+
+        return true
+    }
+
+    /** Unstackable item wasn't found to be removed */
     return false
 }

@@ -2,6 +2,8 @@ package me.ihdeveloper.humans.core
 
 import java.io.File
 import kotlin.reflect.KClass
+import me.ihdeveloper.humans.core.registry.getItemInfo
+import me.ihdeveloper.humans.core.registry.getItemInstance
 import me.ihdeveloper.humans.core.system.SceneSystem
 import me.ihdeveloper.humans.core.util.GameLogger
 import org.bukkit.Bukkit
@@ -143,6 +145,7 @@ enum class GameItemRarity(
 ) {
     COMMON(ChatColor.WHITE),
     UNCOMMON(ChatColor.GREEN),
+    RARE(ChatColor.BLUE),
     SPECIAL(ChatColor.RED);
 }
 
@@ -178,6 +181,12 @@ annotation class GameItemPickaxe
  */
 open class GameItem {
     open val raritySuffix: String? = null
+
+    override fun toString(): String {
+        getItemInfo(this::class)?.let {
+            return "${it.rarity.color}${it.name}"
+        } ?: return "§7Unknown Item"
+    }
 }
 
 /**
@@ -198,7 +207,9 @@ open class GameItemStack(
         }
 
     override fun toString(): String {
-        return "GameItemStack[type=${type.simpleName}, amount=$amount, isPickaxe=$isPickaxe]"
+       getItemInstance(this.type)?.let {
+           return it.toString()
+       } ?: return "§7Unknown Item"
     }
 }
 

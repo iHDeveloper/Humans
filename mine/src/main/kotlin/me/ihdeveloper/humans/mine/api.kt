@@ -33,7 +33,7 @@ class MineIntegrationAPI : IntegrationAPI {
     )
 
     override fun fromEntityType(type: String, location: Location): Entity? = when (type) {
-        "prison_mine_wizard" -> PrisonMineWizard(location)
+        "prison_mine_wizard" -> PrisonMineWizard(location, PrisonMineWizard.ShopType.UNKNOWN)
         "prison_mine_crystal" -> PrisonMineCrystal(location)
         else -> null
     }

@@ -1,6 +1,7 @@
 package me.ihdeveloper.humans.core.gui
 
 import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 
@@ -35,4 +36,22 @@ class GUIImage(
             flags?.forEach { addItemFlags(it) }
         }
     }
+}
+
+/**
+ * Represents a component that requires player's object to render
+ */
+interface GUIRenderByPlayer {
+    fun renderByPlayer(player: Player): ItemStack
+}
+
+/**
+ * Represents a component that re-render when the player clicks on it
+ */
+interface GUIOnClick {
+
+    /**
+     * Returns true when the component needs to be re-rendered
+     */
+    fun onClick(player: Player): Boolean
 }

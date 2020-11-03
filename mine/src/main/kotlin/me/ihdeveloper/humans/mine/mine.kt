@@ -78,7 +78,10 @@ class Mine(
 
     private val players = mutableSetOf<String>()
 
-    private val wizard = PrisonMineWizard(wizardSpawn)
+    private val wizard = PrisonMineWizard(wizardSpawn, when (name) {
+        "stone-mine" -> PrisonMineWizard.ShopType.STONE
+        else -> PrisonMineWizard.ShopType.UNKNOWN
+    })
 
     private var resetTime = RESET_TIME
 
