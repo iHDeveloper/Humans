@@ -1,6 +1,7 @@
 package me.ihdeveloper.humans.core.system
 
 import me.ihdeveloper.humans.core.System
+import me.ihdeveloper.humans.core.item.PrisonCoalPass
 import me.ihdeveloper.humans.core.item.PrisonCursedPickaxe
 import me.ihdeveloper.humans.core.item.PrisonNormalPickaxe
 import me.ihdeveloper.humans.core.item.PrisonStone
@@ -19,6 +20,9 @@ class ItemSystem : System("Core/Item") {
         /** Prison Tool Items */
         registerItem(PrisonNormalPickaxe::class, logger)
         registerItem(PrisonCursedPickaxe::class, logger)
+
+        /** Prison Mine Passes */
+        registerItem(PrisonCoalPass::class, logger)
     }
 
     override fun dispose() {}

@@ -15,3 +15,10 @@ abstract class NaturalItem : GameItem() {
 abstract class ToolItem : GameItem() {
     override val raritySuffix = "TOOL"
 }
+
+/**
+ * Abstraction for mine pass items (e.g. coal pass, gold pass, etc...)
+ */
+abstract class MinePassItem : GameItem() {
+    override val raritySuffix = "MINE PASS"
+}

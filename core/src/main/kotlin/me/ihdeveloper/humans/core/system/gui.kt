@@ -2,12 +2,16 @@ package me.ihdeveloper.humans.core.system
 
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.gui.GUIImage
+import me.ihdeveloper.humans.core.gui.GUIOnClick
 import me.ihdeveloper.humans.core.gui.GUIOverview
 import me.ihdeveloper.humans.core.gui.GUIScreen
+import me.ihdeveloper.humans.core.gui.GUIShopSale
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.plugin.java.JavaPlugin
@@ -34,7 +38,23 @@ class GUISystem : System("Core/GUI"), Listener {
 
             val component = screen.getComponent(slot) ?: return
 
-            if (component is GUIImage || component is GUIOverview) {
+            if (action !== InventoryAction.PICKUP_ONE
+                && action !== InventoryAction.PICKUP_SOME
+                && action !== InventoryAction.PICKUP_HALF
+                && action !== InventoryAction.PICKUP_ALL) {
+                isCancelled = true
+                return
+            }
+
+            if (component !is GUIOnClick) {
+                isCancelled = true
+                return
+            }
+
+            if (component.onClick(whoClicked as Player)) {
+
+                /** Re-renders the component on the screen */
+                screen.setItem(slot, component)
                 isCancelled = true
             }
         }

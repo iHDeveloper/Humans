@@ -3,12 +3,21 @@ package me.ihdeveloper.humans.mine.entity
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
+import me.ihdeveloper.humans.core.GameItemStack
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
 import me.ihdeveloper.humans.core.entity.event.EntityOnClick
 import me.ihdeveloper.humans.core.entity.event.EntityOnInteract
 import me.ihdeveloper.humans.core.entity.spawnNPCHologram
+import me.ihdeveloper.humans.core.gui.GUIBlank
+import me.ihdeveloper.humans.core.gui.GUIImage
+import me.ihdeveloper.humans.core.gui.GUIShopSale
+import me.ihdeveloper.humans.core.gui.screen
+import me.ihdeveloper.humans.core.item.PrisonCoalPass
+import me.ihdeveloper.humans.core.item.PrisonNormalPickaxe
+import me.ihdeveloper.humans.core.item.PrisonStone
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.util.Conversation
+import me.ihdeveloper.humans.core.util.openScreen
 import me.ihdeveloper.humans.core.util.setTexture
 import org.bukkit.Color
 import org.bukkit.Effect
@@ -27,8 +36,14 @@ private const val WIZARD_TABLE_RADIUS = 1F
  * A monster that manages the mine crystals
  */
 class PrisonMineWizard(
-    location: Location
+    location: Location,
+    private val shopType: ShopType,
 ) : CustomArmorStand(location), EntityOnClick, EntityOnInteract {
+    enum class ShopType {
+        STONE,
+        UNKNOWN;
+    }
+
     companion object {
         private val messages = arrayOf(
             "§7[Wizard] §cOscar:§f My job is maintaining the mines in the prison",
@@ -104,7 +119,32 @@ class PrisonMineWizard(
     }
 
     override fun onInteract(player: Player) {
-        player.sendMessage("§7[Wizard] §cOscar:§f Come back later to get pass to other mines!")
+        val screen = screen(3, "§8» Wizard Shop", player) {
+            val blank = GUIBlank()
+
+            for (y in 0..2)
+                for (x in 0..8)
+                    setItem(x, y, blank)
+
+            when (shopType) {
+                ShopType.STONE -> {
+                    setItem(3, 1, GUIShopSale(
+                        GameItemStack(PrisonCoalPass::class, 1),
+                        GameItemStack(PrisonStone::class, 64),
+                    ))
+
+                    setItem(5, 1, GUIShopSale(
+                        GameItemStack(PrisonNormalPickaxe::class, 1),
+                        GameItemStack(PrisonStone::class, 32),
+                    ))
+                }
+                ShopType.UNKNOWN -> {
+                    setItem(4, 1, GUIImage(Material.BARRIER, 1, 0, "§8» §7Coming soon..."))
+                }
+            }
+        }
+
+        player.openScreen(screen)
     }
 
     override fun die() {

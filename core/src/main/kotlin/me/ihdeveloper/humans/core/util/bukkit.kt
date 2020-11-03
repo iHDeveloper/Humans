@@ -11,6 +11,8 @@ import me.ihdeveloper.humans.core.system.ProfileSystem
 import me.ihdeveloper.humans.core.system.RegionSystem
 import me.ihdeveloper.humans.service.api.Profile
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.util.Vector
 
@@ -97,4 +99,10 @@ fun SkullMeta.setTexture(data: String, signature: String) {
     val field = javaClass.getDeclaredField("profile")
     field.isAccessible = true
     field.set(this, gameProfile)
+}
+
+fun ItemStack.itemMeta(block: ItemMeta.() -> Unit) {
+    itemMeta = itemMeta.apply {
+        block(this)
+    }
 }
