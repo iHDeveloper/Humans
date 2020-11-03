@@ -13,16 +13,20 @@ import me.ihdeveloper.humans.core.gui.GUIImage
 import me.ihdeveloper.humans.core.gui.GUIShopSale
 import me.ihdeveloper.humans.core.gui.screen
 import me.ihdeveloper.humans.core.item.PrisonCoalPass
+import me.ihdeveloper.humans.core.item.PrisonCrystal
 import me.ihdeveloper.humans.core.item.PrisonNormalPickaxe
 import me.ihdeveloper.humans.core.item.PrisonStone
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.util.Conversation
+import me.ihdeveloper.humans.core.util.addGameItem
 import me.ihdeveloper.humans.core.util.openScreen
 import me.ihdeveloper.humans.core.util.setTexture
+import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Effect
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.block.Block
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -31,6 +35,7 @@ import org.bukkit.inventory.meta.SkullMeta
 
 private const val CRYSTAL_YAW_SPEED = 3.5F
 private const val WIZARD_TABLE_RADIUS = 1F
+private const val WIZARD_TIMEOUT = 20L * 60L
 
 /**
  * A monster that manages the mine crystals
@@ -53,20 +58,7 @@ class PrisonMineWizard(
     }
 
     private val holograms = spawnNPCHologram(location, "§cOscar", "§7Prison Mine Wizard", "§e§lCLICK")
-    private val table = location.clone().subtract(2.0, 0.0, 0.0).block
-
-    private val tableCrystalLocation = table.location.clone().add(0.5, 0.25, 0.5)
-    private val tableParticleLocation = table.location.clone().add(0.5, 0.15, 0.5)
-
-    private val crystals = mutableListOf(
-        PrisonMineCrystal(tableCrystalLocation.clone()),
-        PrisonMineCrystal(tableCrystalLocation.clone()),
-        PrisonMineCrystal(tableCrystalLocation.clone()),
-        PrisonMineCrystal(tableCrystalLocation.clone()),
-    )
-
-    /** Represents the current angle */
-    private var angle = 0.0
+    val table = PrisonMineWizardTable(location.clone().subtract(2.0, 0.0, 0.0).block)
 
     init {
         customName = "§cPrison Mine Wizard"
@@ -93,25 +85,6 @@ class PrisonMineWizard(
                 }
             }
         }
-
-        if (table.type != Material.ENDER_PORTAL_FRAME)
-            table.type = Material.ENDER_PORTAL_FRAME
-
-        updateCrystals()
-
-        crystals.forEach { spawnEntity(it, false, null) }
-    }
-
-    override fun t_() {
-        super.t_()
-
-        world.world.spigot().playEffect(tableParticleLocation, Effect.WITCH_MAGIC)
-
-        updateCrystals()
-
-        angle += 3
-        if (angle >= 360.0)
-            angle = 0.0
     }
 
     override fun onClick(player: Player) {
@@ -147,14 +120,121 @@ class PrisonMineWizard(
         player.openScreen(screen)
     }
 
+    override fun t_() {
+        super.t_()
+
+        table.onTick()
+    }
+
     override fun die() {
         super.die()
 
-        crystals.forEach { it.die() }
+        table.destroy()
         holograms.forEach { it.die() }
     }
 
+}
+
+/**
+ * A table the handles the crystal entities
+ */
+class PrisonMineWizardTable(
+    val block: Block
+) {
+    val size: Int
+        get() = crystals.size
+
+    private val crystalLocation = block.location.clone().add(.5, .25, .5)
+    private val particleLocation = block.location.clone().add(.5, .15, .5)
+
+    private val crystals = mutableListOf<PrisonMineCrystal>()
+    private val players = mutableMapOf<String, Int>()
+
+    private var angle = 0.0
+    private var timeout = WIZARD_TIMEOUT
+
+    init {
+        if (block.type != Material.ENDER_PORTAL_FRAME)
+            block.type = Material.ENDER_PORTAL_FRAME
+
+        updateCrystals()
+
+        crystals.forEach { spawnEntity(it, false, null) }
+    }
+
+    /** Adds crystal to the table */
+    fun add(player: Player) {
+        val crystal = PrisonMineCrystal(crystalLocation.clone())
+        crystals.add(crystal)
+
+        updateCrystals()
+        players[player.name] = players.getOrDefault(player.name, 0) + 1
+
+        spawnEntity(crystal, false, null)
+    }
+
+    /** Remove the crystals and give them to the player */
+    fun remove(player: Player): Int {
+        val count = players[player.name]
+        if (count === null) {
+            return -1
+        }
+        players.remove(player.name)
+
+        val crystalItemStack = GameItemStack(PrisonCrystal::class)
+
+        for (ignored in 1..count) {
+            val crystal = crystals[size - 1]
+            crystals.removeAt(size - 1)
+            crystal.die()
+
+            player.inventory.addGameItem(crystalItemStack)
+        }
+
+        player.sendMessage("§eYou got §7x$count $crystalItemStack§e from the wizard table")
+
+        return count
+    }
+
+    /** De-spawns all crystals in the table */
+    private fun reset() {
+        players.keys.forEach {
+            remove(Bukkit.getPlayerExact(it))
+        }
+
+        crystals.forEach { it.die() }
+        crystals.clear()
+    }
+
+    internal fun onTick() {
+        if (size <= 0) {
+            timeout = WIZARD_TIMEOUT
+        } else {
+            particleLocation.world.spigot().playEffect(particleLocation, Effect.WITCH_MAGIC)
+        }
+
+        updateCrystals()
+
+        timeout--
+        if (timeout <= 0) {
+            reset()
+            angle = 0.0
+            return
+        }
+
+        angle += 3
+        if (angle >= 360.0)
+            angle = 0.0
+    }
+
+    internal fun destroy() {
+        crystals.forEach { it.die() }
+    }
+
     private fun updateCrystals() {
+        if (size <= 0)
+            return
+
         val anglePerCrystal = 360 / crystals.size
 
         var currentAngle = angle
@@ -163,8 +243,8 @@ class PrisonMineWizard(
             val newLoc = crystal.crystalLocation.apply {
                 val radian = (currentAngle * PI) / 180
 
-                x = tableCrystalLocation.x + (WIZARD_TABLE_RADIUS * cos(radian))
-                z = tableCrystalLocation.z + (WIZARD_TABLE_RADIUS * sin(radian))
+                x = crystalLocation.x + (WIZARD_TABLE_RADIUS * cos(radian))
+                z = crystalLocation.z + (WIZARD_TABLE_RADIUS * sin(radian))
                 yaw += CRYSTAL_YAW_SPEED
             }
 
@@ -172,7 +252,6 @@ class PrisonMineWizard(
             currentAngle += anglePerCrystal
         }
     }
-
 }
 
 /**

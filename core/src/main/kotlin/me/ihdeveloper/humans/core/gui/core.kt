@@ -88,7 +88,7 @@ class GUIShopSale(
                     addAll(arrayOf(
                         "§7",
                         "§eCosts",
-                        "§8» §f${cost.amount}${costInfo.rarity.color} ${costInfo.name}",
+                        "§8» §7x${cost.amount}${costInfo.rarity.color} ${costInfo.name}",
                         "§7",
                         if (player.inventory.hasGameItem(cost)) "§aYou can purchase this item!" else "§cYou can't purchase this item!",
                         "§7",

@@ -10,6 +10,13 @@ abstract class NaturalItem : GameItem() {
 }
 
 /**
+ * Abstraction for enchanted natural items (e.g. Enchanted Stone, Enchanted Coal, etc...)
+ */
+abstract class EnchantedNaturalItem : GameItem() {
+    override val raritySuffix = "ENCHANTED NATURAL"
+}
+
+/**
  * Abstraction for tool items (e.g. pickaxe, axe, etc...)
  */
 abstract class ToolItem : GameItem() {

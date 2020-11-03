@@ -128,8 +128,10 @@ class ProfileSystem : System("Core/Profile"), Listener {
 
     /**
      * Update the player's inventory immediately
+     *
+     * It's priority is low. So that any event in the lowest can change the player.
      */
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOW)
     @Suppress("UNUSED")
     fun onQuit(event: PlayerQuitEvent) {
         event.run {
