@@ -15,6 +15,9 @@ import me.ihdeveloper.humans.core.command.PlaySceneCommand
 import me.ihdeveloper.humans.core.command.RegionNewCommand
 import me.ihdeveloper.humans.core.command.RegionSaveCommand
 import me.ihdeveloper.humans.core.command.RegionSetCommand
+import me.ihdeveloper.humans.core.command.RewardCreateCommand
+import me.ihdeveloper.humans.core.command.RewardDestroyCommand
+import me.ihdeveloper.humans.core.command.RewardSpawnCommand
 import me.ihdeveloper.humans.core.command.SaveSceneCommand
 import me.ihdeveloper.humans.core.command.SceneSetLocationCommand
 import me.ihdeveloper.humans.core.command.SetSpawnCommand
@@ -37,6 +40,7 @@ import me.ihdeveloper.humans.core.entity.ItemHologram
 import me.ihdeveloper.humans.core.entity.PrisonGuard
 import me.ihdeveloper.humans.core.entity.PrisonWatcher
 import me.ihdeveloper.humans.core.entity.PrisonWitch
+import me.ihdeveloper.humans.core.entity.RewardItem
 import me.ihdeveloper.humans.core.entity.WarpCart
 import me.ihdeveloper.humans.core.entity.event.EntityOnClick
 import me.ihdeveloper.humans.core.entity.event.EntityOnInteract
@@ -186,6 +190,7 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
         registerEntity(PrisonWatcher::class, CustomArmorStand::class, logger)
         registerEntity(PrisonWitch::class, CustomWitch::class, logger)
         registerEntity(PrisonWitch.Potion::class, CustomPotion::class, logger)
+        registerEntity(RewardItem::class, CustomArmorStand::class, logger)
     }
 
     override fun lateInit(plugin: JavaPlugin) {
@@ -295,6 +300,11 @@ class CommandSystem : System("Core/Command") {
         RegionNewCommand(),
         RegionSetCommand(),
         RegionSaveCommand(),
+
+        /** Reward square commands */
+        RewardCreateCommand(),
+        RewardSpawnCommand(),
+        RewardDestroyCommand(),
     )
 
     override fun init(plugin: JavaPlugin) {

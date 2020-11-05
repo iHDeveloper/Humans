@@ -60,3 +60,12 @@ commands:
   crash:
     usage: "crash"
     description: "Crashes the player's connection"
+  reward-create:
+    usage: "reward-create"
+    description: "Creates a reward square"
+  reward-spawn:
+    usage: "reward-spawn"
+    description: "Spawns the created reward square"
+  reward-destroy:
+    usage: "reward-destroy"
+    description: "Destroys the created reward square"
