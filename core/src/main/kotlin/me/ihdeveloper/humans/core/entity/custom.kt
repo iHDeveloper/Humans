@@ -2,18 +2,22 @@ package me.ihdeveloper.humans.core.entity
 
 import com.mojang.authlib.GameProfile
 import me.ihdeveloper.humans.core.entity.event.EntityOnClick
-import me.ihdeveloper.humans.core.util.GameLogger
-import me.ihdeveloper.humans.core.setPrivateField
+import me.ihdeveloper.humans.core.getPrivateField
 import me.ihdeveloper.humans.core.registry.spawnEntity
+import me.ihdeveloper.humans.core.setPrivateField
 import me.ihdeveloper.humans.core.system.NPCSystem
 import me.ihdeveloper.humans.core.system.TEAM_NPC
+import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.util.NMSItemStack
+import me.ihdeveloper.humans.core.util.toNMS
 import me.ihdeveloper.humans.core.util.toNMSWorld
+import me.ihdeveloper.humans.core.util.toServer
 import net.minecraft.server.v1_8_R3.DamageSource
 import net.minecraft.server.v1_8_R3.Entity
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntityGiantZombie
 import net.minecraft.server.v1_8_R3.EntityHuman
+import net.minecraft.server.v1_8_R3.EntityLightning
 import net.minecraft.server.v1_8_R3.EntityLiving
 import net.minecraft.server.v1_8_R3.EntityMinecartRideable
 import net.minecraft.server.v1_8_R3.EntityPlayer
@@ -27,6 +31,7 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutAnimation
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityHeadRotation
 import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo
+import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntityWeather
 import net.minecraft.server.v1_8_R3.PathfinderGoalSelector
 import net.minecraft.server.v1_8_R3.PlayerConnection
 import net.minecraft.server.v1_8_R3.PlayerInteractManager
@@ -417,3 +422,22 @@ open class CustomPotion(
     entity: EntityLiving,
     type: Int
 ) : EntityPotion(toNMSWorld(world), entity, type)
+
+/**
+ * Represents a lightning entity on location
+ */
+open class CustomLightning(
+    location: Location,
+    isEffect: Boolean,
+) : EntityLightning(toNMSWorld(location.world), location.x, location.y, location.z, isEffect) {
+
+    override fun t_() {
+        when (getPrivateField<Int>(EntityLightning::class, this, "lifeTicks")) {
+            2 -> world.server.toNMS().playerList.sendPacketNearby(locX, locY, locZ, 512.0, world.toServer().dimension, PacketPlayOutSpawnEntityWeather(this))
+            0 -> setPrivateField(EntityLightning::class, this, "c", 0)
+        }
+
+        super.t_()
+    }
+
+}
