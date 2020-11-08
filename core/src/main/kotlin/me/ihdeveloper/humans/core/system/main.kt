@@ -29,6 +29,7 @@ import me.ihdeveloper.humans.core.command.WarpSaveCommand
 import me.ihdeveloper.humans.core.core
 import me.ihdeveloper.humans.core.corePlugin
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
+import me.ihdeveloper.humans.core.entity.CustomFallingBlock
 import me.ihdeveloper.humans.core.entity.CustomGiant
 import me.ihdeveloper.humans.core.entity.CustomMineCart
 import me.ihdeveloper.humans.core.entity.CustomNPC
@@ -61,6 +62,7 @@ import me.ihdeveloper.humans.core.util.openScreen
 import me.ihdeveloper.humans.core.util.profile
 import me.ihdeveloper.humans.core.util.region
 import net.minecraft.server.v1_8_R3.EntityArmorStand
+import net.minecraft.server.v1_8_R3.EntityFallingBlock
 import net.minecraft.server.v1_8_R3.EntityGiantZombie
 import net.minecraft.server.v1_8_R3.EntityMinecartRideable
 import net.minecraft.server.v1_8_R3.EntityPotion
@@ -179,6 +181,7 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
         overrideEntity(EntityGiantZombie::class, CustomGiant::class, logger)
         overrideEntity(EntityWitch::class, CustomWitch::class, logger)
         overrideEntity(EntityPotion::class, CustomPotion::class, logger)
+        overrideEntity(EntityFallingBlock::class, CustomFallingBlock::class, logger)
 
         logger.info("Registering entities...")
 
