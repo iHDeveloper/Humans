@@ -12,9 +12,11 @@ import me.ihdeveloper.humans.core.util.NMSItemStack
 import me.ihdeveloper.humans.core.util.toNMS
 import me.ihdeveloper.humans.core.util.toNMSWorld
 import me.ihdeveloper.humans.core.util.toServer
+import net.minecraft.server.v1_8_R3.Block
 import net.minecraft.server.v1_8_R3.DamageSource
 import net.minecraft.server.v1_8_R3.Entity
 import net.minecraft.server.v1_8_R3.EntityArmorStand
+import net.minecraft.server.v1_8_R3.EntityFallingBlock
 import net.minecraft.server.v1_8_R3.EntityGiantZombie
 import net.minecraft.server.v1_8_R3.EntityHuman
 import net.minecraft.server.v1_8_R3.EntityLightning
@@ -39,6 +41,7 @@ import net.minecraft.server.v1_8_R3.Vec3D
 import net.minecraft.server.v1_8_R3.WorldServer
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer
 import org.bukkit.craftbukkit.v1_8_R3.util.UnsafeList
@@ -441,3 +444,9 @@ open class CustomLightning(
     }
 
 }
+
+@Suppress("DEPRECATION")
+open class CustomFallingBlock(
+    type: Material,
+    location: Location
+) : EntityFallingBlock(toNMSWorld(location.world), location.x, location.y, location.z, Block.getById(type.id).blockData)
