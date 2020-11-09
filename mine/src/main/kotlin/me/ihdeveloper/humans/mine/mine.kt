@@ -5,9 +5,9 @@ import me.ihdeveloper.humans.core.BossBar
 import me.ihdeveloper.humans.core.ConfigurationDeserialize
 import me.ihdeveloper.humans.core.ConfigurationSerialize
 import me.ihdeveloper.humans.core.GameItemStack
+import me.ihdeveloper.humans.core.Scene
 import me.ihdeveloper.humans.core.item.PrisonStone
 import me.ihdeveloper.humans.core.registry.spawnEntity
-import me.ihdeveloper.humans.core.util.Conversation
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.util.addGameItem
 import me.ihdeveloper.humans.core.util.crash
@@ -17,6 +17,7 @@ import me.ihdeveloper.humans.core.util.region
 import me.ihdeveloper.humans.core.util.showBossBar
 import me.ihdeveloper.humans.core.util.updateBossBar
 import me.ihdeveloper.humans.mine.entity.PrisonMineWizard
+import me.ihdeveloper.humans.mine.scene.NormalResetScene
 import me.ihdeveloper.humans.mine.system.MineSystem
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -43,11 +44,6 @@ class Mine(
     private val blocks: List<Material>,
 ) : Runnable, ConfigurationSerialize {
     companion object: ConfigurationDeserialize<Mine> {
-        private val autoResetMessages = arrayOf(
-            "§7[Wizard] §cOscar: §eAuto reset has been invoked!",
-            "§7[Wizard] §cOscar: §cNo awards to the miners since they didn't finish the mine!"
-        )
-
         override fun deserialize(data: Map<String, Any>) = Mine(
             name = data["name"] as String,
             regionName = data["regionName"] as String,
@@ -84,10 +80,8 @@ class Mine(
 
     private val players = mutableSetOf<String>()
 
-
-
+    private lateinit var resetScene: Scene
     private var resetTime = RESET_TIME
-
     private var blocksSize = 0
     private var minedBlocks = 0
 
@@ -103,12 +97,11 @@ class Mine(
     }
 
     override fun run() {
-        var reset = false
         if (resetTime < 0) {
             logger.info("Mine($name) invoked the auto reset! ($minedBlocks/$blocksSize)")
-            reset()
 
-            reset = true
+            resetScene = NormalResetScene(this)
+            resetScene.start()
         }
 
         if (minedBlocks == 0) {
@@ -119,11 +112,7 @@ class Mine(
         bossBar.current = minedBlocks
         bossBar.max = blocksSize
 
-        update {
-            if (reset) {
-                Conversation(it, autoResetMessages, false, 20L).start()
-            }
-        }
+        update {}
 
         resetTime--
     }
@@ -173,7 +162,13 @@ class Mine(
         }
     }
 
-    private fun reset() {
+    fun broadcastMessage(message: String) {
+        update {
+            it.sendMessage(message)
+        }
+    }
+
+    fun reset() {
         minedBlocks = 0
         minersCount.clear()
 
