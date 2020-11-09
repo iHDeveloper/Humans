@@ -265,7 +265,7 @@ open class Scene(
     /** A frame is something that happens at a certain time since the scene started */
     private val frames = mutableMapOf<Long, () -> Unit>()
 
-    protected var currentFrame: Long = 0
+    private var currentFrame: Long = 0
     private var cancelThisTick = false
 
     open fun start() {
@@ -344,7 +344,6 @@ open class Scene(
      * Called before the frame's being executed
      */
     protected fun everyFrame(block: () -> Unit) = frame(-2L, block)
-
 
     private fun schedule() = Bukkit.getScheduler().runTaskLater(SceneSystem.plugin, this, 1L)
 }

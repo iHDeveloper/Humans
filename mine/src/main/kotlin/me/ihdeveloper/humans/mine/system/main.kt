@@ -86,6 +86,11 @@ class MineSystem : System("Mine"), Listener {
                     && player.inventory.getGameItem(player.inventory.heldItemSlot)?.type === PrisonCrystal::class) {
                     isCancelled = true
 
+                    if (table.isLocked) {
+                        player.sendMessage("§cThe table is locked. You can't place anything on it!")
+                        return
+                    }
+
                     if (table.size >= 4) {
                         player.sendMessage("§cYou can't place more then 4 crystals in this table")
                         return

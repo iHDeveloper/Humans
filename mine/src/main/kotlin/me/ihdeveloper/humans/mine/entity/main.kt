@@ -144,6 +144,9 @@ class PrisonMineWizardTable(
     val size: Int
         get() = crystals.size
 
+    /** If locked then the player will not able to put crystal on the table 0*/
+    var isLocked = false
+
     private val crystalLocation = block.location.clone().add(.5, .25, .5)
     private val particleLocation = block.location.clone().add(.5, .15, .5)
 
