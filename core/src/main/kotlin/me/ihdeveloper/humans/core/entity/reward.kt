@@ -25,7 +25,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.Vector
 
-private const val ITEM_YAW_SPEED = 3.5F
+private const val ITEM_YAW_SPEED = 2F
 
 private val deltas = arrayOf(
     Vector(1, 0, 0),
@@ -50,6 +50,8 @@ class RewardSquare(
     hologram: ItemStack,
     private val items: Array<GameItemStack>,
 ) : Runnable {
+    var isSpawned = false
+
     private val blocksStates = mutableMapOf<Location, Material>()
     private lateinit var bukkitTask: BukkitTask
     private val itemEntities = arrayListOf<RewardItem>()
@@ -76,6 +78,7 @@ class RewardSquare(
     }
 
     fun destroy() {
+        isSpawned = false
         bukkitTask.cancel()
 
         itemHologram.die()
@@ -149,6 +152,7 @@ class RewardSquare(
                             threshold = true
                         }
                     } else {
+                        isSpawned = true
                         bukkitTask.cancel()
                     }
                     return
@@ -292,8 +296,8 @@ class RewardItem(
             }
         }
 
-        super.aK += ITEM_YAW_SPEED
-        setYawPitch(super.pitch, super.yaw + ITEM_YAW_SPEED)
+        location.yaw += ITEM_YAW_SPEED
+        setLocation()
     }
 
 }

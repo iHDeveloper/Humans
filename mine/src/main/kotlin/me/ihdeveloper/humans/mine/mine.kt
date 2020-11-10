@@ -17,6 +17,7 @@ import me.ihdeveloper.humans.core.util.region
 import me.ihdeveloper.humans.core.util.showBossBar
 import me.ihdeveloper.humans.core.util.updateBossBar
 import me.ihdeveloper.humans.mine.entity.PrisonMineWizard
+import me.ihdeveloper.humans.mine.scene.ForcedResetScene
 import me.ihdeveloper.humans.mine.scene.NormalResetScene
 import me.ihdeveloper.humans.mine.system.MineSystem
 import org.bukkit.Bukkit
@@ -41,6 +42,7 @@ class Mine(
     private val pos1: Location,
     private val pos2: Location,
     private val wizardSpawn: Location,
+    val rewardSpawn: Location,
     private val blocks: List<Material>,
 ) : Runnable, ConfigurationSerialize {
     companion object: ConfigurationDeserialize<Mine> {
@@ -64,6 +66,7 @@ class Mine(
                 }
             },
             wizardSpawn = data["wizardSpawn"] as Location,
+            rewardSpawn = data["rewardSpawn"] as Location,
         )
     }
 
@@ -80,10 +83,15 @@ class Mine(
 
     private val players = mutableSetOf<String>()
 
+    var isResetting = false
     private lateinit var resetScene: Scene
     private var resetTime = RESET_TIME
     private var blocksSize = 0
     private var minedBlocks = 0
+
+    // Award Counter
+    var isAwardCounterEnabled = false
+    var awardCounter: Long = 0L
 
     init {
         logger.debug("Initializing...")
@@ -97,9 +105,37 @@ class Mine(
     }
 
     override fun run() {
-        if (resetTime < 0) {
+        if (isAwardCounterEnabled) {
+            if (awardCounter < 0) {
+                isAwardCounterEnabled = false
+                awardCounter--
+                resetScene.resume() // Continue the scene after counting the reward time
+                return
+            }
+
+            bossBar.title = "§eReward Time: §f${toString(awardCounter)} §7§l| §a§lCOLLECT REWARDS AT THE SQUARE"
+            bossBar.current = 100
+            bossBar.max = 100
+
+            update {}
+
+            awardCounter--
+            return
+        }
+
+        if (isResetting) {
+            bossBar.title = "§e§lResetting..."
+            bossBar.current = 0
+            bossBar.max = 100
+
+            update {}
+            return
+        }
+
+        if (!isResetting && minedBlocks > 0 && resetTime < 0) {
             logger.info("Mine($name) invoked the auto reset! ($minedBlocks/$blocksSize)")
 
+            isResetting = true
             resetScene = NormalResetScene(this)
             resetScene.start()
         }
@@ -108,7 +144,15 @@ class Mine(
             resetTime = RESET_TIME
         }
 
-        bossBar.title = "§eReset Time:§f ${resetToString()} §7§l| §eCrystals §7[${crystalsSizeToString()}§7/§a4§7]"
+        if (!isResetting && minedBlocks == blocksSize) {
+            logger.info("Mine($name) invoked the force reset!")
+
+            isResetting = true
+            resetScene = ForcedResetScene(this)
+            resetScene.start()
+        }
+
+        bossBar.title = "§eReset Time:§f ${toString(resetTime)} §7§l| §eCrystals §7[${crystalsSizeToString()}§7/§a4§7]"
         bossBar.current = minedBlocks
         bossBar.max = blocksSize
 
@@ -117,14 +161,21 @@ class Mine(
         resetTime--
     }
 
-    override fun serialize() = mapOf(
-        "name" to name,
-        "regionName" to regionName,
-        "pos1" to pos1,
-        "pos2" to pos2,
-        "blocks" to blocks,
-        "wizardSpawn" to wizardSpawn,
-    )
+    override fun serialize(): Map<String, Any> {
+        val blocksNames = mutableListOf<String>().apply {
+            blocks.forEach { add(it.name) }
+        }
+
+        return mapOf(
+            "name" to name,
+            "regionName" to regionName,
+            "pos1" to pos1,
+            "pos2" to pos2,
+            "blocks" to blocksNames,
+            "wizardSpawn" to wizardSpawn,
+            "rewardSpawn" to rewardSpawn,
+        )
+    }
 
     fun contains(block: Block): Boolean = block.location.betweenBlock(pos1, pos2)
 
@@ -236,8 +287,8 @@ class Mine(
         }
     }
 
-    private fun resetToString(): String {
-        var seconds = resetTime / 20
+    private fun toString(time: Long): String {
+        var seconds = time / 20
         var minutes = seconds / 60
 
         seconds %= 60

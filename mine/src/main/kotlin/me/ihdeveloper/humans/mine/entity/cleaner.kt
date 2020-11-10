@@ -8,7 +8,7 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.util.Vector
 
-private const val CLEANER_FALL_SPEED = 0.15F
+private const val CLEANER_FALL_SPEED = 0.5F
 
 private val deltas = arrayOf(
     Vector(1, 0, 0),

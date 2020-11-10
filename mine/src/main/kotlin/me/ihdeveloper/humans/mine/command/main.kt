@@ -14,7 +14,8 @@ private var regionName: String? = null
 private var pos1: Location? = null
 private var pos2: Location? = null
 private var wizardSpawn: Location? = null
-private var blocks: MutableList<Material> = mutableListOf()
+private var rewardSpawn: Location? = null
+private var blocks: MutableList<Material> = mutableListOf(Material.STONE)
 
 /**
  * A command for generating the mine after setting the data
@@ -37,6 +38,9 @@ class MineCreateCommand : AdminCommand("mine-create") {
             wizardSpawn === null -> {
                 sender!!.sendMessage("§cFailed! §eThe wizard spawn is not set!")
             }
+            rewardSpawn === null -> {
+                sender!!.sendMessage("§cFailed! §eThe reward spawn is not set!")
+            }
             else -> {
                 MineSystem.mines.add(Mine(
                     mineName!!,
@@ -44,6 +48,7 @@ class MineCreateCommand : AdminCommand("mine-create") {
                     pos1!!,
                     pos2!!,
                     wizardSpawn!!,
+                    rewardSpawn!!,
                     blocks,
                 ))
             }
@@ -102,6 +107,9 @@ class MineSetCommand : AdminCommand("mine-set") {
             }
             "wizard" -> {
                 wizardSpawn = sender.location
+            }
+            "reward" -> {
+                rewardSpawn = sender.location
             }
             else -> {
                 failed = true
