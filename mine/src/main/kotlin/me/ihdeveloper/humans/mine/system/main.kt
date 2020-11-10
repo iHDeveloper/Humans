@@ -130,7 +130,18 @@ class MineSystem : System("Mine"), Listener {
             mines.forEach {
                 if (it.contains(block)) {
                     val blockType = block.type
+
+                    if (blockType === Material.BEDROCK) {
+                        isCancelled = true
+                        return
+                    }
+
                     block.type = Material.BEDROCK
+
+                    if (it.isResetting) {
+                        isCancelled = true
+                        return
+                    }
 
                     if (player.itemInHand.type === Material.AIR) {
                         isCancelled = true
