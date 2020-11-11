@@ -2,6 +2,8 @@ package me.ihdeveloper.humans.mine.entity
 
 import kotlin.math.PI
 import kotlin.math.cos
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sin
 import me.ihdeveloper.humans.core.GameItemStack
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
@@ -36,6 +38,13 @@ import org.bukkit.inventory.meta.SkullMeta
 private const val CRYSTAL_YAW_SPEED = 3.5F
 private const val WIZARD_TABLE_RADIUS = 1F
 private const val WIZARD_TIMEOUT = 20L * 60L
+
+private const val WIZARD_CRYSTAL_Y_SPEED = 0.05
+private const val WIZARD_CRYSTAL_YAW_SPEED = 2F
+private const val WIZARD_CRYSTAL_ANIMATION_IDLE = 0
+const val WIZARD_CRYSTAL_ANIMATION_ROTATING = 1
+private const val WIZARD_CRYSTAL_ANIMATION_HIDING = 2
+private const val WIZARD_CRYSTAL_ANIMATION_SHOWING = 3
 
 /**
  * A monster that manages the mine crystals
@@ -144,15 +153,16 @@ class PrisonMineWizardTable(
     val size: Int
         get() = crystals.size
 
+    val crystal = PrisonMineWizardCrystal(block.location.clone().add(.5, -.25, .5))
+
     /** If locked then the player will not able to put crystal on the table 0*/
     var isLocked = false
 
-    private val crystalLocation = block.location.clone().add(.5, .25, .5)
+    private val crystalLocation = block.location.clone().add(.5, .45, .5)
     private val particleLocation = block.location.clone().add(.5, .15, .5)
 
     private val crystals = mutableListOf<PrisonMineCrystal>()
     private val players = mutableMapOf<String, Int>()
-
     private var angle = 0.0
     private var timeout = WIZARD_TIMEOUT
 
@@ -172,6 +182,10 @@ class PrisonMineWizardTable(
 
         updateCrystals()
         players[player.name] = players.getOrDefault(player.name, 0) + 1
+
+        if (size == 1) {
+            this.crystal.animation = WIZARD_CRYSTAL_ANIMATION_SHOWING
+        }
 
         spawnEntity(crystal, false, null)
     }
@@ -194,17 +208,25 @@ class PrisonMineWizardTable(
             player.inventory.addGameItem(crystalItemStack)
         }
 
+        if (size <= 0) {
+            crystal.animation = WIZARD_CRYSTAL_ANIMATION_HIDING
+        }
+
         player.sendMessage("§eYou got §7x$count $crystalItemStack§e from the wizard table")
 
         return count
     }
 
     /** De-spawns all crystals in the table */
-    private fun reset() {
-        players.keys.forEach {
-            remove(Bukkit.getPlayerExact(it))
+    private fun reset(give: Boolean = true) {
+        if (give) {
+            players.keys.forEach {
+                remove(Bukkit.getPlayerExact(it))
+            }
         }
+        players.clear()
 
+        crystal.animation = WIZARD_CRYSTAL_ANIMATION_HIDING
         crystals.forEach { it.die() }
         crystals.clear()
     }
@@ -217,6 +239,10 @@ class PrisonMineWizardTable(
         }
 
         updateCrystals()
+
+        if (size >= 4) {
+            timeout = WIZARD_TIMEOUT
+        }
 
         timeout--
         if (timeout <= 0) {
@@ -254,6 +280,92 @@ class PrisonMineWizardTable(
             crystal.updateLocation(newLoc)
             currentAngle += anglePerCrystal
         }
+    }
+}
+
+/**
+ * Represents the wizard's crystal that he uses to summon magic on the mine
+ */
+class PrisonMineWizardCrystal(
+    private val baseLocation: Location
+) : CustomArmorStand(baseLocation.clone()) {
+    var animation: Int = WIZARD_CRYSTAL_ANIMATION_IDLE
+        set(value) {
+            location.yaw = baseLocation.yaw
+            setLocation()
+
+            ticks = 0
+            field = value
+        }
+
+    private val particleLocation = baseLocation.clone().apply {
+        y += 0.25
+    }
+
+    private var ticks = 0
+    private var animatedY: Double = 0.0
+
+    init {
+        customName = "§ePrison Wizard's Crystal"
+        customNameVisible = true
+        isInvisible = true
+        setGravity(false)
+        setLocation()
+
+        (getBukkitEntity() as ArmorStand).apply {
+            helmet = ItemStack(Material.SKULL_ITEM, 1, 3.toShort()).apply {
+                itemMeta = (itemMeta as SkullMeta).apply {
+                    setTexture(
+                        "ewogICJ0aW1lc3RhbXAiIDogMTYwNTA5Nzk3OTQxMCwKICAicHJvZmlsZUlkIiA6ICJmMjc0YzRkNjI1MDQ0ZTQxOGVmYmYwNmM3NWIyMDIxMyIsCiAgInByb2ZpbGVOYW1lIiA6ICJIeXBpZ3NlbCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yY2YwY2NmNWE1Zjk3MDk3MjYyZTc3M2JiZjY1YzRkN2Q5YTM5OTM4MDE1YmYwMGRlNDkxODYyMGYwMzRmOWIwIgogICAgfQogIH0KfQ==",
+                        "yEoei3Z0OlBUyo43aM1SM10LzjmBNQ3suFEsZGP33nSRjwzMA5HEbnIDg1jAXP+AJiJe3+2HBbGihOCXcOXRfxAciOsdOZr4Nr+uJzrVNbU/kG+9ZDG4bSXHdcBhWqe2WQk3OAI+qwqvqEYV2g3uT/ctfJMyso6gRhoItoWj8En3bZqaeA7z8cdqZnvcCsZ1LOPa0GclY1RceUkImOF7naYce6qgduceoCLqx+kLvRVE++GvxiypDSQER6F8SbEMWB/s1AdFQ9KXaekAigSrT6pzyZxZbjbnzejhrUGYmYj+c1vdRyd9vEX0z/de6fk2+BW2Sr4hA/QRhGo6ZiSWqtINTWaQMTSLDoaRDMUKnvb5IGFePbT1SqNiuoIoUBNVDc81U8ZaQR24OMG0yx15z6u3vc7tM6pNBVlq4piwv5cpiv2N6wCYVVjJjQnwcRpUACG98SbaRF8ri2TXW1WNFjaMBEf9qkmXmPALZgNYXZhALdrUkgWt38WzRRDpi9RvSnbpb1LSsVQxU7tyDWDq6K1MiYLRYagdBDoh6RO+kvRjYSDwCoY/O1QOCpLP8EqXrbrRsKbqlWzE8UbIE1IP3denryHyJCSL3OrrKLLJTU7XV7vV9iEiELuetIFMwFwHub5ZaXNQ9/mjj18B13GUTxEvX3UaFy/BoEGJLughsdw=",
+                    )
+                }
+            }
+        }
+    }
+
+    override fun t_() {
+        super.t_()
+
+        when (animation) {
+            WIZARD_CRYSTAL_ANIMATION_SHOWING -> {
+                if (ticks % 2 == 0) {
+                    if (animatedY < 0.5) {
+                        animatedY += WIZARD_CRYSTAL_Y_SPEED
+
+                        location.y = min(baseLocation.y + 1.0, baseLocation.y + animatedY)
+                        setLocation()
+                    } else {
+                        animation = WIZARD_CRYSTAL_ANIMATION_ROTATING
+                    }
+                }
+            }
+            WIZARD_CRYSTAL_ANIMATION_IDLE -> return
+            WIZARD_CRYSTAL_ANIMATION_HIDING -> {
+                if (ticks % 2 == 0) {
+                    if (animatedY > 0.0) {
+                        animatedY -= WIZARD_CRYSTAL_Y_SPEED
+
+                        location.y = max(baseLocation.y, baseLocation.y + animatedY)
+                        setLocation()
+                    } else {
+                        animation = WIZARD_CRYSTAL_ANIMATION_IDLE
+                    }
+                }
+            }
+            WIZARD_CRYSTAL_ANIMATION_ROTATING -> {
+                if (ticks % 5 == 0) {
+                    location.world.spigot().playEffect(particleLocation, Effect.CLOUD)
+                }
+                if (ticks % 2 == 0) {
+                    super.aK += WIZARD_CRYSTAL_YAW_SPEED
+                    setYawPitch(super.pitch, super.yaw + WIZARD_CRYSTAL_YAW_SPEED)
+                }
+            }
+            else -> return
+        }
+
+        ticks++
     }
 }
 
