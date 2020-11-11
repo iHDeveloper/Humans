@@ -2,6 +2,7 @@ package me.ihdeveloper.humans.mine.system
 
 import me.ihdeveloper.humans.core.Configuration
 import me.ihdeveloper.humans.core.GameItemOnBreak
+import me.ihdeveloper.humans.core.SceneState
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
 import me.ihdeveloper.humans.core.item.PrisonCrystal
@@ -104,6 +105,10 @@ class MineSystem : System("Mine"), Listener {
 
                     it.wizard.table.add(player)
                     it.broadcastCrystal(player)
+
+                    if (it.wizard.table.size >= 4) {
+                        it.triggerCrystalMode()
+                    }
                     return
                 }
             }
@@ -129,6 +134,12 @@ class MineSystem : System("Mine"), Listener {
         event.run {
             mines.forEach {
                 if (it.contains(block)) {
+                    if (it.isResetting ||
+                        (it.crystalMode && it.crystalIntroScene != null && it.crystalIntroScene?.state != SceneState.STOPPED)) {
+                        isCancelled = true
+                        return
+                    }
+
                     val blockType = block.type
 
                     if (blockType === Material.BEDROCK) {
@@ -179,7 +190,7 @@ class MineSystem : System("Mine"), Listener {
     @Suppress("UNUSED")
     fun onQuit(event: PlayerQuitEvent) {
         mines.forEach {
-            val crystalsCount = it.wizard.table.remove(event.player)
+            val crystalsCount = it.wizard.table.remove(event.player, !it.crystalMode)
             if (crystalsCount != -1)
                 logger.debug("Removing $crystalsCount crystals from the wizard table placed by ${event.player.name} in ${it.name}")
 

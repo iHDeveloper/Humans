@@ -6,6 +6,8 @@ import me.ihdeveloper.humans.core.ConfigurationDeserialize
 import me.ihdeveloper.humans.core.ConfigurationSerialize
 import me.ihdeveloper.humans.core.GameItemStack
 import me.ihdeveloper.humans.core.Scene
+import me.ihdeveloper.humans.core.SceneState
+import me.ihdeveloper.humans.core.item.PrisonEnchantedStone
 import me.ihdeveloper.humans.core.item.PrisonStone
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.util.GameLogger
@@ -17,6 +19,9 @@ import me.ihdeveloper.humans.core.util.region
 import me.ihdeveloper.humans.core.util.showBossBar
 import me.ihdeveloper.humans.core.util.updateBossBar
 import me.ihdeveloper.humans.mine.entity.PrisonMineWizard
+import me.ihdeveloper.humans.mine.entity.WIZARD_CRYSTAL_ANIMATION_ROTATING
+import me.ihdeveloper.humans.mine.scene.CrystalIntroScene
+import me.ihdeveloper.humans.mine.scene.CrystalResetScene
 import me.ihdeveloper.humans.mine.scene.ForcedResetScene
 import me.ihdeveloper.humans.mine.scene.NormalResetScene
 import me.ihdeveloper.humans.mine.system.MineSystem
@@ -93,6 +98,11 @@ class Mine(
     var isAwardCounterEnabled = false
     var awardCounter: Long = 0L
 
+    // Crystal Mode
+    var crystalMode = false
+    var crystalIntroScene: CrystalIntroScene? = null
+    private var crystalTitleToggle = false
+
     init {
         logger.debug("Initializing...")
         blocks.forEach { logger.debug("Loaded block: $it") }
@@ -105,6 +115,11 @@ class Mine(
     }
 
     override fun run() {
+        if (crystalIntroScene != null && crystalIntroScene!!.state == SceneState.STOPPED) {
+            crystalIntroScene = null
+            resetTime = 60L * 20L
+        }
+
         if (isAwardCounterEnabled) {
             if (awardCounter < 0) {
                 isAwardCounterEnabled = false
@@ -132,27 +147,42 @@ class Mine(
             return
         }
 
-        if (!isResetting && minedBlocks > 0 && resetTime < 0) {
-            logger.info("Mine($name) invoked the auto reset! ($minedBlocks/$blocksSize)")
+        if (!isResetting && (minedBlocks > 0 || crystalMode) && resetTime < 0) {
+            logger.info("Mine($name) invoked the auto reset! ($minedBlocks/$blocksSize, crystal=$crystalMode)")
 
             isResetting = true
-            resetScene = NormalResetScene(this)
+            resetScene = if (crystalMode) {
+                CrystalResetScene(this, false)
+            } else {
+                NormalResetScene(this)
+            }
             resetScene.start()
         }
 
-        if (minedBlocks == 0) {
+        if (!crystalMode && minedBlocks == 0) {
             resetTime = RESET_TIME
         }
 
         if (!isResetting && minedBlocks == blocksSize) {
-            logger.info("Mine($name) invoked the force reset!")
+            logger.info("Mine($name) invoked the force reset! (crystal=$crystalMode)")
 
             isResetting = true
-            resetScene = ForcedResetScene(this)
+            resetScene = if (crystalMode) {
+                CrystalResetScene(this, true)
+            } else {
+                ForcedResetScene(this)
+            }
             resetScene.start()
         }
 
-        bossBar.title = "§eReset Time:§f ${toString(resetTime)} §7§l| §eCrystals §7[${crystalsSizeToString()}§7/§a4§7]"
+        if (resetTime % 10 == 0L)
+            crystalTitleToggle = !crystalTitleToggle
+
+        bossBar.title = when (crystalMode) {
+            true -> "§eReset Time:§f ${toString(resetTime)} §7§l| ${if (crystalTitleToggle) "§e" else "§f"}§lCRYSTAL MODE"
+            false -> "§eReset Time:§f ${toString(resetTime)} §7§l| §eCrystals §7[${crystalsSizeToString()}§7/§a4§7]"
+        }
+
         bossBar.current = minedBlocks
         bossBar.max = blocksSize
 
@@ -184,7 +214,9 @@ class Mine(
         // TODO write a method to get the item type from based on the material
         when (type) {
             Material.STONE -> {
-                if (!player.inventory.addGameItem(GameItemStack(PrisonStone::class, 1))) {
+                if (!player.inventory.addGameItem(if (crystalMode) {
+                        GameItemStack(PrisonEnchantedStone::class, 1)
+                    } else GameItemStack(PrisonStone::class, 1))) {
                     player.sendMessage("§c§lYour inventory is full to collect the mined item!")
                 }
             }
@@ -220,11 +252,26 @@ class Mine(
     }
 
     fun reset() {
+        resetTime = RESET_TIME
         minedBlocks = 0
         minersCount.clear()
 
         rebuildBlocks()
         calculateBlocks()
+    }
+
+    fun triggerCrystalMode() {
+        crystalMode = true
+        crystalIntroScene = CrystalIntroScene(this)
+        crystalIntroScene!!.start()
+
+        wizard.table.let {
+            it.isLocked = true
+            it.crystal.animation = WIZARD_CRYSTAL_ANIMATION_ROTATING
+        }
+
+        forEach { it.type = Material.BEDROCK }
+        minedBlocks = 0
     }
 
     private fun rebuildBlocks() {
@@ -243,7 +290,7 @@ class Mine(
 
         // TODO we can optimize this using a math calculation
         forEach {
-            if (it.type !== org.bukkit.Material.AIR) {
+            if (it.type !== Material.AIR) {
                 for (blockType in blocks) {
                     if (blockType === it.type) {
                         blocksSize++
