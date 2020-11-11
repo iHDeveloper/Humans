@@ -40,7 +40,7 @@ private const val WIZARD_TABLE_RADIUS = 1F
 private const val WIZARD_TIMEOUT = 20L * 60L
 
 private const val WIZARD_CRYSTAL_Y_SPEED = 0.05
-private const val WIZARD_CRYSTAL_YAW_SPEED = 2F
+private const val WIZARD_CRYSTAL_YAW_SPEED = 3.5F
 private const val WIZARD_CRYSTAL_ANIMATION_IDLE = 0
 const val WIZARD_CRYSTAL_ANIMATION_ROTATING = 1
 private const val WIZARD_CRYSTAL_ANIMATION_HIDING = 2
@@ -153,7 +153,7 @@ class PrisonMineWizardTable(
     val size: Int
         get() = crystals.size
 
-    val crystal = PrisonMineWizardCrystal(block.location.clone().add(.5, -.25, .5))
+    val crystal = PrisonMineWizardCrystal(block.location.clone().add(.5, -1.25, .5))
 
     /** If locked then the player will not able to put crystal on the table 0*/
     var isLocked = false
@@ -173,6 +173,7 @@ class PrisonMineWizardTable(
         updateCrystals()
 
         crystals.forEach { spawnEntity(it, false, null) }
+        spawnEntity(crystal, false, null)
     }
 
     /** Adds crystal to the table */
@@ -191,7 +192,7 @@ class PrisonMineWizardTable(
     }
 
     /** Remove the crystals and give them to the player */
-    fun remove(player: Player): Int {
+    fun remove(player: Player, give: Boolean = true): Int {
         val count = players[player.name]
         if (count === null) {
             return -1
@@ -205,20 +206,24 @@ class PrisonMineWizardTable(
             crystals.removeAt(size - 1)
             crystal.die()
 
-            player.inventory.addGameItem(crystalItemStack)
+            if (give)
+                player.inventory.addGameItem(crystalItemStack)
         }
 
         if (size <= 0) {
             crystal.animation = WIZARD_CRYSTAL_ANIMATION_HIDING
         }
 
-        player.sendMessage("§eYou got §7x$count $crystalItemStack§e from the wizard table")
+        if (give)
+            player.sendMessage("§eYou got §7x$count $crystalItemStack§e from the wizard table")
 
+        if (!give)
+            return -1
         return count
     }
 
     /** De-spawns all crystals in the table */
-    private fun reset(give: Boolean = true) {
+    fun reset(give: Boolean = true) {
         if (give) {
             players.keys.forEach {
                 remove(Bukkit.getPlayerExact(it))
@@ -258,6 +263,7 @@ class PrisonMineWizardTable(
 
     internal fun destroy() {
         crystals.forEach { it.die() }
+        crystal.die()
     }
 
     private fun updateCrystals() {
@@ -299,15 +305,15 @@ class PrisonMineWizardCrystal(
         }
 
     private val particleLocation = baseLocation.clone().apply {
-        y += 0.25
+        y += 1
     }
 
     private var ticks = 0
     private var animatedY: Double = 0.0
 
     init {
-        customName = "§ePrison Wizard's Crystal"
-        customNameVisible = true
+        customName = "§cWizard's Crystal"
+        customNameVisible = false
         isInvisible = true
         setGravity(false)
         setLocation()
@@ -329,21 +335,27 @@ class PrisonMineWizardCrystal(
 
         when (animation) {
             WIZARD_CRYSTAL_ANIMATION_SHOWING -> {
-                if (ticks % 2 == 0) {
-                    if (animatedY < 0.5) {
+                if (customNameVisible)
+                    customNameVisible = false
+
+                if (animatedY < 0.5) {
                         animatedY += WIZARD_CRYSTAL_Y_SPEED
 
-                        location.y = min(baseLocation.y + 1.0, baseLocation.y + animatedY)
+                        location.y = min(baseLocation.y + 0.5, baseLocation.y + animatedY)
                         setLocation()
                     } else {
-                        animation = WIZARD_CRYSTAL_ANIMATION_ROTATING
+                        animation = WIZARD_CRYSTAL_ANIMATION_IDLE
                     }
-                }
             }
-            WIZARD_CRYSTAL_ANIMATION_IDLE -> return
+            WIZARD_CRYSTAL_ANIMATION_IDLE -> {
+                if (!customNameVisible && animatedY > 0.0)
+                    customNameVisible = true
+            }
             WIZARD_CRYSTAL_ANIMATION_HIDING -> {
-                if (ticks % 2 == 0) {
-                    if (animatedY > 0.0) {
+                if (customNameVisible)
+                    customNameVisible = false
+
+                if (animatedY > -0.25) {
                         animatedY -= WIZARD_CRYSTAL_Y_SPEED
 
                         location.y = max(baseLocation.y, baseLocation.y + animatedY)
@@ -351,18 +363,18 @@ class PrisonMineWizardCrystal(
                     } else {
                         animation = WIZARD_CRYSTAL_ANIMATION_IDLE
                     }
-                }
             }
             WIZARD_CRYSTAL_ANIMATION_ROTATING -> {
-                if (ticks % 5 == 0) {
-                    location.world.spigot().playEffect(particleLocation, Effect.CLOUD)
-                }
+                if (!customNameVisible)
+                    customNameVisible = true
+
                 if (ticks % 2 == 0) {
-                    super.aK += WIZARD_CRYSTAL_YAW_SPEED
-                    setYawPitch(super.pitch, super.yaw + WIZARD_CRYSTAL_YAW_SPEED)
+                    location.world.spigot().playEffect(particleLocation, Effect.WITCH_MAGIC)
                 }
+                super.aK += WIZARD_CRYSTAL_YAW_SPEED
+                setYawPitch(super.pitch, super.yaw + WIZARD_CRYSTAL_YAW_SPEED)
             }
-            else -> return
+            else -> {}
         }
 
         ticks++
