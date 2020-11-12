@@ -2,6 +2,7 @@ package me.ihdeveloper.humans.core.system
 
 import me.ihdeveloper.humans.core.System
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -14,7 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin
  */
 class FreezeSystem : System("Core/Freeze"), Listener {
     companion object {
-        val players = mutableSetOf<String>()
+        val players = mutableMapOf<String, Location>()
     }
 
     override fun init(plugin: JavaPlugin) {
@@ -30,6 +31,7 @@ class FreezeSystem : System("Core/Freeze"), Listener {
             if (!players.contains(player.name))
                 return
 
+            player.teleport(players[player.name])
             isCancelled = true
         }
     }

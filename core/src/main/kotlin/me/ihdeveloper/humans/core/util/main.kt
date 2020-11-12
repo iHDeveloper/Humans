@@ -78,6 +78,8 @@ fun toNMSPlayer(player: Player): EntityPlayer = (player as CraftPlayer).handle
  * Check if the location is between two locations
  */
 fun Location.between(from: Location, to: Location): Boolean {
+    if (from.world.name !== to.world.name)
+        return false
     if (from.y > y || y > to.y)
         return false
     if (from.x < x || x < to.x)

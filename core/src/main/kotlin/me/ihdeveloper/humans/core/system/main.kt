@@ -105,6 +105,7 @@ import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerAchievementAwardedEvent
+import org.bukkit.event.player.PlayerBedEnterEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
@@ -595,6 +596,9 @@ class PlayerSystem : System("Core/Player"), Listener {
                 health = 20.0
             }
 
+            level = 0
+            exp = 0f
+
             for (player in Bukkit.getOnlinePlayers()) {
                 if (!player.isOp)
                     continue
@@ -704,6 +708,11 @@ class PlayerSystem : System("Core/Player"), Listener {
         event.isCancelled = true
     }
 
+    @EventHandler
+    @Suppress("UNUSED")
+    fun onBedEnter(event: PlayerBedEnterEvent) {
+        event.isCancelled = true
+    }
 }
 
 const val SERVER_MOTD =

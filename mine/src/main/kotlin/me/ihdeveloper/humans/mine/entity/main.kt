@@ -192,12 +192,14 @@ class PrisonMineWizardTable(
     }
 
     /** Remove the crystals and give them to the player */
-    fun remove(player: Player, give: Boolean = true): Int {
+    fun remove(player: Player, give: Boolean = true, removeFromMemory: Boolean = false): Int {
         val count = players[player.name]
         if (count === null) {
             return -1
         }
-        players.remove(player.name)
+
+        if (removeFromMemory)
+            players.remove(player.name)
 
         val crystalItemStack = GameItemStack(PrisonCrystal::class)
 
@@ -226,7 +228,7 @@ class PrisonMineWizardTable(
     fun reset(give: Boolean = true) {
         if (give) {
             players.keys.forEach {
-                remove(Bukkit.getPlayerExact(it))
+                remove(Bukkit.getPlayerExact(it), false)
             }
         }
         players.clear()

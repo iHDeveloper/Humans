@@ -88,7 +88,7 @@ class IntroScene(
     init {
         initFrame {
             player.run {
-                inventory.setItem(8, null)
+                inventory.clear()
                 removePotionEffect(PotionEffectType.BLINDNESS)
                 removePotionEffect(PotionEffectType.SLOW)
             }
@@ -197,13 +197,15 @@ class IntroScene(
         }
 
         frame((SECOND * 12) + 2) {
-            player.sendMessage("§cPrison Witch: §fYessir")
+            player.sendMessage("§cPrison Witch: §fYessir!")
             witch.equipment[0] = ItemStack(Items.WOODEN_PICKAXE)
+            witch.updateInventory(player.toNMS())
         }
 
         frame((SECOND * 14) + 2) {
             player.inventory.addGameItem(GameItemStack(PrisonCursedPickaxe::class))
             witch.equipment[0] = null
+            witch.updateInventory(player.toNMS())
         }
 
         frame((SECOND * 16) + 2) {
@@ -235,7 +237,7 @@ class IntroScene(
             pause()
         }
 
-        frame((SECOND * 24) + 3) {
+        frame((SECOND * 22) + 3) {
             player.run {
                 foodLevel = 20
                 health = 20.0

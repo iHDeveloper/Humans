@@ -167,8 +167,6 @@ class MineSystem : System("Mine"), Listener {
                     }
 
                     if (!gameItemStack.isPickaxe) {
-                        logger.debug("The item is not pickaxe!")
-                        logger.debug("$gameItemStack")
                         isCancelled = true
                         return
                     }
