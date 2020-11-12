@@ -89,6 +89,8 @@ class IntroScene(
         initFrame {
             player.run {
                 inventory.setItem(8, null)
+                removePotionEffect(PotionEffectType.BLINDNESS)
+                removePotionEffect(PotionEffectType.SLOW)
             }
             pause()
         }
