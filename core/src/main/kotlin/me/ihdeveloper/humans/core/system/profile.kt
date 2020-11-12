@@ -14,6 +14,7 @@ import net.minecraft.server.v1_8_R3.MojangsonParser
 import net.minecraft.server.v1_8_R3.NBTTagCompound
 import org.bukkit.Bukkit
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftInventoryPlayer
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -29,6 +30,41 @@ class ProfileSystem : System("Core/Profile"), Listener {
 
     companion object {
         val profiles = mutableMapOf<String, Profile>()
+
+        fun reload(player: Player): Profile {
+            val profileInventory = mutableMapOf<Int, JsonObject>()
+
+            (player.inventory as CraftInventoryPlayer).run {
+                for (i in 0 until 36) {
+                    if (i == 8)
+                        continue
+
+                    val nmsItemStack = getNMSItem(i)
+                    val gameItemStack = getGameItem(i)
+
+                    if (nmsItemStack === null || gameItemStack === null)
+                        continue
+
+                    val nbt = NBTTagCompound()
+                    nbt.setInt("amount", gameItemStack.amount)
+                    if (gameItemStack is NullGameItemStack)
+                        nbt.set("data", NBTTagCompound().apply {
+                            setString("id", "null")
+                            set("Lost", gameItemStack.nbt)
+                        })
+                    else
+                        nbt.set("data", nmsItemStack.tag.get("ItemData"))
+
+                    profileInventory[i] = core.gson.fromJson(nbt.toString(), JsonObject::class.java)
+                }
+            }
+
+            return profiles[player.name]!!.apply {
+                inventory = profileInventory
+
+                core.api!!.updateProfile(player.name, this)
+            }
+        }
     }
 
     override fun init(plugin: JavaPlugin) {
@@ -137,38 +173,8 @@ class ProfileSystem : System("Core/Profile"), Listener {
         event.run {
             player.run {
                 logger.info("Saving $name...")
-                val profileInventory = mutableMapOf<Int, JsonObject>()
 
-                (player.inventory as CraftInventoryPlayer).run {
-                    for (i in 0 until 36) {
-                        if (i == 8)
-                            continue
-
-                        val nmsItemStack = getNMSItem(i)
-                        val gameItemStack = getGameItem(i)
-
-                        if (nmsItemStack === null || gameItemStack === null)
-                            continue
-
-                        val nbt = NBTTagCompound()
-                        nbt.setInt("amount", gameItemStack.amount)
-                        if (gameItemStack is NullGameItemStack)
-                            nbt.set("data", NBTTagCompound().apply {
-                                setString("id", "null")
-                                set("Lost", gameItemStack.nbt)
-                            })
-                        else
-                            nbt.set("data", nmsItemStack.tag.get("ItemData"))
-
-                        profileInventory[i] = core.gson.fromJson(nbt.toString(), JsonObject::class.java)
-                    }
-                }
-
-                profiles[name]!!.apply {
-                    inventory = profileInventory
-
-                    core.api!!.updateProfile(name, this)
-                }
+                reload(this)
 
                 profiles.remove(name)
 
