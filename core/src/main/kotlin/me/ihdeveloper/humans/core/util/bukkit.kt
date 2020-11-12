@@ -15,9 +15,6 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
-import org.bukkit.util.Vector
-
-private val oldVelocity = mutableMapOf<String, Vector>()
 
 /**
  * Returns the players' game profile
@@ -41,17 +38,27 @@ val Player.gameName: String
  * Freezes a player's position
  */
 fun Player.freeze() {
-    oldVelocity[name] = velocity
-    velocity = velocity.zero()
-    FreezeSystem.players.add(name)
+    FreezeSystem.players[name] = player.location
+
+    // Its broken (I will fix it later)
+//    val compound = NBTTagCompound()
+//    toNMS().c(compound) // Load data on the NBT compound
+//    compound.setByte("NoAI", 1.toByte())
+//    toNMS().f(compound) // Save data from the NBT compound
 }
 
 /**
  * Unfreezes a player's position. If the player is frozen before.
  */
 fun Player.unfreeze() {
-    velocity = oldVelocity[name]
-    oldVelocity.remove(name)
+    teleport(FreezeSystem.players[player.name])
+
+    // Its broken (I will fix it later)
+//    val compound = NBTTagCompound()
+//    toNMS().c(compound) // Load data on the NBT compound
+//    compound.setByte("NoAI", 0.toByte())
+//    toNMS().f(compound) // Save data from the NBT compound
+
     FreezeSystem.players.remove(name)
 }
 

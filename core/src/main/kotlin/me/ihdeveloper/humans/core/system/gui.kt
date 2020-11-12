@@ -36,7 +36,12 @@ class GUISystem : System("Core/GUI"), Listener {
         event.run {
             val screen = screens[whoClicked.name] ?: return
 
-            val component = screen.getComponent(slot) ?: return
+            val component = screen.getComponent(slot)
+
+            if (component == null) {
+                isCancelled = true
+                return
+            }
 
             if (action !== InventoryAction.PICKUP_ONE
                 && action !== InventoryAction.PICKUP_SOME
