@@ -1,13 +1,16 @@
 package me.ihdeveloper.humans.core.scene
 
 import me.ihdeveloper.humans.core.Configuration
+import me.ihdeveloper.humans.core.GameItemStack
 import me.ihdeveloper.humans.core.SceneMeta
 import me.ihdeveloper.humans.core.entity.PrisonWatcher
 import me.ihdeveloper.humans.core.entity.PrisonWitch
+import me.ihdeveloper.humans.core.item.PrisonCursedPickaxe
 import me.ihdeveloper.humans.core.system.GAME_MENU
 import me.ihdeveloper.humans.core.system.PlayerSystem
 import me.ihdeveloper.humans.core.system.ProfileSystem
 import me.ihdeveloper.humans.core.util.GameLogger
+import me.ihdeveloper.humans.core.util.addGameItem
 import me.ihdeveloper.humans.core.util.between
 import me.ihdeveloper.humans.core.util.freeze
 import me.ihdeveloper.humans.core.util.toNMS
@@ -188,10 +191,24 @@ class IntroScene(
         }
 
         frame((SECOND * 10) + 2) {
-            player.sendMessage("§cPrison Watcher: §fWitch, send this \"Human\" somewhere unsafe!")
+            player.sendMessage("§cPrison Watcher: §fWitch, give this \"Human\" a cursed pickaxe!")
         }
 
         frame((SECOND * 12) + 2) {
+            player.sendMessage("§cPrison Witch: §fYessir")
+            witch.equipment[0] = ItemStack(Items.WOODEN_PICKAXE)
+        }
+
+        frame((SECOND * 14) + 2) {
+            player.inventory.addGameItem(GameItemStack(PrisonCursedPickaxe::class))
+            witch.equipment[0] = null
+        }
+
+        frame((SECOND * 16) + 2) {
+            player.sendMessage("§cPrison Watcher: §fWitch, send this \"Human\" somewhere unsafe!")
+        }
+
+        frame((SECOND * 18) + 2) {
             player.sendMessage("§cPrison Witch: §fYessir!")
 
             witch.equipment[0] = ItemStack(Items.POTION)
@@ -199,11 +216,11 @@ class IntroScene(
             witch.updateInventory(player.toNMS())
         }
 
-        frame((SECOND * 14) + 2) {
+        frame((SECOND * 20) + 2) {
             player.sendMessage("§cPrison Witch: §fI'm going to send this \"Human\" to...")
         }
 
-        frame ((SECOND * 16) + 2) {
+        frame ((SECOND * 22) + 2) {
             player.sendMessage("§cPrison Witch: §e§lHumans Prison")
 
             player.toNMS().also {
@@ -216,7 +233,7 @@ class IntroScene(
             pause()
         }
 
-        frame((SECOND * 16) + 3) {
+        frame((SECOND * 24) + 3) {
             player.run {
                 foodLevel = 20
                 health = 20.0
@@ -224,7 +241,7 @@ class IntroScene(
             }
         }
 
-        frame((SECOND * 20) + 3) {
+        frame((SECOND * 26) + 3) {
             player.run {
                 for (i in 1 until 3)
                     sendMessage("")
@@ -239,7 +256,7 @@ class IntroScene(
             ProfileSystem.profiles[player.name]?.new = false
         }
 
-        frame((SECOND * 20) + 5) {
+        frame((SECOND * 26) + 5) {
             Bukkit.getOnlinePlayers().forEach {
                 if (!player.canSee(it) && player.toNMS() !== it.toNMS())
                     player.showPlayer(it)
