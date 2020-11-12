@@ -4,8 +4,10 @@ import kotlin.random.Random
 import me.ihdeveloper.humans.core.entity.Hologram
 import me.ihdeveloper.humans.core.entity.WarpCart
 import me.ihdeveloper.humans.core.registry.spawnEntity
+import me.ihdeveloper.humans.core.system.ProfileSystem
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.util.between
+import me.ihdeveloper.humans.core.util.profile
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -107,6 +109,7 @@ class Warp(
         val cart = WarpCart(player.entityId, start, this)
         carts.add(cart)
 
+        with(player) { core.api?.updateProfile(name, ProfileSystem.reload(player)) }
         spawnEntity(cart, false, null)
         cart.apply {
             bukkitEntity.passenger = player
