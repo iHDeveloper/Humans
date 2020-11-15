@@ -736,13 +736,18 @@ class LoginSystem : System("Core/Login"), Listener {
         event.motd = SERVER_MOTD
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     @Suppress("UNUSED")
     fun onLogin(event: PlayerLoginEvent) {
+        if (event.result == PlayerLoginEvent.Result.KICK_WHITELIST) {
+            event.kickMessage = "§eHumans Portal: §cFailed to access the humans world §7(${event.kickMessage})"
+            return
+        }
+
         core.integratedPart?.run {
             val profile = event.player.profile
 
-            if (profile == null)  {
+            if (profile == null) {
                 event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "§cFailed to connect to ${core.serverName}! §7(PROFILE_NOT_FOUND_2)")
                 return
             }
