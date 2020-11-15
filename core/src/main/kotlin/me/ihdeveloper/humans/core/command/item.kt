@@ -13,6 +13,7 @@ import me.ihdeveloper.humans.core.util.addGameItem
 import me.ihdeveloper.humans.core.util.setGameItem
 import me.ihdeveloper.humans.core.util.setNMSItem
 import net.minecraft.server.v1_8_R3.NBTTagCompound
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
@@ -35,9 +36,19 @@ class GiveCommand : AdminCommand("give") {
         }
 
         val id: String = args[0]
+        var name: String = sender.name
         var amount = 1
 
-        if (args.size == 2) {
+        if (args.size >= 3) {
+            name = args[1]
+
+            try {
+                amount = Integer.parseInt(args[1])
+            } catch (e: NumberFormatException) {
+                sender.sendMessage("§cFailed to parse the amount.")
+                return true
+            }
+        } else if (args.size == 2) {
             try {
                 amount = Integer.parseInt(args[1])
             } catch (e: NumberFormatException) {
@@ -53,7 +64,14 @@ class GiveCommand : AdminCommand("give") {
             return true
         }
 
-        sender.inventory.apply {
+        val player = Bukkit.getPlayerExact(name)
+
+        if (player == null) {
+            sender.sendMessage("§cFailed! §ePlayer not found")
+            return true
+        }
+
+        player.inventory.apply {
             if (!addGameItem(
                 if (type === NullGameItem::class)
                     NullGameItemStack(NBTTagCompound().apply {
