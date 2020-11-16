@@ -228,7 +228,7 @@ class PrisonMineWizardTable(
     fun reset(give: Boolean = true) {
         if (give) {
             players.keys.forEach {
-                remove(Bukkit.getPlayerExact(it), false)
+                remove(Bukkit.getPlayerExact(it), give)
             }
         }
         players.clear()

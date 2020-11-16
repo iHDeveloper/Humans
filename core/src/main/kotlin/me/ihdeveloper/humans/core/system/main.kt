@@ -61,6 +61,7 @@ import me.ihdeveloper.humans.core.scene.IntroScene
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.util.ITEMSTACK_AIR
 import me.ihdeveloper.humans.core.util.between
+import me.ihdeveloper.humans.core.util.itemMeta
 import me.ihdeveloper.humans.core.util.openScreen
 import me.ihdeveloper.humans.core.util.profile
 import me.ihdeveloper.humans.core.util.region
@@ -380,7 +381,6 @@ class BlockSystem : System("Core/Block"), Listener {
     @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPistonExtendEvent) = cancelEvent(event)
     @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPistonRetractEvent) = cancelEvent(event)
 
-    @Suppress("UNUSED")
     private fun cancelEvent(event: Cancellable) {
         event.isCancelled = true
     }
@@ -390,7 +390,7 @@ class BlockSystem : System("Core/Block"), Listener {
  * An item for the game menu
  */
 val GAME_MENU = ItemStack(Material.NETHER_STAR, 1).apply {
-    itemMeta = itemMeta.apply {
+    itemMeta {
         displayName = "§eGame Menu §7(Right click)"
         lore = arrayListOf(
             "§7View your profile in the game!",
@@ -761,7 +761,7 @@ class LoginSystem : System("Core/Login"), Listener {
     @Suppress("UNUSED")
     fun onLogin(event: PlayerLoginEvent) {
         if (portalState) {
-            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "§eHumans Portal: §cIt's locked! §eYou can't access the humans world.)")
+            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "§eHumans Portal: §cIt's locked! §eYou can't access the humans world.")
             return
         }
 
@@ -828,18 +828,20 @@ class ScoreboardSystem : System("Core/Scoreboard"), Listener {
                 else -> memberTeam
             }
 
+            val joinedPlayer = event.player
             Bukkit.getOnlinePlayers().forEach { player ->
-                when (player.name) {
+                when (joinedPlayer.name) {
                     "iDhoom" -> ownerTeam
                     "iHDeveloper" -> devTeam
                     "Prum" -> devTeam
                     "iSDeveloper" -> buildTeam
                     else -> memberTeam
                 }.also {
-                    it.addEntry(player.name)
+                    it.addEntry(joinedPlayer.name)
 
                     /** Adds our player to the other player's team */
                     val thisPlayerName = event.player.name
+
                     if (player.name != thisPlayerName) {
                         player.scoreboard.getTeam(thisPlayerTeam.name).addEntry(thisPlayerName)
                     }
