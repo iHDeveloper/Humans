@@ -12,6 +12,8 @@ import me.ihdeveloper.humans.core.command.ItemInfoCommand
 import me.ihdeveloper.humans.core.command.NPCSaveCommand
 import me.ihdeveloper.humans.core.command.NPCSummonCommand
 import me.ihdeveloper.humans.core.command.PlaySceneCommand
+import me.ihdeveloper.humans.core.command.PortalLockCommand
+import me.ihdeveloper.humans.core.command.PortalUnlockCommand
 import me.ihdeveloper.humans.core.command.RegionNewCommand
 import me.ihdeveloper.humans.core.command.RegionSaveCommand
 import me.ihdeveloper.humans.core.command.RegionSetCommand
@@ -26,6 +28,7 @@ import me.ihdeveloper.humans.core.command.SetWarpLocationCommand
 import me.ihdeveloper.humans.core.command.SummonCommand
 import me.ihdeveloper.humans.core.command.SummonSaveCommand
 import me.ihdeveloper.humans.core.command.WarpSaveCommand
+import me.ihdeveloper.humans.core.command.portalState
 import me.ihdeveloper.humans.core.core
 import me.ihdeveloper.humans.core.corePlugin
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
@@ -309,6 +312,10 @@ class CommandSystem : System("Core/Command") {
         RewardCreateCommand(),
         RewardSpawnCommand(),
         RewardDestroyCommand(),
+
+        /** Portal commands */
+        PortalLockCommand(),
+        PortalUnlockCommand(),
     )
 
     override fun init(plugin: JavaPlugin) {
@@ -716,7 +723,7 @@ class PlayerSystem : System("Core/Player"), Listener {
 }
 
 const val SERVER_MOTD =
-"""§8» §e§lTHE HUMANS §8§l- §7§lv0.1-ALPHA
+"""§8» §e§lTHE HUMANS §8§l- §7§lv0.0-ALPHA
 §8» §c§lGAME IS UNDER HEAVY DEVELOPMENT"""
 
 /**
@@ -739,8 +746,12 @@ class LoginSystem : System("Core/Login"), Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     @Suppress("UNUSED")
     fun onLogin(event: PlayerLoginEvent) {
+        if (portalState) {
+            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "§eHumans Portal: §cIt's locked! §eYou can't access the humans world.)")
+        }
+
         if (event.result == PlayerLoginEvent.Result.KICK_WHITELIST) {
-            event.kickMessage = "§eHumans Portal: §cFailed to access the humans world §7(WHITELIST)"
+            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "§eHumans Portal: §cFailed to access the humans world §7(WHITELIST)")
             return
         }
 
