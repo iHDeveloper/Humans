@@ -1,17 +1,13 @@
 package me.ihdeveloper.humans.core.command
 
-import java.lang.NumberFormatException
 import me.ihdeveloper.humans.core.AdminCommand
 import me.ihdeveloper.humans.core.GameItemStack
 import me.ihdeveloper.humans.core.registry.NullGameItem
 import me.ihdeveloper.humans.core.registry.NullGameItemStack
-import me.ihdeveloper.humans.core.util.getNMSItem
-import me.ihdeveloper.humans.core.registry.createItem
 import me.ihdeveloper.humans.core.registry.getItemClass
 import me.ihdeveloper.humans.core.registry.getItemInfo
 import me.ihdeveloper.humans.core.util.addGameItem
-import me.ihdeveloper.humans.core.util.setGameItem
-import me.ihdeveloper.humans.core.util.setNMSItem
+import me.ihdeveloper.humans.core.util.getNMSItem
 import net.minecraft.server.v1_8_R3.NBTTagCompound
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -40,7 +36,7 @@ class GiveCommand : AdminCommand("give") {
         var amount = 1
 
         if (args.size >= 3) {
-            name = args[1]
+            name = args[2]
 
             try {
                 amount = Integer.parseInt(args[1])

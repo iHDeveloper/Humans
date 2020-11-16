@@ -106,6 +106,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerAchievementAwardedEvent
 import org.bukkit.event.player.PlayerBedEnterEvent
@@ -125,6 +126,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scoreboard.DisplaySlot
 import org.spigotmc.event.player.PlayerSpawnLocationEvent
 
+const val TEAM_OWNER = "@0owner"
 const val TEAM_DEV = "@1dev"
 const val TEAM_BUILD = "@2build"
 const val TEAM_MEMBER = "@9member"
@@ -594,8 +596,12 @@ class PlayerSystem : System("Core/Player"), Listener {
                     introScenes.remove(name)
                 }
             } else {
-                if (core.serverName == "Hub")
+                if (core.serverName == "Hub") {
                     sendMessage("§eWelcome back, §7\"Human\"§e!")
+                    sendMessage("")
+                    sendMessage("§cThe connection to the portal is unstable for you")
+                    sendMessage("§cPlease report any bugs and glitches using §e/support")
+                }
                 sendMessage("")
                 sendMessage("")
 
@@ -720,6 +726,14 @@ class PlayerSystem : System("Core/Player"), Listener {
     fun onBedEnter(event: PlayerBedEnterEvent) {
         event.isCancelled = true
     }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    @Suppress("UNUSED")
+    fun onInventoryClick(event: InventoryClickEvent) {
+        if (event.clickedInventory != null && event.clickedInventory.type != InventoryType.PLAYER) {
+            event.isCancelled = true
+        }
+    }
 }
 
 const val SERVER_MOTD =
@@ -748,10 +762,6 @@ class LoginSystem : System("Core/Login"), Listener {
     fun onLogin(event: PlayerLoginEvent) {
         if (portalState) {
             event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "§eHumans Portal: §cIt's locked! §eYou can't access the humans world.)")
-        }
-
-        if (event.result == PlayerLoginEvent.Result.KICK_WHITELIST) {
-            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "§eHumans Portal: §cFailed to access the humans world §7(WHITELIST)")
             return
         }
 
@@ -796,6 +806,10 @@ class ScoreboardSystem : System("Core/Scoreboard"), Listener {
             sidebar.getScore("§0").score = 1
             core.apply { if (serverName != null) sidebar.getScore("§9§7§oV0.0b - ${serverName!!.toUpperCase()}").score = 1 }
 
+            val ownerTeam = registerNewTeam(TEAM_OWNER).apply {
+                prefix = "§7[OWNER] §e"
+            }
+
             val devTeam = registerNewTeam(TEAM_DEV).apply {
                 prefix = "§7[DEV] §3"
             }
@@ -816,7 +830,9 @@ class ScoreboardSystem : System("Core/Scoreboard"), Listener {
 
             Bukkit.getOnlinePlayers().forEach { player ->
                 when (player.name) {
+                    "iDhoom" -> ownerTeam
                     "iHDeveloper" -> devTeam
+                    "Prum" -> devTeam
                     "iSDeveloper" -> buildTeam
                     else -> memberTeam
                 }.also {
