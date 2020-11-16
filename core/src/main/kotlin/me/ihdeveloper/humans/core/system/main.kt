@@ -716,7 +716,7 @@ class PlayerSystem : System("Core/Player"), Listener {
 }
 
 const val SERVER_MOTD =
-"""§8» §e§lTHE HUMANS §8§l- §7§lv0.0-ALPHA
+"""§8» §e§lTHE HUMANS §8§l- §7§lv0.1-ALPHA
 §8» §c§lGAME IS UNDER HEAVY DEVELOPMENT"""
 
 /**
@@ -740,7 +740,7 @@ class LoginSystem : System("Core/Login"), Listener {
     @Suppress("UNUSED")
     fun onLogin(event: PlayerLoginEvent) {
         if (event.result == PlayerLoginEvent.Result.KICK_WHITELIST) {
-            event.kickMessage = "§eHumans Portal: §cFailed to access the humans world §7(${event.kickMessage})"
+            event.kickMessage = "§eHumans Portal: §cFailed to access the humans world §7(WHITELIST)"
             return
         }
 
