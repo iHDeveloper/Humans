@@ -2,6 +2,7 @@ package me.ihdeveloper.humans.core.entity.npc
 
 import me.ihdeveloper.humans.core.entity.Prisoner
 import me.ihdeveloper.humans.core.util.randomGameProfile
+import me.ihdeveloper.humans.core.util.applyTexture
 import org.bukkit.Location
 
 enum class PrisonerType {

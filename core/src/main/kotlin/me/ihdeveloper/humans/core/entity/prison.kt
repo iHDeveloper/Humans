@@ -4,6 +4,7 @@ import kotlin.math.sqrt
 import me.ihdeveloper.humans.core.corePlugin
 import me.ihdeveloper.humans.core.scene.IntroScene
 import me.ihdeveloper.humans.core.system.SceneSystem
+import me.ihdeveloper.humans.core.util.NMSItemStack
 import net.minecraft.server.v1_8_R3.BlockPosition
 import net.minecraft.server.v1_8_R3.EntityLiving
 import net.minecraft.server.v1_8_R3.EntityPlayer
@@ -203,7 +204,6 @@ class PrisonWitch(
         }
 
         /** Methods that deals with the packet layer */
-
 
         fun spawnToPlayer(player: EntityPlayer) {
             player.connection.sendPacket(PacketPlayOutSpawnEntity(this, 73, potionValue))

@@ -832,7 +832,7 @@ class ScoreboardSystem : System("Core/Scoreboard"), Listener {
                     "iSDeveloper" -> TEAM_BUILD
                     else -> TEAM_MEMBER
                 }.also {
-                    player.scoreboard.getTeam(it)addEntry(event.player.name)
+                    player.scoreboard.getTeam(it).addEntry(event.player.name)
                 }
             }
         }
