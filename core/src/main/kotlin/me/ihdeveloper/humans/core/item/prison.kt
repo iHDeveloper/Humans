@@ -1,6 +1,7 @@
 package me.ihdeveloper.humans.core.item
 
 import com.mojang.authlib.GameProfile
+import me.ihdeveloper.humans.core.GameItem
 import me.ihdeveloper.humans.core.GameItemInfo
 import me.ihdeveloper.humans.core.GameItemOnBreak
 import me.ihdeveloper.humans.core.GameItemPickaxe

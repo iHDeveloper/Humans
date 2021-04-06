@@ -7,6 +7,8 @@ import me.ihdeveloper.humans.core.registry.NullGameItemStack
 import me.ihdeveloper.humans.core.registry.getItemClass
 import me.ihdeveloper.humans.core.registry.getItemInfo
 import me.ihdeveloper.humans.core.util.addGameItem
+import me.ihdeveloper.humans.core.util.setGameItem
+import me.ihdeveloper.humans.core.util.setNMSItem
 import me.ihdeveloper.humans.core.util.getNMSItem
 import net.minecraft.server.v1_8_R3.NBTTagCompound
 import org.bukkit.Bukkit
