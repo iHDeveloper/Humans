@@ -10,21 +10,29 @@ plugins {
     id("com.github.johnrengelman.shadow") version "6.0.0"
 }
 
-group = "me.ihdeveloper.humans"
+val useLocalDependency: String by project
+
+group = "me.ihdeveloper"
 version = "0.0"
 
 // The server to run the plugins on it
-val server = Server()
+internal val server = Server()
 
 // The build tools to use the Bukkit api
-val buildTools = BuildTools(
+internal val buildTools = BuildTools(
 
     // Server Version
     minecraftVersion = "1.8.8",
 
     // Spigot = true
     // Craftbukkit = false
-    useSpigot = true
+    useSpigot = true,
+
+    // Use local cached dependency (default = false)
+    useLocalDependency = if (project.hasProperty("useLocalDependency")) useLocalDependency.toBoolean() else true,
+
+    // The local version of the cached dependency
+    localDependencyVersion = "1.8.8-R0.1-SNAPSHOT"
 )
 
 allprojects {
@@ -49,7 +57,12 @@ subprojects {
 
         // Include the server jar source
         if (project.name != "game-service") {
-            compileOnly(files(buildTools.serverJar.absolutePath))
+            if (buildTools.useLocalDependency) {
+                compileOnly("org.spigotmc:spigot:${buildTools.localDependencyVersion}")
+            } else {
+                compileOnly(files(buildTools.serverJar.absolutePath))
+            }
+
             implementation(project(":game-service"))
 
             if (project.name != "core")
@@ -362,9 +375,11 @@ fun printIntro() {
     }
 }
 
-class BuildTools (
+internal class BuildTools (
     val minecraftVersion: String,
-    val useSpigot: Boolean
+    val useSpigot: Boolean,
+    val useLocalDependency: Boolean,
+    val localDependencyVersion: String
 ) {
     val buildDir = File(".build-tools")
     val file = File(buildDir, "build-tools.jar")
@@ -380,7 +395,7 @@ class BuildTools (
 /**
  * Help making the server and structuring it
  */
-class Server {
+internal class Server {
 
     /**
      * Directory of the server
