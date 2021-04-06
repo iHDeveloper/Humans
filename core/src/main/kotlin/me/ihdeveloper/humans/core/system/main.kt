@@ -806,45 +806,33 @@ class ScoreboardSystem : System("Core/Scoreboard"), Listener {
             sidebar.getScore("§0").score = 1
             core.apply { if (serverName != null) sidebar.getScore("§9§7§oV0.0b - ${serverName!!.toUpperCase()}").score = 1 }
 
-            val ownerTeam = registerNewTeam(TEAM_OWNER).apply {
-                prefix = "§7[OWNER] §e"
-            }
-
-            val devTeam = registerNewTeam(TEAM_DEV).apply {
+            registerNewTeam(TEAM_DEV).apply {
                 prefix = "§7[DEV] §3"
             }
 
-            val buildTeam = registerNewTeam(TEAM_BUILD).apply {
+            registerNewTeam(TEAM_BUILD).apply {
                 prefix = "§d"
             }
 
-            val memberTeam = registerNewTeam(TEAM_MEMBER).apply {
+            registerNewTeam(TEAM_MEMBER).apply {
                 prefix = "§9"
             }
 
-            val thisPlayerTeam = when (event.player.name) {
-                "iHDeveloper" -> devTeam
-                "iSDeveloper" -> buildTeam
-                else -> memberTeam
-            }
-
-            val joinedPlayer = event.player
             Bukkit.getOnlinePlayers().forEach { player ->
-                when (joinedPlayer.name) {
-                    "iDhoom" -> ownerTeam
-                    "iHDeveloper" -> devTeam
-                    "Prum" -> devTeam
-                    "iSDeveloper" -> buildTeam
-                    else -> memberTeam
+                when (player.name) { // Add all players to the player who joined
+                    "iHDeveloper" -> TEAM_DEV
+                    "iSDeveloper" -> TEAM_BUILD
+                    else -> TEAM_MEMBER
                 }.also {
-                    it.addEntry(joinedPlayer.name)
+                    player.scoreboard.getTeam(it).addEntry(player.name)
+                }
 
-                    /** Adds our player to the other player's team */
-                    val thisPlayerName = event.player.name
-
-                    if (player.name != thisPlayerName) {
-                        player.scoreboard.getTeam(thisPlayerTeam.name).addEntry(thisPlayerName)
-                    }
+                when (event.player.name) { // Add the player who joined to all the players
+                    "iHDeveloper" -> TEAM_DEV
+                    "iSDeveloper" -> TEAM_BUILD
+                    else -> TEAM_MEMBER
+                }.also {
+                    player.scoreboard.getTeam(it)addEntry(event.player.name)
                 }
             }
         }
