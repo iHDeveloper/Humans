@@ -806,33 +806,35 @@ class ScoreboardSystem : System("Core/Scoreboard"), Listener {
             sidebar.getScore("§0").score = 1
             core.apply { if (serverName != null) sidebar.getScore("§9§7§oV0.0b - ${serverName!!.toUpperCase()}").score = 1 }
 
-            registerNewTeam(TEAM_DEV).apply {
+            val devTeam = registerNewTeam(TEAM_DEV).apply {
                 prefix = "§7[DEV] §3"
             }
 
-            registerNewTeam(TEAM_BUILD).apply {
+            val buildTeam = registerNewTeam(TEAM_BUILD).apply {
                 prefix = "§d"
             }
 
-            registerNewTeam(TEAM_MEMBER).apply {
+            val memberTeam = registerNewTeam(TEAM_MEMBER).apply {
                 prefix = "§9"
             }
 
             Bukkit.getOnlinePlayers().forEach { player ->
                 when (player.name) { // Add all players to the player who joined
-                    "iHDeveloper" -> TEAM_DEV
-                    "iSDeveloper" -> TEAM_BUILD
-                    else -> TEAM_MEMBER
+                    "iHDeveloper" -> devTeam
+                    "iSDeveloper" -> buildTeam
+                    else -> memberTeam
                 }.also {
-                    player.scoreboard.getTeam(it).addEntry(player.name)
+                    it.addEntry(player.name)
                 }
 
-                when (event.player.name) { // Add the player who joined to all the players
-                    "iHDeveloper" -> TEAM_DEV
-                    "iSDeveloper" -> TEAM_BUILD
-                    else -> TEAM_MEMBER
-                }.also {
-                    player.scoreboard.getTeam(it).addEntry(event.player.name)
+                if (player.name != event.player.name) {
+                    when (event.player.name) { // Add the player who joined to all the players
+                        "iHDeveloper" -> TEAM_DEV
+                        "iSDeveloper" -> TEAM_BUILD
+                        else -> TEAM_MEMBER
+                    }.also {
+                        player.scoreboard.getTeam(it).addEntry(event.player.name)
+                    }
                 }
             }
         }
