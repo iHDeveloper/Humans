@@ -1,7 +1,6 @@
 package me.ihdeveloper.humans.core.item
 
 import com.mojang.authlib.GameProfile
-import me.ihdeveloper.humans.core.GameItem
 import me.ihdeveloper.humans.core.GameItemInfo
 import me.ihdeveloper.humans.core.GameItemOnBreak
 import me.ihdeveloper.humans.core.GameItemPickaxe
@@ -101,6 +100,7 @@ class PrisonCursedPickaxe : ToolItem(), GameItemOnBreak {
         player.run {
             addPotionEffect(PotionEffect(PotionEffectType.SLOW_DIGGING, 20 * 5, 0), true)
 
+            // TODO Make this action bar to avoid spam
             sendMessage("§eYou got cursed with §cMiner Fatigue I§e for §c5§e seconds")
         }
     }

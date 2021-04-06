@@ -69,3 +69,9 @@ commands:
   reward-destroy:
     usage: "reward-destroy"
     description: "Destroys the created reward square"
+  portal-lock:
+    usage: "portal-lock"
+    description: "Locks the portal"
+  portal-unlock:
+    usage: "portal-unlock"
+    description: "Unlocks the portal"
