@@ -38,6 +38,7 @@ internal val buildTools = BuildTools(
 allprojects {
     repositories {
         mavenCentral()
+        mavenLocal()
     }
 }
 

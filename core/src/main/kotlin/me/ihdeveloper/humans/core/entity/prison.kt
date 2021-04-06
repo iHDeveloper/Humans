@@ -5,6 +5,8 @@ import me.ihdeveloper.humans.core.corePlugin
 import me.ihdeveloper.humans.core.scene.IntroScene
 import me.ihdeveloper.humans.core.system.SceneSystem
 import me.ihdeveloper.humans.core.util.NMSItemStack
+import me.ihdeveloper.humans.core.util.findEntities
+import me.ihdeveloper.humans.core.util.toNMS
 import net.minecraft.server.v1_8_R3.BlockPosition
 import net.minecraft.server.v1_8_R3.EntityLiving
 import net.minecraft.server.v1_8_R3.EntityPlayer
