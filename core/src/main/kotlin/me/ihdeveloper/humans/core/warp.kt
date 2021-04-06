@@ -117,6 +117,7 @@ class Warp(
             // Fix: Cart doesn't move on the start
             bukkitEntity.velocity = Vector(0.45, 0.0, 0.0)
         }
+        player.sendMessage("§7Going to $displayName§7...")
 
         server?.run {
             Bukkit.getScheduler().runTaskLater(corePlugin, {

@@ -12,6 +12,8 @@ import me.ihdeveloper.humans.core.command.ItemInfoCommand
 import me.ihdeveloper.humans.core.command.NPCSaveCommand
 import me.ihdeveloper.humans.core.command.NPCSummonCommand
 import me.ihdeveloper.humans.core.command.PlaySceneCommand
+import me.ihdeveloper.humans.core.command.PortalLockCommand
+import me.ihdeveloper.humans.core.command.PortalUnlockCommand
 import me.ihdeveloper.humans.core.command.RegionNewCommand
 import me.ihdeveloper.humans.core.command.RegionSaveCommand
 import me.ihdeveloper.humans.core.command.RegionSetCommand
@@ -26,6 +28,7 @@ import me.ihdeveloper.humans.core.command.SetWarpLocationCommand
 import me.ihdeveloper.humans.core.command.SummonCommand
 import me.ihdeveloper.humans.core.command.SummonSaveCommand
 import me.ihdeveloper.humans.core.command.WarpSaveCommand
+import me.ihdeveloper.humans.core.command.portalState
 import me.ihdeveloper.humans.core.core
 import me.ihdeveloper.humans.core.corePlugin
 import me.ihdeveloper.humans.core.entity.CustomArmorStand
@@ -58,6 +61,7 @@ import me.ihdeveloper.humans.core.scene.IntroScene
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.util.ITEMSTACK_AIR
 import me.ihdeveloper.humans.core.util.between
+import me.ihdeveloper.humans.core.util.itemMeta
 import me.ihdeveloper.humans.core.util.openScreen
 import me.ihdeveloper.humans.core.util.profile
 import me.ihdeveloper.humans.core.util.region
@@ -103,6 +107,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerAchievementAwardedEvent
 import org.bukkit.event.player.PlayerBedEnterEvent
@@ -122,6 +127,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scoreboard.DisplaySlot
 import org.spigotmc.event.player.PlayerSpawnLocationEvent
 
+const val TEAM_OWNER = "@0owner"
 const val TEAM_DEV = "@1dev"
 const val TEAM_BUILD = "@2build"
 const val TEAM_MEMBER = "@9member"
@@ -309,6 +315,10 @@ class CommandSystem : System("Core/Command") {
         RewardCreateCommand(),
         RewardSpawnCommand(),
         RewardDestroyCommand(),
+
+        /** Portal commands */
+        PortalLockCommand(),
+        PortalUnlockCommand(),
     )
 
     override fun init(plugin: JavaPlugin) {
@@ -371,7 +381,6 @@ class BlockSystem : System("Core/Block"), Listener {
     @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPistonExtendEvent) = cancelEvent(event)
     @EventHandler @Suppress("UNUSED") fun onEvent(event: BlockPistonRetractEvent) = cancelEvent(event)
 
-    @Suppress("UNUSED")
     private fun cancelEvent(event: Cancellable) {
         event.isCancelled = true
     }
@@ -381,7 +390,7 @@ class BlockSystem : System("Core/Block"), Listener {
  * An item for the game menu
  */
 val GAME_MENU = ItemStack(Material.NETHER_STAR, 1).apply {
-    itemMeta = itemMeta.apply {
+    itemMeta {
         displayName = "§eGame Menu §7(Right click)"
         lore = arrayListOf(
             "§7View your profile in the game!",
@@ -587,8 +596,12 @@ class PlayerSystem : System("Core/Player"), Listener {
                     introScenes.remove(name)
                 }
             } else {
-                if (core.serverName == "Hub")
+                if (core.serverName == "Hub") {
                     sendMessage("§eWelcome back, §7\"Human\"§e!")
+                    sendMessage("")
+                    sendMessage("§cThe connection to the portal is unstable for you")
+                    sendMessage("§cPlease report any bugs and glitches using §e/support")
+                }
                 sendMessage("")
                 sendMessage("")
 
@@ -713,6 +726,14 @@ class PlayerSystem : System("Core/Player"), Listener {
     fun onBedEnter(event: PlayerBedEnterEvent) {
         event.isCancelled = true
     }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    @Suppress("UNUSED")
+    fun onInventoryClick(event: InventoryClickEvent) {
+        if (event.clickedInventory != null && event.clickedInventory.type != InventoryType.PLAYER) {
+            event.isCancelled = true
+        }
+    }
 }
 
 const val SERVER_MOTD =
@@ -736,13 +757,18 @@ class LoginSystem : System("Core/Login"), Listener {
         event.motd = SERVER_MOTD
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     @Suppress("UNUSED")
     fun onLogin(event: PlayerLoginEvent) {
+        if (portalState) {
+            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "§eHumans Portal: §cIt's locked! §eYou can't access the humans world.")
+            return
+        }
+
         core.integratedPart?.run {
             val profile = event.player.profile
 
-            if (profile == null)  {
+            if (profile == null) {
                 event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "§cFailed to connect to ${core.serverName}! §7(PROFILE_NOT_FOUND_2)")
                 return
             }
@@ -780,6 +806,10 @@ class ScoreboardSystem : System("Core/Scoreboard"), Listener {
             sidebar.getScore("§0").score = 1
             core.apply { if (serverName != null) sidebar.getScore("§9§7§oV0.0b - ${serverName!!.toUpperCase()}").score = 1 }
 
+            val ownerTeam = registerNewTeam(TEAM_OWNER).apply {
+                prefix = "§7[OWNER] §e"
+            }
+
             val devTeam = registerNewTeam(TEAM_DEV).apply {
                 prefix = "§7[DEV] §3"
             }
@@ -798,16 +828,20 @@ class ScoreboardSystem : System("Core/Scoreboard"), Listener {
                 else -> memberTeam
             }
 
+            val joinedPlayer = event.player
             Bukkit.getOnlinePlayers().forEach { player ->
-                when (player.name) {
+                when (joinedPlayer.name) {
+                    "iDhoom" -> ownerTeam
                     "iHDeveloper" -> devTeam
+                    "Prum" -> devTeam
                     "iSDeveloper" -> buildTeam
                     else -> memberTeam
                 }.also {
-                    it.addEntry(player.name)
+                    it.addEntry(joinedPlayer.name)
 
                     /** Adds our player to the other player's team */
                     val thisPlayerName = event.player.name
+
                     if (player.name != thisPlayerName) {
                         player.scoreboard.getTeam(thisPlayerTeam.name).addEntry(thisPlayerName)
                     }

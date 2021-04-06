@@ -101,6 +101,7 @@ class PrisonCursedPickaxe : ToolItem(), GameItemOnBreak {
         player.run {
             addPotionEffect(PotionEffect(PotionEffectType.SLOW_DIGGING, 20 * 5, 0), true)
 
+            // TODO Make this action bar to avoid spam
             sendMessage("§eYou got cursed with §cMiner Fatigue I§e for §c5§e seconds")
         }
     }

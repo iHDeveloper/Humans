@@ -4,12 +4,7 @@ import kotlin.math.sqrt
 import me.ihdeveloper.humans.core.corePlugin
 import me.ihdeveloper.humans.core.scene.IntroScene
 import me.ihdeveloper.humans.core.system.SceneSystem
-import me.ihdeveloper.humans.core.util.NMSItemStack
-import me.ihdeveloper.humans.core.util.findEntities
-import me.ihdeveloper.humans.core.util.toNMS
 import net.minecraft.server.v1_8_R3.BlockPosition
-import net.minecraft.server.v1_8_R3.DamageSource
-import net.minecraft.server.v1_8_R3.EntityHuman
 import net.minecraft.server.v1_8_R3.EntityLiving
 import net.minecraft.server.v1_8_R3.EntityPlayer
 import net.minecraft.server.v1_8_R3.Items
@@ -25,7 +20,6 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntity
 import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntityLiving
 import net.minecraft.server.v1_8_R3.PacketPlayOutUpdateEntityNBT
 import net.minecraft.server.v1_8_R3.PacketPlayOutWorldEvent
-import net.minecraft.server.v1_8_R3.Vec3D
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material

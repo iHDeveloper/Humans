@@ -41,6 +41,7 @@ fun fromNPCType(type: String, location: Location): CustomNPC? = when(type) {
     "prisoner_dhoom" -> newPrisoner(location, PrisonerType.IDHOOM)
     "prisoner_almond" -> newPrisoner(location, PrisonerType.ALMOND)
     "prisoner_brhom" -> newPrisoner(location, PrisonerType.BRHOM)
+    "prisoner_ali" -> newPrisoner(location, PrisonerType.ALI)
     else -> core.integratedPart?.fromNPCType(type, location)
 }
 

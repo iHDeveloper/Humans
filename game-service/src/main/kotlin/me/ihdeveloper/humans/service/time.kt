@@ -67,4 +67,4 @@ data class GameTime (
     }
 }
 
-val gameTime = GameTime()
+internal val gameTime = GameTime()
