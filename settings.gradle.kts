@@ -5,5 +5,5 @@ include(
     "hub",
     "mine",
     "game-service",
-    "blocks-api"
+    "simple-api"
 )

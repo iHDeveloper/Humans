@@ -18,7 +18,6 @@ import org.bukkit.plugin.java.JavaPlugin
 val logger = GameLogger("API/Blocks")
 val gson = Gson()
 
-//const val API_ENDPOINT = "humans.blocks.api"
 const val API_ENDPOINT = "http://localhost"
 
 const val PROFILE_TIMEOUT = 50

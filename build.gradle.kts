@@ -69,7 +69,7 @@ subprojects {
             if (project.name != "core")
                 compileOnly(project(":core"))
 
-            if (project.name == "blocks-api") {
+            if (project.name == "simple-api") {
                 val fuelVersion = "2.3.0"
                 implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
                 implementation("com.github.kittinunf.fuel:fuel-coroutines:$fuelVersion")
