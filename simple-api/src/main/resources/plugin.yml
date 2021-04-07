@@ -1,6 +1,6 @@
-name: Humans-BlocksAPI
+name: Humans-SimpleAPI
 version: 0.1
-main: me.ihdeveloper.humans.blocks.Main
+main: me.ihdeveloper.humans.simple.Main
 author: iHDeveloper
 depend:
   - Humans-Core

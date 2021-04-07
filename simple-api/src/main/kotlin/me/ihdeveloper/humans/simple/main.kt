@@ -1,4 +1,4 @@
-package me.ihdeveloper.humans.blocks
+package me.ihdeveloper.humans.simple
 
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.coroutines.awaitStringResult
@@ -15,23 +15,24 @@ import me.ihdeveloper.humans.service.api.Skills
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
-val logger = GameLogger("API/Blocks")
+val logger = GameLogger("API/Simple")
 val gson = Gson()
 
 const val API_ENDPOINT = "http://localhost"
 
 const val PROFILE_TIMEOUT = 50
 
+@Suppress("UNUSED")
 class Main : JavaPlugin() {
     override fun onEnable() {
-        core.api = BlocksAPI()
+        core.api = SimpleAPI()
         core.otherSystems.add(APISystem())
     }
 
     override fun onDisable() {}
 }
 
-class APISystem : System("Blocks/API") {
+class APISystem : System("Simple/API") {
     companion object {
         internal lateinit var plugin: JavaPlugin
     }
@@ -48,7 +49,7 @@ class APISystem : System("Blocks/API") {
 }
 
 
-class BlocksAPI : GameAPI {
+class SimpleAPI : GameAPI {
     override fun getTime(): GameTime {
         return runBlocking {
             logger.info("Fetching the game time...")
