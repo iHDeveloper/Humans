@@ -113,6 +113,7 @@ class PrisonCursedPickaxe : ToolItem(), GameItemOnBreak {
     description = [
         "§7Crafted in the §6§l☯§e Humans Agency",
         "§7Cursed by §3Agent H",
+        "§9Able to break multiple blocks",
         "§7",
         "§c§l☣§c Item Curse",
         "§8» §7Each time a block mined by this pickaxe",

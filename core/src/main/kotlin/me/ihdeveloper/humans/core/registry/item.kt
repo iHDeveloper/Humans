@@ -13,6 +13,7 @@ import me.ihdeveloper.humans.core.GameItemStack
 import me.ihdeveloper.humans.core.GameItemTexture
 import me.ihdeveloper.humans.core.GameItemWithTexture
 import me.ihdeveloper.humans.core.item.EnchantedNaturalItem
+import me.ihdeveloper.humans.core.item.PrisonUltimatePickaxe
 import me.ihdeveloper.humans.core.util.NMSItemStack
 import me.ihdeveloper.humans.core.util.applyTexture
 import me.ihdeveloper.humans.core.util.gameProfile
@@ -141,6 +142,11 @@ fun createItem(itemClass: KClass<out GameItem>, amount: Int = 1): NMSItemStack {
             }
 
             info.flags.forEach { if (it != ItemFlag.HIDE_UNBREAKABLE) addItemFlags(it) }
+
+            if (instance is PrisonUltimatePickaxe) {
+                addEnchant(Enchantment.DIG_SPEED, 1, true)
+                addItemFlags(ItemFlag.HIDE_ENCHANTS)
+            }
 
             if (instance is EnchantedNaturalItem) {
                 addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, true)
