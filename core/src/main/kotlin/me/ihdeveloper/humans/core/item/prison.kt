@@ -120,7 +120,7 @@ class PrisonCursedPickaxe : ToolItem(), GameItemOnBreak {
         "§8» §7You get §6Haste III§7 for §c5 seconds", // TODO Design a system for cursed items
     ],
     rarity = GameItemRarity.SPECIAL,
-    material = Material.WOOD_PICKAXE,
+    material = Material.IRON_PICKAXE,
     flags = [ItemFlag.HIDE_ATTRIBUTES],
     unbreakable = true
 )

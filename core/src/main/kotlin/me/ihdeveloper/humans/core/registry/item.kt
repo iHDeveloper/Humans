@@ -144,7 +144,7 @@ fun createItem(itemClass: KClass<out GameItem>, amount: Int = 1): NMSItemStack {
             info.flags.forEach { if (it != ItemFlag.HIDE_UNBREAKABLE) addItemFlags(it) }
 
             if (instance is PrisonUltimatePickaxe) {
-                addEnchant(Enchantment.DIG_SPEED, 1, true)
+                addEnchant(Enchantment.DIG_SPEED, 50, true)
                 addItemFlags(ItemFlag.HIDE_ENCHANTS)
             }
 
