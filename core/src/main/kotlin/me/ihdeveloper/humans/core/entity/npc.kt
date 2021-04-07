@@ -94,7 +94,7 @@ class Prisoner (
     location: Location,
     profile: GameProfile
 ) : CustomNPC(location, profile) {
-    private val profileField = Class.forName("org.bukkit.craftbukkit.v1_8_R3.inventory.CraftMetaSkull").getField("profile")
+    private val profileField = Class.forName("org.bukkit.craftbukkit.v1_8_R3.inventory.CraftMetaSkull").getDeclaredField("profile")
 
     init {
         initNPC()
