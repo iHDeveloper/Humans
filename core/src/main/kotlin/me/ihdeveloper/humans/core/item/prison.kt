@@ -100,9 +100,11 @@ class PrisonNormalPickaxe : ToolItem()
 class PrisonCursedPickaxe : ToolItem(), GameItemOnBreak {
     override fun onBreak(player: Player) {
         player.run {
+            if (hasPotionEffect(PotionEffectType.SLOW_DIGGING))
+                return
+
             addPotionEffect(PotionEffect(PotionEffectType.SLOW_DIGGING, 20 * 5, 0), true)
 
-            // TODO Make this action bar to avoid spam
             sendActionBar("§7»§c Miner Fatigue§b I§7 -§c 5§e seconds")
         }
     }
@@ -129,9 +131,12 @@ class PrisonCursedPickaxe : ToolItem(), GameItemOnBreak {
 class PrisonUltimatePickaxe : ToolItem(), GameItemOnBreak {
     override fun onBreak(player: Player) {
         player.run {
+            if (hasPotionEffect(PotionEffectType.FAST_DIGGING))
+                return
+
             addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 20 * 5, 2), true)
 
-            sendActionBar("§7»§6 Haste§b III§7 -§c 5§e seconds")
+            sendActionBar("§6Haste§b III§7 -§c 5§e seconds")
         }
     }
 }
