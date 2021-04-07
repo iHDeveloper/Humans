@@ -13,13 +13,13 @@ Implementations that change the Minecraft behaviour completely.
 - Teleportation System
 - NPC System
 - Boss Bar System
-- Cross-Time System
+- Cross-Server Time System
 - Custom Item System
 - Custom GUI System
 - Custom Entity System
 
 ## Game Modules
-The goal of modules is to seperate the codebase of the game world. And it lets you focus on what matters.
+The goal of modules is to separate the codebase of the game world. And it lets you focus on what matters.
 | Name | Path | Description |
 |-------|-------|------------|
 | Core | core/ | The main infrastructure to run different parts of the game world |
