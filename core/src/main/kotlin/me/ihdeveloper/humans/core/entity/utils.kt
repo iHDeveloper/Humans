@@ -37,10 +37,10 @@ fun fromNPCType(type: String, location: Location): CustomNPC? = when(type) {
     "agent_developer" -> AgentDeveloper(location)
 
     /** Prisoners */
-    "prisoner_sattam" -> newPrisoner(location, PrisonerType.SATTAM)
-    "prisoner_dhoom" -> newPrisoner(location, PrisonerType.IDHOOM)
-    "prisoner_almond" -> newPrisoner(location, PrisonerType.ALMOND)
-    "prisoner_brhom" -> newPrisoner(location, PrisonerType.BRHOM)
+    "prisoner_sattam" -> newPrisoner(location, PrisonerType.CAMERON)
+    "prisoner_dhoom" -> newPrisoner(location, PrisonerType.HAKIM)
+    "prisoner_almond" -> newPrisoner(location, PrisonerType.SARAH)
+    "prisoner_brhom" -> newPrisoner(location, PrisonerType.XANDER)
     "prisoner_ali" -> newPrisoner(location, PrisonerType.ALI)
     else -> core.integratedPart?.fromNPCType(type, location)
 }

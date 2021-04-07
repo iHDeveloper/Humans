@@ -89,11 +89,12 @@ class AgentDeveloper(
  */
 class Prisoner (
     name: String,
-    skullName: String,
+    skullProfile: GameProfile,
     private val messages: Array<String>,
     location: Location,
     profile: GameProfile
 ) : CustomNPC(location, profile) {
+    private val profileField = Class.forName("org.bukkit.craftbukkit.v1_8_R3.inventory.CraftMetaSkull").getField("profile")
 
     init {
         initNPC()
@@ -102,7 +103,8 @@ class Prisoner (
         val itemSkull = ItemStack(Material.SKULL_ITEM, 1, 3.toShort())
         itemSkull.apply {
             itemMeta = (itemMeta as SkullMeta).apply {
-                owner = skullName
+                profileField.isAccessible = true
+                profileField.set(this, skullProfile)
             }
         }
 
