@@ -5,7 +5,7 @@ The story starts with **Wither King** putting all humans in one prison. And the 
 The game architecture provides you the ability to run multiple servers with different behaviour in the same infrastructure.
 The design of the game systems are flexible to allow adding more content while safely maintaining the game.
 
-**Note:** The game is not complete at all.
+**Note:** The game is not complete at all. The game is unstable and is under the **ALPHA** state.
 
 ## Technical Implementations
 Implementations that change the Minecraft behaviour completely.

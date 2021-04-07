@@ -13,7 +13,7 @@ plugins {
 val useLocalDependency: String by project
 
 group = "me.ihdeveloper"
-version = "0.0"
+version = "0.1"
 
 // The server to run the plugins on it
 internal val server = Server()
