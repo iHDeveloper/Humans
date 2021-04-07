@@ -53,8 +53,15 @@ subprojects {
     }
 
     dependencies {
-        implementation(kotlin("stdlib"))
-        implementation(kotlin("reflect"))
+        if (project.name == "kotlin") {
+            implementation(kotlin("stdlib"))
+            implementation(kotlin("reflect"))
+
+            implementation(project(":game-service"))
+        } else {
+            compileOnly(kotlin("stdlib"))
+            compileOnly(kotlin("reflect"))
+        }
 
         // Include the server jar source
         if (project.name != "game-service") {
@@ -64,7 +71,7 @@ subprojects {
                 compileOnly(files(buildTools.serverJar.absolutePath))
             }
 
-            implementation(project(":game-service"))
+            compileOnly(project(":game-service"))
 
             if (project.name != "core")
                 compileOnly(project(":core"))

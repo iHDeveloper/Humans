@@ -3,6 +3,9 @@ version: 0.0
 main: me.ihdeveloper.humans.core.Main
 author: iHDeveloper
 
+depend:
+  - Humans-Kotlin
+
 commands:
   summon:
     usage: "summon <type>"

@@ -5,5 +5,6 @@ include(
     "hub",
     "mine",
     "game-service",
-    "simple-api"
+    "simple-api",
+    "kotlin"
 )

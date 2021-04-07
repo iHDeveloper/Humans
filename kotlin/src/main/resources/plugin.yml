@@ -1,0 +1,5 @@
+name: Humans-Kotlin
+description: A plugin that contains the common shared dependencies in the game
+version: 0.0
+main: me.ihdeveloper.humans.kotlin.Main
+author: iHDeveloper
