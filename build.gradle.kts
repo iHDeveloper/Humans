@@ -80,6 +80,7 @@ subprojects {
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
             jvmTarget = "1.8"
+            useIR = true
         }
     }
 
@@ -188,7 +189,7 @@ tasks {
      */
     register<Download>("download-build-tools") {
         onlyIf {
-            !buildTools.file.exists()
+            !buildTools.useLocalDependency && !buildTools.file.exists()
         }
 
         val temp = buildTools.buildDir
@@ -215,7 +216,7 @@ tasks {
         dependsOn("download-build-tools")
 
         onlyIf {
-            !buildTools.serverJar.exists()
+            !buildTools.useLocalDependency && !buildTools.serverJar.exists()
         }
 
         doLast {
