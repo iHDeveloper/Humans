@@ -116,9 +116,9 @@ class PrisonCursedPickaxe : ToolItem(), GameItemOnBreak {
         "§7",
         "§c§l☣§c Item Curse",
         "§8» §7Each time a block mined by this pickaxe",
-        "§8» §7You get §6Haste I§7 for §c5 seconds", // TODO Design a system for cursed items
+        "§8» §7You get §6Haste III§7 for §c5 seconds", // TODO Design a system for cursed items
     ],
-    rarity = GameItemRarity.UNCOMMON,
+    rarity = GameItemRarity.SPECIAL,
     material = Material.WOOD_PICKAXE,
     flags = [ItemFlag.HIDE_ATTRIBUTES],
     unbreakable = true
@@ -127,10 +127,10 @@ class PrisonCursedPickaxe : ToolItem(), GameItemOnBreak {
 class PrisonUltimatePickaxe : ToolItem(), GameItemOnBreak {
     override fun onBreak(player: Player) {
         player.run {
-            addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 20 * 5, 0), true)
+            addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 20 * 5, 2), true)
 
             // TODO Make this action bar to avoid spam
-            sendMessage("§eYou got cursed with §6Haste I§e for §c5§e seconds")
+            sendMessage("§eYou got cursed with §6Haste III§e for §c5§e seconds")
         }
     }
 }
