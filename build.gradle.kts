@@ -59,8 +59,13 @@ subprojects {
 
             implementation(project(":game-service"))
         } else {
-            compileOnly(kotlin("stdlib"))
-            compileOnly(kotlin("reflect"))
+            if (project.name == "game-service") {
+		implementation(kotlin("stdlib"))
+            	implementation(kotlin("reflect"))
+            } else {
+            	compileOnly(kotlin("stdlib"))
+            	compileOnly(kotlin("reflect"))
+	    }
         }
 
         // Include the server jar source
