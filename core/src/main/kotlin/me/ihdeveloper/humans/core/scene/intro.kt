@@ -5,7 +5,7 @@ import me.ihdeveloper.humans.core.GameItemStack
 import me.ihdeveloper.humans.core.SceneMeta
 import me.ihdeveloper.humans.core.entity.PrisonWatcher
 import me.ihdeveloper.humans.core.entity.PrisonWitch
-import me.ihdeveloper.humans.core.item.PrisonUltimatePickaxe
+import me.ihdeveloper.humans.core.item.PrisonCursedPickaxe
 import me.ihdeveloper.humans.core.system.GAME_MENU
 import me.ihdeveloper.humans.core.system.PlayerSystem
 import me.ihdeveloper.humans.core.system.ProfileSystem
@@ -203,7 +203,7 @@ class IntroScene(
         }
 
         frame((SECOND * 14) + 2) {
-            player.inventory.addGameItem(GameItemStack(PrisonUltimatePickaxe::class))
+            player.inventory.addGameItem(GameItemStack(PrisonCursedPickaxe::class))
             witch.equipment[0] = null
             witch.updateInventory(player.toNMS())
         }
