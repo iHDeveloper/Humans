@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile
 import me.ihdeveloper.humans.core.BossBar
 import me.ihdeveloper.humans.core.GameRegion
 import me.ihdeveloper.humans.core.core
+import me.ihdeveloper.humans.core.entity.connection
 import me.ihdeveloper.humans.core.gui.GUIScreen
 import me.ihdeveloper.humans.core.system.BossBarSystem
 import me.ihdeveloper.humans.core.system.FreezeSystem
@@ -11,6 +12,11 @@ import me.ihdeveloper.humans.core.system.GUISystem
 import me.ihdeveloper.humans.core.system.ProfileSystem
 import me.ihdeveloper.humans.core.system.RegionSystem
 import me.ihdeveloper.humans.service.api.Profile
+import net.md_5.bungee.api.chat.TextComponent
+import net.md_5.bungee.chat.ComponentSerializer
+import net.minecraft.server.v1_8_R3.IChatBaseComponent
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat
+import org.bukkit.craftbukkit.v1_8_R3.util.CraftChatMessage
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
@@ -95,6 +101,14 @@ fun Player.crash(error: String) = kickPlayer(arrayOf(
     "§cSomething wrong happened! §7[${core.serverName}]",
     "§cPlease report the error to the admins.",
 ).joinToString("\n"))
+
+/**
+ * Sends a message to the [Player] in the action bar
+ */
+fun Player.sendActionBar(message: String) {
+    val nmsComponents = IChatBaseComponent.ChatSerializer.a("{\"text\":\"${message}\"}")
+    toNMS().connection.sendPacket(PacketPlayOutChat(nmsComponents, 2.toByte()))
+}
 
 /**
  * Sets a random game profile with texture data and signature. And, apply it to the skull item

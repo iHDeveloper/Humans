@@ -8,6 +8,7 @@ import me.ihdeveloper.humans.core.GameItemPickaxe
 import me.ihdeveloper.humans.core.GameItemRarity
 import me.ihdeveloper.humans.core.GameItemTexture
 import me.ihdeveloper.humans.core.GameItemWithTexture
+import me.ihdeveloper.humans.core.util.sendActionBar
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
@@ -102,7 +103,7 @@ class PrisonCursedPickaxe : ToolItem(), GameItemOnBreak {
             addPotionEffect(PotionEffect(PotionEffectType.SLOW_DIGGING, 20 * 5, 0), true)
 
             // TODO Make this action bar to avoid spam
-            sendMessage("§eYou got cursed with §cMiner Fatigue I§e for §c5§e seconds")
+            sendActionBar("§7»§c Miner Fatigue§b I§7 -§c 5§e seconds")
         }
     }
 }
@@ -130,8 +131,7 @@ class PrisonUltimatePickaxe : ToolItem(), GameItemOnBreak {
         player.run {
             addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 20 * 5, 2), true)
 
-            // TODO Make this action bar to avoid spam
-            sendMessage("§eYou got cursed with §6Haste III§e for §c5§e seconds")
+            sendActionBar("§7»§6 Haste§b III§7 -§c 5§e seconds")
         }
     }
 }
