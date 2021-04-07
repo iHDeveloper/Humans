@@ -30,6 +30,7 @@ import net.minecraft.server.v1_8_R3.EnumProtocolDirection
 import net.minecraft.server.v1_8_R3.MathHelper
 import net.minecraft.server.v1_8_R3.NetworkManager
 import net.minecraft.server.v1_8_R3.PacketPlayOutAnimation
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityEquipment
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityHeadRotation
 import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo
@@ -286,6 +287,7 @@ open class CustomNPC(
 
             /** Send an animation of the NPC's arm swinging */
             sendPacket(PacketPlayOutAnimation(this@CustomNPC, 0))
+            sendPacket(PacketPlayOutEntityEquipment(id, 4, getEquipment(4)))
         }
     }
 }
