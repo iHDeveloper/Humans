@@ -36,8 +36,8 @@ fun newPrisoner(location: Location, type: PrisonerType): Prisoner = when(type) {
         "Cameron",
         randomGameProfile().apply { applyTexture(CAMERON_TEXTURE, CAMERON_SIGNATURE) },
         arrayOf(
-            "§7[NPC] §eSattam: §7When the §cWither King§7 opened the stone mine the first mine in this prison",
-            "§7[NPC] §eSattam: §7This pickaxe was the one that he used to break the first block in the mine",
+            "§7[NPC] §eCameron: §7When the §cWither King§7 opened the stone mine the first mine in this prison",
+            "§7[NPC] §eCameron: §7This pickaxe was the one that he used to break the first block in the mine",
         ),
         location,
         randomGameProfile().apply { applyTexture(PROFILE_TEXTURE, PROFILE_SIGNATURE) }
@@ -57,8 +57,8 @@ fun newPrisoner(location: Location, type: PrisonerType): Prisoner = when(type) {
         "Sarah",
         randomGameProfile().apply { applyTexture(SARAH_TEXTURE, SARAH_SIGNATURE) },
         arrayOf(
-            "§7[NPC] §eAlmond: §7We are not ready yet...",
-            "§7[NPC] §eAlmond: §cMy time will come soon..."
+            "§7[NPC] §eSarah: §7We are not ready yet...",
+            "§7[NPC] §eSarah: §cMy time will come soon..."
         ),
         location,
         randomGameProfile().apply { applyTexture(PROFILE_TEXTURE, PROFILE_SIGNATURE) }
@@ -67,8 +67,8 @@ fun newPrisoner(location: Location, type: PrisonerType): Prisoner = when(type) {
         "Xander",
         randomGameProfile().apply { applyTexture(XANDER_TEXTURE, XANDER_SIGNATURE) },
         arrayOf(
-            "§7[NPC] §eBrhom: §7Mining a stack of §ePrison Stone§7 in the §eStone Mine§7",
-            "§7[NPC] §eBrhom: §7will give you a pass to access the §eCoal Mine§7!"
+            "§7[NPC] §eXander: §7Mining a stack of §ePrison Stone§7 in the §eStone Mine§7",
+            "§7[NPC] §eXander: §7will give you a pass to access the §eCoal Mine§7!"
         ),
         location,
         randomGameProfile().apply { applyTexture(PROFILE_TEXTURE, PROFILE_SIGNATURE) }
