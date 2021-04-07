@@ -106,3 +106,31 @@ class PrisonCursedPickaxe : ToolItem(), GameItemOnBreak {
         }
     }
 }
+
+@GameItemInfo(
+    id = "prison:pickaxe:ultimate",
+    name = "Prison Ultimate Pickaxe",
+    description = [
+        "§7Crafted in the §6§l☯§e Humans Agency",
+        "§7Cursed by §3Agent H",
+        "§7",
+        "§c§l☣§c Item Curse",
+        "§8» §7Each time a block mined by this pickaxe",
+        "§8» §7You get §6Haste I§7 for §c5 seconds", // TODO Design a system for cursed items
+    ],
+    rarity = GameItemRarity.UNCOMMON,
+    material = Material.WOOD_PICKAXE,
+    flags = [ItemFlag.HIDE_ATTRIBUTES],
+    unbreakable = true
+)
+@GameItemPickaxe
+class PrisonUltimatePickaxe : ToolItem(), GameItemOnBreak {
+    override fun onBreak(player: Player) {
+        player.run {
+            addPotionEffect(PotionEffect(PotionEffectType.FAST_DIGGING, 20 * 5, 0), true)
+
+            // TODO Make this action bar to avoid spam
+            sendMessage("§eYou got cursed with §6Haste I§e for §c5§e seconds")
+        }
+    }
+}

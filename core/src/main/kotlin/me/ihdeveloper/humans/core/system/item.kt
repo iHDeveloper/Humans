@@ -4,6 +4,7 @@ import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.item.PrisonCoalPass
 import me.ihdeveloper.humans.core.item.PrisonCrystal
 import me.ihdeveloper.humans.core.item.PrisonCursedPickaxe
+import me.ihdeveloper.humans.core.item.PrisonUltimatePickaxe
 import me.ihdeveloper.humans.core.item.PrisonEnchantedStone
 import me.ihdeveloper.humans.core.item.PrisonNormalPickaxe
 import me.ihdeveloper.humans.core.item.PrisonStone
@@ -23,6 +24,7 @@ class ItemSystem : System("Core/Item") {
         /** Prison Tool Items */
         registerItem(PrisonNormalPickaxe::class, logger)
         registerItem(PrisonCursedPickaxe::class, logger)
+        registerItem(PrisonUltimatePickaxe::class, logger)
 
         /** Prison Mine Items */
         registerItem(PrisonCrystal::class, logger)
