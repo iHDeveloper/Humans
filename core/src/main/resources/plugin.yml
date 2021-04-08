@@ -37,7 +37,7 @@ commands:
     usage: "warps-save"
     description: "Saves the warps configuration"
   give:
-    usage: "give <id> [amount]"
+    usage: "give <id> [amount] [player]"
     description: "Gives the player a game item"
   item-info:
     usage: "item-info"

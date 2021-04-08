@@ -105,7 +105,7 @@ class PrisonCursedPickaxe : ToolItem(), GameItemOnBreak {
 
             addPotionEffect(PotionEffect(PotionEffectType.SLOW_DIGGING, 20 * 5, 0), true)
 
-            sendActionBar("§7»§c Miner Fatigue§b I§7 -§c 5§e seconds")
+            sendActionBar("§cMiner Fatigue§b I§7 -§c 5§e seconds")
         }
     }
 }
