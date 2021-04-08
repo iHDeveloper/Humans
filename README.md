@@ -7,6 +7,8 @@ The design of the game systems are flexible to allow adding more content while s
 
 **Note:** The game is not complete at all. The game is unstable and is under the **ALPHA** state.
 
+Check out the [Youtube Video](https://youtu.be/mdQTy7q6s0k) for the showcase of the game world.
+
 ## Technical Implementations
 Implementations that change the Minecraft behaviour completely.
 - Scene System
