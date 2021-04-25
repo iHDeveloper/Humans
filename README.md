@@ -24,7 +24,7 @@ Implementations that change the Minecraft behaviour completely.
 The goal of modules is to separate the codebase of the game world. And it lets you focus on what matters.
 | Name | Path | Description |
 |-------|-------|------------|
-| Core | core/ | The main infrastructure to run different parts of the game world |
+| Core | core/ | The main engine that runs the game world with flexibility |
 | Game Service | game-service/ | HTTP Server that provides shared info for all parts of the game world |
 | Hub | hub/ | Includes functionality to run the **Hub** of the game world |
 | Kotlin | kotlin/ | Empty project that's used to include shared dependencies in order to decrease the size of the plugins |
