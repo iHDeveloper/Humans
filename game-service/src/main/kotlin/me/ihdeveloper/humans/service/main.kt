@@ -6,12 +6,8 @@ import kotlin.concurrent.thread
 import me.ihdeveloper.humans.service.api.Profile
 import me.ihdeveloper.humans.service.api.Project
 import me.ihdeveloper.humans.service.api.ProjectItem
-import spark.Request
-import spark.Response
-import spark.Spark.get
-import spark.Spark.initExceptionHandler
-import spark.Spark.port
-import spark.Spark.post
+import reactor.core.publisher.Mono
+import reactor.netty.http.server.HttpServer
 
 val profiles = mutableMapOf<String, Profile>()
 
@@ -57,44 +53,51 @@ fun main() {
         gameTime.start(true)
     }
 
-    port(80)
-    initExceptionHandler { e: java.lang.Exception? -> e?.printStackTrace() }
-
     println("[INFO] Game service started!")
     println("[INFO] Listening on port 80...")
 
-    /** Read the current time of the game */
-    get("/time", fun(_: Request, res: Response): String {
-        res.status(200)
-        return gameTime.serialize()
-    })
+    val server = HttpServer.create().apply {
+        port(80)
 
-    /** Read a profile from the map */
-    get("/profile/:name", fun(req: Request, res: Response): String {
-        val name = req.params("name")
+        /* Routing */
+        route {
 
-        val profile = profiles[name]
+            /* Read the current time of the game */
+            it.get("/time") { _, res ->
+                res.sendString(Mono.just(gameTime.serialize()))
+            }
 
-        if (profile == null) {
-            res.status(200)
-            return "{}"
+            /* Read a profile from the map */
+            it.get("/profile/{name}") { req, res ->
+                val name = req.param("name")
+
+                val profile = profiles[name]
+
+                if (profile == null) {
+                    res.sendString(Mono.just("{}"))
+                } else {
+                    res.sendString(Mono.just(profile.serialize()))
+                }
+            }
+
+            it.post("/profile/{name}") { req, res ->
+                val name = req.param("name")
+
+                val flux = req.receive().retain()
+
+                flux.asString().map { data ->
+                    try {
+                        profiles[name] = Profile.deserialize(data)
+                        res.status(204)
+                    } catch (e: Exception) {
+                        res.status(406)
+                    }
+                }
+                res.send()
+            }
         }
 
-        return profile.serialize()
-    })
+    }.bindNow()
 
-    /** Update profile in the map */
-    post("/profile/:name", fun(req: Request, res: Response) {
-        val name = req.params("name")
-
-        try {
-            profiles[name] = Profile.deserialize(req.body())
-            res.status(204)
-        } catch (e: Exception) {
-            res.status(406)
-        }
-    })
-
-    /** Read information about project */
-//    get("/project/:name". fun(req: Request, res: Response) { "" })
+    server.onDispose().block()
 }

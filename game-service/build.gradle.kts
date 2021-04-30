@@ -1,6 +1,7 @@
 dependencies {
     implementation("com.google.code.gson:gson:2.8.6")
-    implementation("com.sparkjava:spark-core:2.9.2")
+    implementation("io.projectreactor.netty:reactor-netty-core:1.0.6")
+    implementation("io.projectreactor.netty:reactor-netty-http:1.0.6")
 }
 
 tasks {
