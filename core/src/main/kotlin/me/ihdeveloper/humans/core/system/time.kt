@@ -27,6 +27,7 @@ class TimeSystem : System("Core/Time"), Runnable {
     }
 
     override fun run() {
+        DevTools.profileStart("Time")
         val gameTime = core.time
         val worldTime = gameTime.let {
             // TODO Calculate the minutes for more smooth timing
@@ -78,6 +79,8 @@ class TimeSystem : System("Core/Time"), Runnable {
                 time.suffix = "§6:§f${minutes} §e${am}"
             }
         }
+
+        DevTools.profileEnd("Time")
     }
 
     override fun dispose() {}
