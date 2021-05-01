@@ -1,19 +1,33 @@
 package me.ihdeveloper.humans.core.command
 
 import me.ihdeveloper.humans.core.AdminCommand
-import me.ihdeveloper.humans.core.util.GameLogger
+import me.ihdeveloper.humans.core.core
 import me.ihdeveloper.humans.core.entity.fromEntityType
 import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.registry.summonedEntities
 import me.ihdeveloper.humans.core.registry.summonedEntitiesInfo
 import me.ihdeveloper.humans.core.system.CustomEntitySystem
 import me.ihdeveloper.humans.core.system.PlayerSystem
+import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.util.crash
+import me.ihdeveloper.spigot.devtools.api.DevTools
 import net.minecraft.server.v1_8_R3.Entity
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
+
+class GameDebugCommand : AdminCommand("game-debug") {
+    override fun execute(sender: CommandSender?, cmd: Command?, label: String?, args: Array<out String>?): Boolean {
+        if (sender is ConsoleCommandSender) {
+            sender.sendMessage("§cThis command requires a player to execute it")
+            return true
+        }
+
+        DevTools.watch(sender as Player, "Game Time", "${core.time}")
+        return true
+    }
+}
 
 class SummonCommand : AdminCommand("summon") {
     private val logger = GameLogger("Core/Command/Summon")

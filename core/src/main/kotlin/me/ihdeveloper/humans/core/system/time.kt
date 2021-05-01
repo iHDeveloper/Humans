@@ -2,6 +2,7 @@ package me.ihdeveloper.humans.core.system
 
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.core
+import me.ihdeveloper.spigot.devtools.api.DevTools
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scoreboard.DisplaySlot
@@ -44,6 +45,8 @@ class TimeSystem : System("Core/Time"), Runnable {
         val am = if (gameTime.hours >= 12) "PM" else "AM"
         val hours = x(if (gameTime.hours >= 12) gameTime.hours - 12 else gameTime.hours)
         val minutes = x(5 * (gameTime.minutes / 5))
+
+        DevTools.watch("Game Time", "${core.time}")
 
         Bukkit.getOnlinePlayers().forEach {
 

@@ -7,6 +7,7 @@ import me.ihdeveloper.humans.core.GameRegion
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.command.CrashCommand
 import me.ihdeveloper.humans.core.command.CreateWarpCommand
+import me.ihdeveloper.humans.core.command.GameDebugCommand
 import me.ihdeveloper.humans.core.command.GiveCommand
 import me.ihdeveloper.humans.core.command.ItemInfoCommand
 import me.ihdeveloper.humans.core.command.NPCSaveCommand
@@ -65,6 +66,7 @@ import me.ihdeveloper.humans.core.util.itemMeta
 import me.ihdeveloper.humans.core.util.openScreen
 import me.ihdeveloper.humans.core.util.profile
 import me.ihdeveloper.humans.core.util.region
+import me.ihdeveloper.spigot.devtools.api.DevTools
 import net.minecraft.server.v1_8_R3.EntityArmorStand
 import net.minecraft.server.v1_8_R3.EntityFallingBlock
 import net.minecraft.server.v1_8_R3.EntityGiantZombie
@@ -170,6 +172,7 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
     }
 
     override fun init(plugin: JavaPlugin) {
+        DevTools.profileStart("Custom Entity")
         Companion.logger = logger
         plugin.server.pluginManager.registerEvents(this, plugin)
 
@@ -223,6 +226,7 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
             summonedEntities.add(entity)
             summonedEntitiesInfo.add(info)
         }
+        DevTools.profileEnd("Custom Entity")
     }
 
     override fun dispose() {
@@ -279,6 +283,7 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
 class CommandSystem : System("Core/Command") {
     private val commands = arrayOf(
         CrashCommand(),
+        GameDebugCommand(),
 
         /** Item Commands */
         GiveCommand(),
@@ -418,6 +423,7 @@ class MenuSystem : System("Core/Menu"), Listener {
     @EventHandler
     @Suppress("UNUSED")
     fun onClick(event: InventoryClickEvent) {
+        DevTools.profileStart("GUIs")
         event.run {
             if (clickedInventory !is PlayerInventory)
                 return
@@ -429,6 +435,7 @@ class MenuSystem : System("Core/Menu"), Listener {
             if(action === InventoryAction.PICKUP_ONE)
                 open(whoClicked as Player)
         }
+        DevTools.profileEnd("GUIs")
     }
 
     /**
@@ -760,6 +767,7 @@ class LoginSystem : System("Core/Login"), Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     @Suppress("UNUSED")
     fun onLogin(event: PlayerLoginEvent) {
+        DevTools.profileStart("Core/Login")
         if (portalState) {
             event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "§eHumans Portal: §cIt's locked! §eYou can't access the humans world.")
             return
@@ -781,6 +789,8 @@ class LoginSystem : System("Core/Login"), Listener {
                 }
             }
         }
+
+        DevTools.profileEnd("Core/Login")
     }
 }
 
@@ -855,6 +865,7 @@ class ChatSystem : System("Core/Chat"), Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     @Suppress("UNUSED")
     fun onChat(event: AsyncPlayerChatEvent) {
+        DevTools.profileStart("Chat")
         event.run {
             event.isCancelled = true
 
@@ -874,6 +885,7 @@ class ChatSystem : System("Core/Chat"), Listener {
                 player.sendMessage(message)
             }
         }
+        DevTools.profileEnd("Chat")
     }
 }
 
@@ -952,21 +964,26 @@ class RegionSystem : System("Core/Region"), Listener {
     @EventHandler
     @Suppress("UNUSED")
     fun onMove(event: PlayerMoveEvent) {
+        DevTools.profileStart("Regions")
         event.player.run {
             regions.forEach {
                 if (location.between(it.from, it.to)) {
                     if (it !== region) {
                         region = it
+                        DevTools.watch("Region", "§e${it.name}")
                         scoreboard.getTeam(TEAM_REGION).suffix = it.displayName
                     }
+                    DevTools.profileEnd("Regions")
                     return
                 }
             }
 
             if (region != unknown) {
                 scoreboard.getTeam(TEAM_REGION).suffix = "§7Unknown"
+                DevTools.watch("Region", "Unknown")
                 region = unknown
             }
+            DevTools.profileEnd("Regions")
             return
         }
     }

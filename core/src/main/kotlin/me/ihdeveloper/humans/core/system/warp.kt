@@ -8,6 +8,7 @@ import me.ihdeveloper.humans.core.entity.WarpCart
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.warps
 import me.ihdeveloper.humans.core.warpsInfo
+import me.ihdeveloper.spigot.devtools.api.DevTools
 import org.bukkit.Bukkit
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftMinecart
 import org.bukkit.entity.EntityType
@@ -93,6 +94,7 @@ class WarpSystem : System("Core/Warp"), Listener {
      */
     @EventHandler
     fun onVehicleMove(event: VehicleMoveEvent) {
+        DevTools.profileStart("Warp")
         event.run {
             if (vehicle.type !== EntityType.MINECART)
                 return
@@ -110,6 +112,7 @@ class WarpSystem : System("Core/Warp"), Listener {
             vehicle.passenger.teleport(cart.warp.spawn)
             vehicle.remove()
         }
+        DevTools.profileEnd("Warp")
     }
 
     @EventHandler

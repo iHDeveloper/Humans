@@ -7,6 +7,7 @@ import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.entity.CustomNPC
 import me.ihdeveloper.humans.core.entity.fromNPCType
 import me.ihdeveloper.humans.core.util.toNMSPlayer
+import me.ihdeveloper.spigot.devtools.api.DevTools
 import net.minecraft.server.v1_8_R3.EntityPlayer
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo
 import net.minecraft.server.v1_8_R3.PlayerConnection
@@ -131,6 +132,7 @@ class NPCSystem : System("Core/NPC"), Listener {
     @EventHandler
     @Suppress("UNUSED")
     fun onMove(event: PlayerMoveEvent) {
+        DevTools.profileStart("NPCs")
         for (npc in npcList) {
             if (npc.location.world.name != event.to.world.name)
                 continue
@@ -146,6 +148,7 @@ class NPCSystem : System("Core/NPC"), Listener {
             npc.spawn(toNMSPlayer(event.player))
             logger.debug("[NPC Tracker] Spawning ${event.player.name}...")
         }
+        DevTools.profileEnd("NPCs")
     }
 
     @EventHandler

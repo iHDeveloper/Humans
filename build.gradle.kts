@@ -39,6 +39,7 @@ allprojects {
     repositories {
         mavenCentral()
         mavenLocal()
+        maven(url = "https://jitpack.io")
     }
 }
 
@@ -60,12 +61,12 @@ subprojects {
             implementation(project(":game-service"))
         } else {
             if (project.name == "game-service") {
-		implementation(kotlin("stdlib"))
+		        implementation(kotlin("stdlib"))
             	implementation(kotlin("reflect"))
             } else {
             	compileOnly(kotlin("stdlib"))
             	compileOnly(kotlin("reflect"))
-	    }
+	        }
         }
 
         // Include the server jar source
@@ -77,6 +78,7 @@ subprojects {
             }
 
             compileOnly(project(":game-service"))
+            compileOnly(files(File("gradle/spigot-dev-tools-0.1-api.jar").absolutePath))
 
             if (project.name != "core")
                 compileOnly(project(":core"))

@@ -5,6 +5,7 @@ author: iHDeveloper
 
 depend:
   - Humans-Kotlin
+  - SpigotDevTools
 
 commands:
   summon:
@@ -78,3 +79,6 @@ commands:
   portal-unlock:
     usage: "portal-unlock"
     description: "Unlocks the portal"
+  game-debug:
+    usage: "game-debug"
+    description: "Show debug information of the game world using SDT"

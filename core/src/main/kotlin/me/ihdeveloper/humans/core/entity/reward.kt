@@ -7,18 +7,13 @@ import me.ihdeveloper.humans.core.GameItemStack
 import me.ihdeveloper.humans.core.corePlugin
 import me.ihdeveloper.humans.core.registry.createItem
 import me.ihdeveloper.humans.core.registry.spawnEntity
-import me.ihdeveloper.humans.core.setPrivateField
 import me.ihdeveloper.humans.core.util.addGameItem
-import me.ihdeveloper.humans.core.util.findEntities
-import net.minecraft.server.v1_8_R3.Entity
-import net.minecraft.server.v1_8_R3.EntityPlayer
-import net.minecraft.server.v1_8_R3.TileEntityBeacon
+import me.ihdeveloper.spigot.devtools.api.DevTools
 import org.bukkit.Bukkit
 import org.bukkit.Effect
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -101,6 +96,8 @@ class RewardSquare(
     }
 
     override fun run() {
+        DevTools.profileStart("Reward Square")
+        DevTools.watch("Reward Square Ticks", "${ticks}§e ticks")
         ticks++
 
         if (ticks == 4 && !spawnedHologram) {
@@ -155,6 +152,7 @@ class RewardSquare(
                         isSpawned = true
                         bukkitTask.cancel()
                     }
+                    DevTools.profileEnd("Reward Square")
                     return
                 }
 
@@ -195,6 +193,7 @@ class RewardSquare(
                 }
             }
         }
+        DevTools.profileEnd("Reward Square")
     }
 
     private fun Block.update(type: Material) {
