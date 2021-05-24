@@ -24,9 +24,8 @@ class GameDebugCommand : AdminCommand("game-debug") {
             return true
         }
 
-        DevTools.watch(sender as Player, "Game World Name", "${core.serverName}")
         DevTools.watch(sender as Player, "UUID", "${sender.uniqueId}")
-        sender.sendMessage("§eSent the important debug information to you!")
+        sender.sendMessage("§eSent the debug information about you to you!")
         return true
     }
 }

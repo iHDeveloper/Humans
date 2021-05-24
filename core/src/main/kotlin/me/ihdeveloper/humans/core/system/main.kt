@@ -970,7 +970,7 @@ class RegionSystem : System("Core/Region"), Listener {
                 if (location.between(it.from, it.to)) {
                     if (it !== region) {
                         region = it
-                        DevTools.watch("Region", "§e${it.name}")
+                        DevTools.watch(this, "Region", "§e${it.name}")
                         scoreboard.getTeam(TEAM_REGION).suffix = it.displayName
                     }
                     DevTools.profileEnd("Regions")
@@ -980,7 +980,7 @@ class RegionSystem : System("Core/Region"), Listener {
 
             if (region != unknown) {
                 scoreboard.getTeam(TEAM_REGION).suffix = "§7Unknown"
-                DevTools.watch("Region", "Unknown")
+                DevTools.watch(this, "Region", "Unknown")
                 region = unknown
             }
             DevTools.profileEnd("Regions")

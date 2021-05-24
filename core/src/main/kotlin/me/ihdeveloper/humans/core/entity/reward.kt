@@ -97,7 +97,7 @@ class RewardSquare(
 
     override fun run() {
         DevTools.profileStart("Reward Square")
-        DevTools.watch("Reward Square Ticks", "${ticks}§e ticks")
+        DevTools.pin("Reward Square Ticks", "${ticks}§e ticks")
         ticks++
 
         if (ticks == 4 && !spawnedHologram) {

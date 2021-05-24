@@ -47,7 +47,7 @@ class TimeSystem : System("Core/Time"), Runnable {
         val hours = x(if (gameTime.hours >= 12) gameTime.hours - 12 else gameTime.hours)
         val minutes = x(5 * (gameTime.minutes / 5))
 
-        DevTools.watch("Game Time", "${core.time}")
+        DevTools.pin("Game Time", "${core.time}")
 
         Bukkit.getOnlinePlayers().forEach {
 
