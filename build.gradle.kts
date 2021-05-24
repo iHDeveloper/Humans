@@ -78,7 +78,7 @@ subprojects {
             }
 
             compileOnly(project(":game-service"))
-            compileOnly("com.github.iHDeveloper:spigot-dev-tools:v0.2.1-alpha:api")
+            compileOnly("me.ihdeveloper:spigot-dev-tools:v0.2.1-alpha:api")
 
             if (project.name != "core")
                 compileOnly(project(":core"))
