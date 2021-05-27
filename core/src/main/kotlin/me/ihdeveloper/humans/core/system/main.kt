@@ -425,17 +425,23 @@ class MenuSystem : System("Core/Menu"), Listener {
     fun onClick(event: InventoryClickEvent) {
         DevTools.profileStart("GUIs")
         event.run {
-            if (clickedInventory !is PlayerInventory)
+            if (clickedInventory !is PlayerInventory) {
+                DevTools.profileEnd("GUIs")
                 return
-            if (slot != 8)
+            }
+
+            if (slot != 8) {
+                DevTools.profileEnd("GUIs")
                 return
+            }
 
             isCancelled = true
 
             if(action === InventoryAction.PICKUP_ONE)
                 open(whoClicked as Player)
+
+            DevTools.profileEnd("GUIs")
         }
-        DevTools.profileEnd("GUIs")
     }
 
     /**
@@ -593,6 +599,7 @@ class PlayerSystem : System("Core/Player"), Listener {
     @EventHandler(priority = EventPriority.LOW)
     @Suppress("UNUSED")
     fun onJoin(event: PlayerJoinEvent) {
+        DevTools.pin("Online Players", "§a${Bukkit.getOnlinePlayers().size}§e/§c${Bukkit.getMaxPlayers()}")
         event.player.run {
             val profile = player.profile!!
 
@@ -636,6 +643,7 @@ class PlayerSystem : System("Core/Player"), Listener {
     @EventHandler
     @Suppress("UNUSED")
     fun onQuit(event: PlayerQuitEvent) {
+        DevTools.pin("Online Players", "§a${Bukkit.getOnlinePlayers().size}§e/§c${Bukkit.getMaxPlayers()}")
         for (player in Bukkit.getOnlinePlayers()) {
             if (!player.isOp)
                 continue
@@ -870,6 +878,7 @@ class ChatSystem : System("Core/Chat"), Listener {
             event.isCancelled = true
 
             if (SceneSystem.individuals.containsKey(player.name)) {
+                DevTools.profileEnd("Chat")
                 player.sendMessage("§cYou can't send a message during a scene!")
                 return
             }
@@ -884,8 +893,9 @@ class ChatSystem : System("Core/Chat"), Listener {
 
                 player.sendMessage(message)
             }
+
+            DevTools.profileEnd("Chat")
         }
-        DevTools.profileEnd("Chat")
     }
 }
 

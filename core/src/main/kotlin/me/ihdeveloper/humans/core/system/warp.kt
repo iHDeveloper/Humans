@@ -96,23 +96,31 @@ class WarpSystem : System("Core/Warp"), Listener {
     fun onVehicleMove(event: VehicleMoveEvent) {
         DevTools.profileStart("Warp")
         event.run {
-            if (vehicle.type !== EntityType.MINECART)
+            if (vehicle.type !== EntityType.MINECART) {
+                DevTools.profileEnd("Warp")
                 return
+            }
 
-            if ((vehicle as CraftMinecart).handle !is WarpCart)
+            if ((vehicle as CraftMinecart).handle !is WarpCart) {
+                DevTools.profileEnd("Warp")
                 return
+            }
 
-            if (vehicle.passenger == null)
+            if (vehicle.passenger == null) {
+                DevTools.profileEnd("Warp")
                 vehicle.remove()
+            }
 
             val cart = (vehicle as CraftMinecart).handle as WarpCart
-            if (to.block.location.distance(cart.warp.end.block.location) > 1)
+            if (to.block.location.distance(cart.warp.end.block.location) > 1) {
+                DevTools.profileEnd("Warp")
                 return
+            }
 
             vehicle.passenger.teleport(cart.warp.spawn)
             vehicle.remove()
+            DevTools.profileEnd("Warp")
         }
-        DevTools.profileEnd("Warp")
     }
 
     @EventHandler

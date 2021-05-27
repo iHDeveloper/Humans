@@ -7,6 +7,7 @@ import me.ihdeveloper.humans.core.registry.getItemInfo
 import me.ihdeveloper.humans.core.registry.getItemInstance
 import me.ihdeveloper.humans.core.system.SceneSystem
 import me.ihdeveloper.humans.core.util.GameLogger
+import me.ihdeveloper.spigot.devtools.api.DevTools
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Location
@@ -303,17 +304,21 @@ open class Scene(
     }
 
     override fun run() {
+        DevTools.profileStart("Scene/$name")
         if (state === SceneState.PAUSED) {
             frames[-2L]?.invoke()
             schedule()
+            DevTools.profileEnd("Scene/$name")
             return
         } else if (state !== SceneState.RUNNING) {
+            DevTools.profileEnd("Scene/$name")
             return
         }
 
         if (cancelThisTick) {
             cancelThisTick = false
             schedule()
+            DevTools.profileEnd("Scene/$name")
             return
         }
 
@@ -322,6 +327,7 @@ open class Scene(
         currentFrame++
 
         schedule()
+        DevTools.profileEnd("Scene/$name")
     }
 
     /**

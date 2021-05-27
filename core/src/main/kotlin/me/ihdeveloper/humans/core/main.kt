@@ -25,6 +25,7 @@ import me.ihdeveloper.humans.core.system.TimeSystem
 import me.ihdeveloper.humans.core.system.WarpSystem
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.service.GameTime
+import me.ihdeveloper.spigot.devtools.api.DevTools
 import org.bukkit.plugin.java.JavaPlugin
 
 /** Folder that contains data about the plugin */
@@ -174,6 +175,8 @@ class GameCore {
             logger.info("Late Initializing ${it.name.toLowerCase()} system (other)...")
             it.lateInit(plugin)
         }
+
+        DevTools.pin("Game World Name", serverName)
     }
 
     /**
