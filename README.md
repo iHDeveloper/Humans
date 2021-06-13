@@ -30,7 +30,7 @@ The goal of modules is to separate the codebase of the game world. And it lets y
 | Kotlin | kotlin/ | Empty project that's used to include shared dependencies in order to decrease the size of the plugins |
 | Mine | mine/ | Includes functionality to run the **Mine** of the game world |
 | Simple API | simple-api/ | In-Memory API to fetch/store data about the player from game service |
-
+| Protocol | protocol/ | Implementation of the protocol to contact the game service API |
 ## Compile the game
 This step will generate all of the jars to run the game world in the `build/` folder.
 ```shell

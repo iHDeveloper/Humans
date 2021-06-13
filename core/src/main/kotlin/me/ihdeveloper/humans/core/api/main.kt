@@ -1,6 +1,6 @@
 package me.ihdeveloper.humans.core.api
 
-import me.ihdeveloper.humans.service.GameTime
+import me.ihdeveloper.humans.service.api.GameTime
 import me.ihdeveloper.humans.service.api.Profile
 import org.bukkit.entity.Player
 

@@ -59,6 +59,7 @@ subprojects {
             implementation(kotlin("reflect"))
 
             implementation(project(":game-service"))
+            implementation(project(":protocol"))
         } else {
             if (project.name == "game-service") {
 		        implementation(kotlin("stdlib"))
@@ -70,7 +71,7 @@ subprojects {
         }
 
         // Include the server jar source
-        if (project.name != "game-service") {
+        if (project.name != "game-service" && project.name != "protocol") {
             if (buildTools.useLocalDependency) {
                 compileOnly("org.spigotmc:spigot:${buildTools.localDependencyVersion}")
             } else {
@@ -78,6 +79,7 @@ subprojects {
             }
 
             compileOnly(project(":game-service"))
+            compileOnly(project(":protocol"))
             compileOnly("me.ihdeveloper:spigot-dev-tools:v0.2.1-alpha:api")
 
             if (project.name != "core")

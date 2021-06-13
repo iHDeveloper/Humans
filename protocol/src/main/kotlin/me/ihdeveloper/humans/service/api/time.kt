@@ -1,4 +1,4 @@
-package me.ihdeveloper.humans.service
+package me.ihdeveloper.humans.service.api
 
 data class GameTime (
     var years: Int = 0,
@@ -66,5 +66,3 @@ data class GameTime (
         return "" + x
     }
 }
-
-internal val gameTime = GameTime()
