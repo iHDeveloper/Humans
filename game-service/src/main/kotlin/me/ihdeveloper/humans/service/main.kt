@@ -11,7 +11,7 @@ fun main() {
     println("[INFO] Initializing...")
     println("Starting the game time")
     thread {
-        gameTime.start(true)
+        gameTime.start(false)
     }
 
     println("[INFO] Initializing Netty server on port 80...")

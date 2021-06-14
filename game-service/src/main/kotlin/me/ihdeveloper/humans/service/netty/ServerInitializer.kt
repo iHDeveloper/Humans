@@ -1,6 +1,7 @@
 package me.ihdeveloper.humans.service.netty
 
 import io.netty.channel.Channel
+import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInitializer
 import io.netty.handler.timeout.IdleStateHandler
 import me.ihdeveloper.humans.service.InternalAPIHandler
@@ -16,12 +17,12 @@ internal class ServerInitializer(
         pipeline.run {
             addLast(IdleStateHandler(30, 0, 0))
             addLast(TimeoutHandler())
-            addLast(PacketDecoder(), PacketProcessor(handler), PacketEncoder())
+            addLast(PacketDecoder(), HelloHandler(), PacketProcessor(handler), PacketEncoder())
             addLast(PacketReleaser())
         }
 
         /* Send hello request! */
-        println("A new channel! Hello o/")
+        println("[./${channel.remoteAddress()}] Connected! Waiting for the hello response...")
         val buffer = NettyPacketBuffer.alloc()
         PacketRequestHello.write(buffer, -1, 30 / 2)
         channel.writeAndFlush(buffer)
