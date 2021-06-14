@@ -11,6 +11,7 @@ plugins {
 }
 
 val useLocalDependency: String by project
+val kotlinVersion = "1.4.3"
 
 group = "me.ihdeveloper"
 version = "0.1"
@@ -57,6 +58,7 @@ subprojects {
         if (project.name == "kotlin") {
             implementation(kotlin("stdlib"))
             implementation(kotlin("reflect"))
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinVersion")
 
             implementation(project(":game-service"))
             implementation(project(":protocol"))
@@ -67,6 +69,7 @@ subprojects {
             } else {
             	compileOnly(kotlin("stdlib"))
             	compileOnly(kotlin("reflect"))
+                compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinVersion")
 	        }
         }
 
@@ -83,12 +86,6 @@ subprojects {
 
             if (project.name != "core")
                 compileOnly(project(":core"))
-
-            if (project.name == "simple-api") {
-                val fuelVersion = "2.3.0"
-                implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
-                implementation("com.github.kittinunf.fuel:fuel-coroutines:$fuelVersion")
-            }
         }
     }
 

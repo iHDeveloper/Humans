@@ -10,6 +10,10 @@ object PacketRegistry {
 
     fun get(source: PacketBuffer): Packet? {
         val type = source.readShort()
+        return get(type)
+    }
+
+    fun get(type: Short): Packet? {
         return instances[type]
     }
 

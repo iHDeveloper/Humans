@@ -16,5 +16,6 @@ fun main() {
 
     println("[INFO] Initializing Netty server on port 80...")
     NettyServer.handler = internalAPIHandler
+    NettyServer.port = 80
     NettyServer.init()
 }

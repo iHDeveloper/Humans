@@ -1,35 +1,51 @@
 package me.ihdeveloper.humans.simple
 
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.coroutines.awaitStringResult
-import com.google.common.io.ByteStreams
 import com.google.gson.Gson
-import kotlinx.coroutines.runBlocking
+import java.io.ByteArrayOutputStream
+import java.io.DataOutputStream
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.api.GameAPI
 import me.ihdeveloper.humans.core.core
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.service.api.GameTime
 import me.ihdeveloper.humans.service.api.Profile
-import me.ihdeveloper.humans.service.api.Skills
+import me.ihdeveloper.humans.service.protocol.PacketRegistry
+import me.ihdeveloper.humans.service.protocol.PacketResponseStatus
+import me.ihdeveloper.humans.service.protocol.request.PacketRequestProfile
+import me.ihdeveloper.humans.service.protocol.request.PacketRequestTime
+import me.ihdeveloper.humans.service.protocol.request.PacketRequestUpdateProfile
+import me.ihdeveloper.humans.service.protocol.response.PacketResponseProfile
+import me.ihdeveloper.humans.service.protocol.response.PacketResponseTime
+import me.ihdeveloper.humans.service.protocol.response.PacketResponseUpdateProfile
+import me.ihdeveloper.humans.simple.netty.NettyPacketBuffer
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
-val logger = GameLogger("API/Simple")
-val gson = Gson()
+internal lateinit var apiScope: CoroutineScope
 
-const val API_ENDPOINT = "http://localhost"
-
-const val PROFILE_TIMEOUT = 50
+internal val logger = GameLogger("API/Simple")
+internal val gson = Gson()
 
 @Suppress("UNUSED")
 class Main : JavaPlugin() {
+    companion object {
+        internal lateinit var instance: Main
+    }
+
     override fun onEnable() {
+        instance = this
         core.api = SimpleAPI()
         core.otherSystems.add(APISystem())
     }
 
-    override fun onDisable() {}
+    override fun onDisable() {
+        apiScope.cancel("Plugin disabled!")
+    }
 }
 
 class APISystem : System("Simple/API") {
@@ -41,95 +57,86 @@ class APISystem : System("Simple/API") {
         Companion.plugin = plugin
 
         /** Register the plugin to be able to send outgoing messages to the BungeeCord */
-        plugin.server.messenger.registerOutgoingPluginChannel(plugin, "BungeeCord")
         logger.info("Registering outgoing channel: BungeeCord")
+        plugin.server.messenger.registerOutgoingPluginChannel(plugin, "BungeeCord")
+        logger.info("Connecting to the game service...")
+        NettyClient.init("localhost", 80)
+        logger.info("Initializing the API coroutine scope...")
+        apiScope = CoroutineScope(EmptyCoroutineContext)
     }
 
-    override fun dispose() {}
+    override fun dispose() {
+        logger.info("Cancelling the API coroutine scope...")
+        apiScope.cancel("System is being disposed!")
+    }
 }
 
 
 class SimpleAPI : GameAPI {
-    override fun getTime(): GameTime {
-        return runBlocking {
-            logger.info("Fetching the game time...")
+    private var lastNonce: Short = 1
 
-            /** Reference to the default time in the core */
-            var time = core.time
-
-            Fuel.get("$API_ENDPOINT/time")
-                .awaitStringResult().fold(
-                { data ->
-                    time = gson.fromJson(data, GameTime::class.java)
-                    logger.info("Fetched! Game Time -> $time")
-                },
-                { err ->
-                    logger.error("An error of type ${err.exception} happened: ${err.message}")
+    override fun getTime(block: (time: GameTime) -> Unit) {
+        val buffer = NettyPacketBuffer.alloc()
+        PacketRequestTime.write(buffer, lastNonce.toInt())
+        apiScope.launch {
+            APIClient.call(buffer, lastNonce) { type, source ->
+                val packet = PacketRegistry.get(type)
+                if (packet is PacketResponseTime) {
+                    PacketResponseTime.skipStatus(source)
+                    val time = PacketResponseTime.readTime(source)
+                    Bukkit.getScheduler().runTask(Main.instance) {
+                        block.invoke(time)
+                    }
                 }
-            )
-
-            time
+            }
         }
+        lastNonce++
     }
 
-    override fun getProfile(name: String): Profile? {
-        return runBlocking {
-            logger.info("Fetching profile/${name}...")
-
-            Fuel.get("$API_ENDPOINT/profile/$name")
-                .timeout(PROFILE_TIMEOUT)
-                .timeoutRead(PROFILE_TIMEOUT)
-                .awaitStringResult()
-                .fold(
-                    { data ->
-                        if (data == "{}") {
-                            Profile(
-                                skills = Skills(),
-                                inventory = mapOf(),
-                                new = true
-                            )
-                        } else {
-                            logger.info("Fetched! profile/${name}...")
-                            gson.fromJson(data, Profile::class.java)
-                        }
-                    },
-                    { err ->
-                        logger.error("An error of type ${err.exception} happened: ${err.message}")
-                        null
+    override fun getProfile(name: String, block: (name: String, profile: Profile) -> Unit) {
+        val buffer = NettyPacketBuffer.alloc()
+        PacketRequestProfile.write(buffer, lastNonce.toInt(), name)
+        apiScope.launch {
+            APIClient.call(buffer, lastNonce) { type, source ->
+                val packet = PacketRegistry.get(type)
+                if (packet is PacketResponseProfile) {
+                    PacketResponseProfile.skipStatus(source)
+                    val profile = PacketResponseProfile.readProfile(source)
+                    Bukkit.getScheduler().runTask(Main.instance) {
+                        block.invoke(name, profile)
                     }
-                )
+                }
+            }
         }
+        lastNonce++
     }
 
-    override fun updateProfile(name: String, profile: Profile) {
-        return runBlocking {
-            logger.info("Updating profile/$name...")
-
-            Fuel.post("$API_ENDPOINT/profile/$name")
-//                .timeout(PROFILE_TIMEOUT)
-//                .timeoutRead(PROFILE_TIMEOUT)
-                .body(gson.toJson(profile))
-                .awaitStringResult()
-                .fold(
-                    {
-                        /** Successfully updated */
-                        logger.info("Updated! profile/$name")
-                    },
-                    { err ->
-                        logger.error("Failed to update profile/$name")
-                        logger.error("An error of type ${err.exception} happened: ${err.message}")
+    override fun updateProfile(name: String, profile: Profile, block: (updated: Boolean) -> Unit) {
+        val buffer = NettyPacketBuffer.alloc()
+        PacketRequestUpdateProfile.write(buffer, lastNonce.toInt(), name, profile)
+        apiScope.launch {
+            APIClient.call(buffer, lastNonce) { type, source ->
+                val packet = PacketRegistry.get(type)
+                if (packet is PacketResponseUpdateProfile) {
+                    val status = PacketResponseUpdateProfile.readStatus(source)
+                    Bukkit.getScheduler().runTask(Main.instance) {
+                        block.invoke(status === PacketResponseStatus.OK)
                     }
-                )
-
+                }
+            }
         }
+        lastNonce++
     }
+
 
     override fun sendTo(player: Player, server: String) {
-        val output = ByteStreams.newDataOutput().apply {
+        val stream = ByteArrayOutputStream()
+        val out = DataOutputStream(stream)
+        out.run {
             writeUTF("Connect")
             writeUTF(server)
         }
 
-        player.sendPluginMessage(APISystem.plugin, "BungeeCord", output.toByteArray())
+        player.sendPluginMessage(APISystem.plugin, "BungeeCord", stream.toByteArray())
     }
 }

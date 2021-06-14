@@ -23,7 +23,7 @@ internal class ServerInitializer(
         /* Send hello request! */
         println("A new channel! Hello o/")
         val buffer = NettyPacketBuffer.alloc()
-        PacketRequestHello.write(buffer, -1, 30)
+        PacketRequestHello.write(buffer, -1, 30 / 2)
         channel.writeAndFlush(buffer)
     }
 

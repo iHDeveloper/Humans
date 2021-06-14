@@ -1,11 +1,11 @@
-package me.ihdeveloper.humans.service.netty
+package me.ihdeveloper.humans.simple.netty
 
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
 import java.nio.charset.Charset
 import me.ihdeveloper.humans.service.protocol.PacketBuffer
 
-class NettyPacketBuffer(
+internal class NettyPacketBuffer(
     internal val buf: ByteBuf
 ) : PacketBuffer {
     companion object {
@@ -14,10 +14,10 @@ class NettyPacketBuffer(
     }
 
     override fun readShort() = buf.readShort()
-
     override fun readInt() = buf.readInt()
-
-    override fun readUTF(length: Int): String = buf.toString(buf.readerIndex(), length, Charset.forName("UTF-8"))
+    override fun readUTF(length: Int): String {
+        return buf.toString(buf.readerIndex(), length, Charset.forName("UTF-8"))
+    }
 
     override fun skipBytes(length: Int) {
         buf.skipBytes(length)

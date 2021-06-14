@@ -11,6 +11,10 @@ object PacketResponseProfile : PacketResponse(7) {
         PacketRegistry.register(this::class)
     }
 
+    fun readProfile(source: PacketBuffer): Profile {
+        return PacketRegistry.gson.fromJson(source.readUTF(source.readInt()), Profile::class.java)
+    }
+
     fun write(source: PacketBuffer, nonce: Int, profile: Profile) {
         super.write(source, nonce, PacketResponseStatus.OK)
 

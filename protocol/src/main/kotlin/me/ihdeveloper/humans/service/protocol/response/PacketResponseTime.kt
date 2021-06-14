@@ -11,6 +11,10 @@ object PacketResponseTime : PacketResponse(5) {
         PacketRegistry.register(this::class)
     }
 
+    fun readTime(source: PacketBuffer): GameTime {
+        return PacketRegistry.gson.fromJson(source.readUTF(source.readInt()), GameTime::class.java)
+    }
+
     fun write(source: PacketBuffer, nonce: Int, time: GameTime) {
         super.write(source, nonce, PacketResponseStatus.OK)
 
