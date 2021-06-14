@@ -6,6 +6,7 @@ import java.io.DataOutputStream
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.api.GameAPI
@@ -26,7 +27,7 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
-internal lateinit var apiScope: CoroutineScope
+internal var apiScope: CoroutineScope = CoroutineScope(EmptyCoroutineContext)
 
 internal val logger = GameLogger("API/Simple")
 internal val gson = Gson()
@@ -41,10 +42,18 @@ class Main : JavaPlugin() {
         instance = this
         core.api = SimpleAPI()
         core.otherSystems.add(APISystem())
+        NettyClient.init("localhost", 80)
     }
 
     override fun onDisable() {
-        apiScope.cancel("Plugin disabled!")
+        if (apiScope.isActive)
+            apiScope.cancel("Plugin disabled!")
+
+        NettyClient.shutdown()
+    }
+
+    internal fun disable() {
+        isEnabled = false
     }
 }
 
@@ -59,10 +68,6 @@ class APISystem : System("Simple/API") {
         /** Register the plugin to be able to send outgoing messages to the BungeeCord */
         logger.info("Registering outgoing channel: BungeeCord")
         plugin.server.messenger.registerOutgoingPluginChannel(plugin, "BungeeCord")
-        logger.info("Connecting to the game service...")
-        NettyClient.init("localhost", 80)
-        logger.info("Initializing the API coroutine scope...")
-        apiScope = CoroutineScope(EmptyCoroutineContext)
     }
 
     override fun dispose() {

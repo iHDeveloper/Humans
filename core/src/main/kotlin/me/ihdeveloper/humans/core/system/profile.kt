@@ -18,6 +18,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -33,6 +34,7 @@ class ProfileSystem : System("Core/Profile"), Listener {
 
         fun reload(player: Player): Profile {
             val profileInventory = mutableMapOf<Int, JsonObject>()
+            player.sendMessage("§7Saving your profile...")
 
             (player.inventory as CraftInventoryPlayer).run {
                 for (i in 0 until 36) {
@@ -62,16 +64,35 @@ class ProfileSystem : System("Core/Profile"), Listener {
             return profiles[player.name]!!.apply {
                 inventory = profileInventory
 
-                core.api!!.updateProfile(player.name, this)
+                core.api!!.updateProfile(player.name, this) {
+                    if (it) {
+                        player.sendMessage("§aSaved your profile!")
+                    } else {
+                        player.sendMessage("§cFailed to save your profile! (INTERNAL_ERROR)")
+                    }
+                }
             }
         }
     }
+
+    // TODO potential memory leak when the same players tries to join multiple times
+    val loaded = mutableSetOf<String>()
 
     override fun init(plugin: JavaPlugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin)
     }
 
     override fun dispose() {}
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    @Suppress("UNUSED")
+    fun onPreLogin(event: AsyncPlayerPreLoginEvent) {
+        // TODO handle when the player is not found!
+        core.api!!.getProfile(event.name) { name, profile ->
+            profiles[name] = profile
+            loaded.add(name)
+        }
+    }
 
     /**
      * Loads the player's profile into memory
@@ -82,19 +103,17 @@ class ProfileSystem : System("Core/Profile"), Listener {
         event.player.run {
             logger.info("$name is logging in...")
 
-            val profile = core.api!!.getProfile(name)
-
             /** This error occurs when the api failed to fetch profile */
-            if (profile === null) {
+            if (loaded.contains(name)) {
                 logger.error("§cUnable to load ${name}'s profile!")
                 event.disallow(
                     PlayerLoginEvent.Result.KICK_WHITELIST,
-                    "§cFailed to connect to Humans! §7(PROFILE_NOT_FOUND)"
+                    "§cFailed to connect to Humans! Try again in a few seconds. §7(UNABLE_TO_LOAD)"
                 )
                 return
             }
 
-            profiles[name] = profile
+            loaded.remove(name)
 
             logger.info("$name logged in!")
         }

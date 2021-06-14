@@ -78,6 +78,9 @@ class GameCore {
     /** Global time of the game */
     var time = GameTime()
 
+    /** Is the game ready to be open? */
+    var isReady = false
+
     /** An instance of Gson */
     val gson = Gson()
 
@@ -129,12 +132,9 @@ class GameCore {
             return
         }
 
-        val newTime = api!!.getTime()
-        if (newTime === time) {
-            logger.error("Failed to fetch the updated time from the API!")
-            // TODO Change the server state to ERROR
-        } else {
-            time = newTime
+        api!!.getTime {
+            isReady = true
+            time = it
             thread {
                 time.start()
             }

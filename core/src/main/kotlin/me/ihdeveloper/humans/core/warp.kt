@@ -109,7 +109,7 @@ class Warp(
         val cart = WarpCart(player.entityId, start, this)
         carts.add(cart)
 
-        with(player) { core.api?.updateProfile(name, ProfileSystem.reload(player)) }
+        ProfileSystem.reload(player)
         spawnEntity(cart, false, null)
         cart.apply {
             bukkitEntity.passenger = player

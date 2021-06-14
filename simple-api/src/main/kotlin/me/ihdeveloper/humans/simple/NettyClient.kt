@@ -12,6 +12,7 @@ object NettyClient {
     private lateinit var channel: Channel
 
     fun init(host: String, port: Int) {
+        logger.info("Connecting to the game service...")
         val workerGroup = NioEventLoopGroup()
 
         try {
@@ -25,10 +26,21 @@ object NettyClient {
             }
 
             val future = bootstrap.connect(host, port).sync()
-            channel = future.channel()
-            channel.closeFuture().sync()
+            if (future.isSuccess) {
+                channel = future.channel()
+            } else {
+                future.cause().printStackTrace()
+                Main.instance.disable()
+                error("Failed to connect to the game service server!")
+            }
         } finally {
             workerGroup.shutdownGracefully()
+        }
+    }
+
+    fun shutdown() {
+        synchronized(channel) {
+            channel.close().sync()
         }
     }
 

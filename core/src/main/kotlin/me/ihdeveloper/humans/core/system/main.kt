@@ -776,6 +776,12 @@ class LoginSystem : System("Core/Login"), Listener {
     @Suppress("UNUSED")
     fun onLogin(event: PlayerLoginEvent) {
         DevTools.profileStart("Core/Login")
+
+        if (!core.isReady) {
+            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "§eHumans Portal: §cIt's being created! Trying again in a few seconds.")
+            return
+        }
+
         if (portalState) {
             event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "§eHumans Portal: §cIt's locked! §eYou can't access the humans world.")
             return
