@@ -7,7 +7,9 @@ import me.ihdeveloper.humans.service.protocol.PacketRegistry
 import me.ihdeveloper.humans.service.protocol.response.PacketResponseHello
 
 internal class HelloHandler : SimpleChannelInboundHandler<NettyPacketBuffer>() {
-    private val helloKey = AttributeKey.newInstance<Boolean>("HELLO_KEY")
+    companion object {
+        private val helloKey = AttributeKey.newInstance<Boolean>("HELLO_KEY")
+    }
 
     override fun handlerRemoved(context: ChannelHandlerContext) {
         println("[./${context.channel().remoteAddress()}] Disconnected!")
@@ -17,11 +19,14 @@ internal class HelloHandler : SimpleChannelInboundHandler<NettyPacketBuffer>() {
         val saidHello = context.channel().hasAttr(helloKey)
 
         if (!saidHello) {
-            when (PacketRegistry.get(source)) {
+            println("Type: ${source.readShort()}")
+            println("Nonce: ${source.readShort()}")
+            when (val packet = PacketRegistry.get(source)) {
                 is PacketResponseHello -> {
                     context.channel().attr(helloKey).set(true)
                 }
                 else -> {
+                    println("First Packet: $packet")
                     println("[./${context.channel().remoteAddress()}] Hasn't said hello first! Kicking...")
                     context.close()
                     return

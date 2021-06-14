@@ -21,7 +21,9 @@ import me.ihdeveloper.humans.service.protocol.response.PacketResponseUpdateProfi
 internal class PacketProcessor(
     private val handler: APIHandler
 ) : SimpleChannelInboundHandler<PacketBuffer>() {
-    private val nameAttr = AttributeKey.newInstance<String>("NAME")
+    companion object {
+        private val nameAttr = AttributeKey.newInstance<String>("NAME")
+    }
 
     override fun channelRead0(context: ChannelHandlerContext, source: PacketBuffer) {
         val nickname = if (context.channel().hasAttr(nameAttr)) context.channel().attr(nameAttr).get() else context.channel().remoteAddress().toString()

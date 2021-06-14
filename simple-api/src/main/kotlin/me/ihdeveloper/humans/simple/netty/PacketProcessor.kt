@@ -26,7 +26,14 @@ internal class PacketProcessor : SimpleChannelInboundHandler<PacketBuffer>() {
             val packet = PacketRegistry.get(source)
             if (packet is PacketRequestHello) {
                 logger.info("Received hello! We are ready to go for the game!")
-                val timeout = PacketRequestHello.readTimeout(source)
+                val nonce = packet.readNonce(source).toInt()
+                val timeout = packet.readTimeout(source)
+
+                val response = NettyPacketBuffer.alloc()
+                PacketResponseHello.write(response, nonce, "simple-api")
+                context.writeAndFlush(response)
+                source.release()
+
                 apiScope.launch {
                     logger.info("Preparing the ping handler... (timeout: $timeout seconds)")
                     while (isActive) {
@@ -38,11 +45,6 @@ internal class PacketProcessor : SimpleChannelInboundHandler<PacketBuffer>() {
                         }
                     }
                 }
-
-                val response = NettyPacketBuffer.alloc()
-                PacketResponseHello.write(response, packet.readNonce(source).toInt(), PacketResponseStatus.OK)
-                context.writeAndFlush(response)
-                source.release()
                 saidHello = true
                 return
             } else {
@@ -53,5 +55,10 @@ internal class PacketProcessor : SimpleChannelInboundHandler<PacketBuffer>() {
         apiScope.launch {
             APIClient.dispatch(source)
         }
+    }
+
+    override fun exceptionCaught(context: ChannelHandlerContext, cause: Throwable) {
+        logger.error("Something wrong happened with the game service connection!")
+        cause.printStackTrace()
     }
 }
