@@ -5,13 +5,13 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     java
-    kotlin("jvm") version "1.4.10"
+    kotlin("jvm") version "1.5.0"
     id("de.undercouch.download") version "4.0.4"
     id("com.github.johnrengelman.shadow") version "6.0.0"
 }
 
 val useLocalDependency: String by project
-val kotlinVersion = "1.4.3"
+val kotlinVersion = "1.5.0"
 
 group = "me.ihdeveloper"
 version = "0.1"
@@ -82,7 +82,7 @@ subprojects {
             }
 
             compileOnly(project(":protocol"))
-            compileOnly("me.ihdeveloper:spigot-dev-tools:v0.2.1-alpha:api")
+            compileOnly("me.ihdeveloper:spigot-dev-tools:v0.3-alpha")
 
             if (project.name != "core")
                 compileOnly(project(":core"))
