@@ -1,14 +1,20 @@
 @file:JvmName("Main")
 package me.ihdeveloper.humans.service
 
-//val profiles = mutableMapOf<String, Profile>()
+import kotlin.concurrent.thread
+import me.ihdeveloper.humans.service.api.GameTime
+
+internal val gameTime = GameTime()
+private val internalAPIHandler = InternalAPIHandler(gameTime)
 
 fun main() {
-    println("[INFO] Initializing the game service...")
-//    thread {
-//        gameTime.start(true)
-//    }
+    println("[INFO] Initializing...")
+    println("Starting the game time")
+    thread {
+        gameTime.start(true)
+    }
 
-    println("[INFO] Game service started!")
-    println("[INFO] Listening on port 80...")
+    println("[INFO] Initializing Netty server on port 80...")
+    NettyServer.handler = internalAPIHandler
+    NettyServer.init()
 }

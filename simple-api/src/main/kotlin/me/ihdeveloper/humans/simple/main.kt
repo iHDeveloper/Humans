@@ -9,7 +9,7 @@ import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.api.GameAPI
 import me.ihdeveloper.humans.core.core
 import me.ihdeveloper.humans.core.util.GameLogger
-import me.ihdeveloper.humans.service.GameTime
+import me.ihdeveloper.humans.service.api.GameTime
 import me.ihdeveloper.humans.service.api.Profile
 import me.ihdeveloper.humans.service.api.Skills
 import org.bukkit.entity.Player

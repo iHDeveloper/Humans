@@ -4,17 +4,15 @@ import me.ihdeveloper.humans.service.protocol.PacketBuffer
 import me.ihdeveloper.humans.service.protocol.PacketRegistry
 import me.ihdeveloper.humans.service.protocol.PacketRequest
 
-object PacketRequestProfile : PacketRequest(6) {
+object PacketRequestHello : PacketRequest(0) {
     init {
         PacketRegistry.register(this::class)
     }
 
-    fun readName(source: PacketBuffer) = source.readUTF(source.readInt())
+    fun readTimeout(source: PacketBuffer) = source.readInt()
 
-    fun write(source: PacketBuffer, nonce: Int, name: String) {
+    fun write(source: PacketBuffer, nonce: Int, timeout: Int) {
         super.write(source, nonce)
-
-        source.writeInt(name.length)
-        source.writeUTF(name)
+        source.writeInt(timeout)
     }
 }

@@ -78,7 +78,6 @@ subprojects {
                 compileOnly(files(buildTools.serverJar.absolutePath))
             }
 
-            compileOnly(project(":game-service"))
             compileOnly(project(":protocol"))
             compileOnly("me.ihdeveloper:spigot-dev-tools:v0.2.1-alpha:api")
 

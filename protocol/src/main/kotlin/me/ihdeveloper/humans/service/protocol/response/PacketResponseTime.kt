@@ -6,7 +6,7 @@ import me.ihdeveloper.humans.service.protocol.PacketRegistry
 import me.ihdeveloper.humans.service.protocol.PacketResponse
 import me.ihdeveloper.humans.service.protocol.PacketResponseStatus
 
-object PacketResponseTime : PacketResponse(3) {
+object PacketResponseTime : PacketResponse(5) {
     init {
         PacketRegistry.register(this::class)
     }
