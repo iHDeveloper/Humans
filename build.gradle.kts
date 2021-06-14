@@ -102,7 +102,7 @@ subprojects {
 
             // If there's no version implemented then we give a default version to the project
             if (archiveVersion.orNull == null) {
-                archiveVersion.set("0.0")
+                archiveVersion.set(rootProject.version.toString())
             }
 
             // Change the generated archive name
@@ -165,15 +165,6 @@ subprojects {
 }
 
 tasks {
-
-    /**
-     * Delete the server after the gradle clean task is done
-     */
-    getByName("clean").doLast {
-        // Delete the server folder
-        server.delete()
-    }
-
     /**
      * Clean the plugins jars in the plugins folder of the server
      */
