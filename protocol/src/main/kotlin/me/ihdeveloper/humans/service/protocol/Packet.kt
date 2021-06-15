@@ -11,6 +11,11 @@ abstract class Packet(
         return source.readShort()
     }
 
+
+    fun skipNonce(source: PacketBuffer) {
+        source.skipBytes(2)
+    }
+
     protected fun writeType(source: PacketBuffer) {
         source.writeShort(packetType)
     }

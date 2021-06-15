@@ -8,6 +8,7 @@ internal class PacketEncoder : MessageToByteEncoder<NettyPacketBuffer>() {
     override fun encode(context: ChannelHandlerContext, input: NettyPacketBuffer, out: ByteBuf) {
         input.buf.run {
             resetReaderIndex()
+            out.writeInt(input.buf.readableBytes())
             out.writeBytes(this.readBytes(this.readableBytes()))
             release()
         }

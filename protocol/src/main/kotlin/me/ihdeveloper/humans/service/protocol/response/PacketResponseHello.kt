@@ -6,11 +6,7 @@ import me.ihdeveloper.humans.service.protocol.PacketResponse
 import me.ihdeveloper.humans.service.protocol.PacketResponseStatus
 
 object PacketResponseHello : PacketResponse(1) {
-    fun readName(source: PacketBuffer): String {
-        val length = source.readInt()
-        println("Length: $length")
-        return source.readUTF(length)
-    }
+    fun readName(source: PacketBuffer) = source.readUTF(source.readInt())
 
     fun write(source: PacketBuffer, nonce: Int, name: String) {
         super.write(source, nonce, PacketResponseStatus.OK)

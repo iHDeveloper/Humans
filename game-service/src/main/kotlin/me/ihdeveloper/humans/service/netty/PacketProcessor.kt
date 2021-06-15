@@ -30,6 +30,7 @@ internal class PacketProcessor(
 
         when (val packet = PacketRegistry.get(source)) {
             is PacketResponseHello -> {
+                packet.skipNonce(source)
                 packet.skipStatus(source)
                 val name = packet.readName(source)
                 context.channel().attr(nameAttr).set(name)
@@ -57,11 +58,12 @@ internal class PacketProcessor(
                 context.writeAndFlush(buffer)
             }
             is PacketRequestUpdateProfile -> {
+                val nonce = packet.readNonce(source).toInt()
                 val name = packet.readName(source)
                 val profile = packet.readProfile(source)
                 val response: PacketResponseStatus = if (handler.updateProfile(name, profile)) PacketResponseStatus.OK else PacketResponseStatus.NOT_FOUND
                 val buffer = NettyPacketBuffer.alloc()
-                PacketResponseUpdateProfile.write(buffer, packet.readNonce(source).toInt(), response)
+                PacketResponseUpdateProfile.write(buffer, nonce, response)
                 println("[$nickname] Requested to update profile with name $name! replying with update status... (status: $response)")
                 context.writeAndFlush(buffer)
             }

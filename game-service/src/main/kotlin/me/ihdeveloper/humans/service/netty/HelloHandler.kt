@@ -17,6 +17,13 @@ internal class HelloHandler : SimpleChannelInboundHandler<NettyPacketBuffer>() {
     }
 
     override fun channelRead0(context: ChannelHandlerContext, source: NettyPacketBuffer) {
+        source.buf.resetReaderIndex()
+        println("Packet Hexdump: ${ByteBufUtil.hexDump(source.buf)}")
+        source.buf.resetReaderIndex()
+        println("Type: ${source.readShort()}")
+        println("Nonce: ${source.readShort()}")
+        source.buf.resetReaderIndex()
+
         val saidHello = context.channel().hasAttr(helloKey)
 
         if (!saidHello) {
@@ -25,20 +32,15 @@ internal class HelloHandler : SimpleChannelInboundHandler<NettyPacketBuffer>() {
                     context.channel().attr(helloKey).set(true)
                 }
                 else -> {
-                    println("First Packet: $packet")
+                    println("[Debug] First Packet: $packet")
                     println("[./${context.channel().remoteAddress()}] Hasn't said hello first! Kicking...")
-//                    context.close()
-//                    return
+                    context.close()
+                    return
                 }
             }
         }
 
         source.retain()
-        source.buf.resetReaderIndex()
-        println("Packet Hexdump: ${ByteBufUtil.hexDump(source.buf)}")
-        source.buf.resetReaderIndex()
-        println("Type: ${source.readShort()}")
-        println("Nonce: ${source.readShort()}")
         source.buf.resetReaderIndex()
         context.fireChannelRead(source)
     }
