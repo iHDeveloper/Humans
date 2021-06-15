@@ -7,7 +7,8 @@ import io.netty.handler.codec.MessageToByteEncoder
 class PacketEncoder : MessageToByteEncoder<NettyPacketBuffer>() {
     override fun encode(ctx: ChannelHandlerContext, msg: NettyPacketBuffer, out: ByteBuf) {
         msg.buf.resetReaderIndex()
-        out.writeBytes(msg.buf.readBytes(msg.buf.readableBytes()))
+        out.writeInt(msg.buf.readableBytes())
+        out.writeBytes(msg.buf, msg.buf.readableBytes())
         msg.buf.release()
     }
 }
