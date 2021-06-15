@@ -14,5 +14,6 @@ interface PacketBuffer {
     fun writeInt(value: Int)
     fun writeUTF(value: String)
 
+    fun retain()
     fun release()
 }

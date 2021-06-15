@@ -6,10 +6,6 @@ import me.ihdeveloper.humans.service.protocol.PacketRegistry
 import me.ihdeveloper.humans.service.protocol.PacketRequest
 
 object PacketRequestUpdateProfile : PacketRequest(8) {
-    init {
-        PacketRegistry.register(this::class)
-    }
-
     fun readName(source: PacketBuffer) = source.readUTF(source.readInt())
     fun readProfile(source: PacketBuffer): Profile {
         return PacketRegistry.gson.fromJson(source.readUTF(source.readInt()), Profile::class.java)

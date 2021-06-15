@@ -7,6 +7,7 @@ import io.netty.channel.EventLoopGroup
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.nio.NioSocketChannel
 import me.ihdeveloper.humans.service.protocol.PacketBuffer
+import me.ihdeveloper.humans.service.protocol.PacketRegistry
 import me.ihdeveloper.humans.simple.netty.ClientInitializer
 
 object NettyClient {
@@ -14,8 +15,8 @@ object NettyClient {
     private lateinit var workerGroup: EventLoopGroup
 
     fun init(host: String, port: Int) {
+        PacketRegistry.init()
         logger.info("Connecting to the game service...")
-
         workerGroup = NioEventLoopGroup()
 
         val bootstrap = Bootstrap()

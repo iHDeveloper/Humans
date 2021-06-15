@@ -7,10 +7,6 @@ import me.ihdeveloper.humans.service.protocol.PacketResponse
 import me.ihdeveloper.humans.service.protocol.PacketResponseStatus
 
 object PacketResponseTime : PacketResponse(5) {
-    init {
-        PacketRegistry.register(this::class)
-    }
-
     fun readTime(source: PacketBuffer): GameTime {
         return PacketRegistry.gson.fromJson(source.readUTF(source.readInt()), GameTime::class.java)
     }

@@ -6,10 +6,6 @@ import me.ihdeveloper.humans.service.protocol.PacketResponse
 import me.ihdeveloper.humans.service.protocol.PacketResponseStatus
 
 object PacketResponsePing : PacketResponse(3) {
-    init {
-        PacketRegistry.register(this::class)
-    }
-
     fun write(source: PacketBuffer, nonce: Int) {
         write(source, nonce, PacketResponseStatus.OK)
     }

@@ -16,6 +16,6 @@ abstract class Packet(
     }
 
     protected fun writeNonce(source: PacketBuffer, nonce: Int) {
-        source.writeInt(nonce)
+        source.writeShort(nonce)
     }
 }

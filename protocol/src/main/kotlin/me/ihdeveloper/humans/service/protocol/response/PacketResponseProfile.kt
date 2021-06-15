@@ -7,10 +7,6 @@ import me.ihdeveloper.humans.service.protocol.PacketResponse
 import me.ihdeveloper.humans.service.protocol.PacketResponseStatus
 
 object PacketResponseProfile : PacketResponse(7) {
-    init {
-        PacketRegistry.register(this::class)
-    }
-
     fun readProfile(source: PacketBuffer): Profile {
         return PacketRegistry.gson.fromJson(source.readUTF(source.readInt()), Profile::class.java)
     }

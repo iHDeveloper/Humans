@@ -5,10 +5,6 @@ import me.ihdeveloper.humans.service.protocol.PacketRegistry
 import me.ihdeveloper.humans.service.protocol.PacketRequest
 
 object PacketRequestProfile : PacketRequest(6) {
-    init {
-        PacketRegistry.register(this::class)
-    }
-
     fun readName(source: PacketBuffer) = source.readUTF(source.readInt())
 
     fun write(source: PacketBuffer, nonce: Int, name: String) {

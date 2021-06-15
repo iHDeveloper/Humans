@@ -1,5 +1,6 @@
 package me.ihdeveloper.humans.service.netty
 
+import io.netty.buffer.ByteBufUtil
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
 import io.netty.util.AttributeKey
@@ -19,8 +20,6 @@ internal class HelloHandler : SimpleChannelInboundHandler<NettyPacketBuffer>() {
         val saidHello = context.channel().hasAttr(helloKey)
 
         if (!saidHello) {
-            println("Type: ${source.readShort()}")
-            println("Nonce: ${source.readShort()}")
             when (val packet = PacketRegistry.get(source)) {
                 is PacketResponseHello -> {
                     context.channel().attr(helloKey).set(true)
@@ -28,12 +27,19 @@ internal class HelloHandler : SimpleChannelInboundHandler<NettyPacketBuffer>() {
                 else -> {
                     println("First Packet: $packet")
                     println("[./${context.channel().remoteAddress()}] Hasn't said hello first! Kicking...")
-                    context.close()
-                    return
+//                    context.close()
+//                    return
                 }
             }
         }
 
+        source.retain()
         source.buf.resetReaderIndex()
+        println("Packet Hexdump: ${ByteBufUtil.hexDump(source.buf)}")
+        source.buf.resetReaderIndex()
+        println("Type: ${source.readShort()}")
+        println("Nonce: ${source.readShort()}")
+        source.buf.resetReaderIndex()
+        context.fireChannelRead(source)
     }
 }

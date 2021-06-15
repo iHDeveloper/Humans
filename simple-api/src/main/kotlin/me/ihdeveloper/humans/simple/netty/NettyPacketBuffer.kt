@@ -35,6 +35,10 @@ internal class NettyPacketBuffer(
         buf.writeBytes(value.toByteArray(Charsets.UTF_8))
     }
 
+    override fun retain() {
+        buf.retain()
+    }
+
     override fun release() {
         buf.release()
     }

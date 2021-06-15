@@ -7,12 +7,15 @@ import io.netty.channel.socket.nio.NioServerSocketChannel
 import io.netty.handler.logging.LogLevel
 import io.netty.handler.logging.LoggingHandler
 import me.ihdeveloper.humans.service.netty.ServerInitializer
+import me.ihdeveloper.humans.service.protocol.PacketRegistry
 
 object NettyServer {
     internal var port = 2500
     internal lateinit var handler: InternalAPIHandler
 
     fun init() {
+        PacketRegistry.init()
+
         val bossGroup = NioEventLoopGroup(1)
         val workerGroup = NioEventLoopGroup()
 
