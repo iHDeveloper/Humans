@@ -34,7 +34,7 @@ internal class PacketProcessor(
                 packet.skipStatus(source)
                 val name = packet.readName(source)
                 context.channel().attr(nameAttr).set(name)
-                println("[./${context.channel().remoteAddress()}] has been identified as $name")
+                println("[${context.channel().remoteAddress()}] has been identified as $name")
             }
             is PacketRequestPing -> {
                 val buffer = NettyPacketBuffer.alloc()

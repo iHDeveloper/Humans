@@ -21,7 +21,7 @@ internal class ServerInitializer(
             addLast(PacketReleaser())
         }
 
-        println("[./${channel.remoteAddress()}] Connected!")
+        println("[${channel.remoteAddress()}] Connected!")
         val buffer = NettyPacketBuffer.alloc()
         PacketRequestHello.write(buffer, 0, 5)
         channel.writeAndFlush(buffer)

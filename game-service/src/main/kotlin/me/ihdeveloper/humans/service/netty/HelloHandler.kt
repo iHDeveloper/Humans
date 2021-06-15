@@ -13,7 +13,7 @@ internal class HelloHandler : SimpleChannelInboundHandler<NettyPacketBuffer>() {
     }
 
     override fun handlerRemoved(context: ChannelHandlerContext) {
-        println("[./${context.channel().remoteAddress()}] Disconnected!")
+        println("[${context.channel().remoteAddress()}] Disconnected!")
     }
 
     override fun channelRead0(context: ChannelHandlerContext, source: NettyPacketBuffer) {
@@ -32,8 +32,8 @@ internal class HelloHandler : SimpleChannelInboundHandler<NettyPacketBuffer>() {
                     context.channel().attr(helloKey).set(true)
                 }
                 else -> {
-                    println("[Debug] First Packet: $packet")
-                    println("[./${context.channel().remoteAddress()}] Hasn't said hello first! Kicking...")
+                    println("[${context.channel().remoteAddress()}] First Packet: $packet")
+                    println("[${context.channel().remoteAddress()}] Hasn't said hello first! Kicking...")
                     context.close()
                     return
                 }
