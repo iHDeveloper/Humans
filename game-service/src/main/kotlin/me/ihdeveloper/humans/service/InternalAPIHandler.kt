@@ -14,7 +14,9 @@ internal class InternalAPIHandler(
     }
 
     override fun getProfile(name: String): Profile {
-        return profiles[name] ?: Profile(Skills(), mutableMapOf(), true)
+        return profiles.computeIfAbsent(name) {
+            Profile(Skills(), mutableMapOf(), true)
+        }
     }
 
     override fun updateProfile(name: String, profile: Profile): Boolean {
