@@ -76,7 +76,7 @@ class ProfileSystem : System("Core/Profile"), Listener {
     }
 
     // TODO potential memory leak when the same players tries to join multiple times
-    val loaded = mutableSetOf<String>()
+    private val loaded = mutableSetOf<String>()
 
     override fun init(plugin: JavaPlugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin)
@@ -89,6 +89,10 @@ class ProfileSystem : System("Core/Profile"), Listener {
     fun onPreLogin(event: AsyncPlayerPreLoginEvent) {
         // TODO handle when the player is not found!
         logger.info("$name is logging in...")
+
+        if (loaded.contains(name))
+            return
+
         core.api!!.getProfile(event.name) { name, profile ->
             profiles[name] = profile
             loaded.add(name)
@@ -103,7 +107,7 @@ class ProfileSystem : System("Core/Profile"), Listener {
     fun onLogin(event: PlayerLoginEvent) {
         event.player.run {
             /** This error occurs when the api failed to fetch profile */
-            if (loaded.contains(name)) {
+            if (!loaded.contains(name)) {
                 logger.error("§cUnable to load ${name}'s profile!")
                 event.disallow(
                     PlayerLoginEvent.Result.KICK_WHITELIST,
@@ -113,7 +117,6 @@ class ProfileSystem : System("Core/Profile"), Listener {
             }
 
             loaded.remove(name)
-
             logger.info("$name logged in!")
         }
     }

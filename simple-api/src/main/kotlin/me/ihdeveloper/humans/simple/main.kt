@@ -82,9 +82,13 @@ class SimpleAPI : GameAPI {
 
     override fun getTime(block: (time: GameTime) -> Unit) {
         val buffer = NettyPacketBuffer.alloc()
-        PacketRequestTime.write(buffer, lastNonce.toInt())
+
+        val packetNonce: Short = lastNonce
+        lastNonce++
+
+        PacketRequestTime.write(buffer, packetNonce.toInt())
         apiScope.launch {
-            APIClient.call(buffer, lastNonce) { type, source ->
+            APIClient.call(buffer, packetNonce) { type, source ->
                 val packet = PacketRegistry.get(type)
                 if (packet is PacketResponseTime) {
                     PacketResponseTime.skipStatus(source)
@@ -95,14 +99,17 @@ class SimpleAPI : GameAPI {
                 }
             }
         }
-        lastNonce++
     }
 
     override fun getProfile(name: String, block: (name: String, profile: Profile) -> Unit) {
         val buffer = NettyPacketBuffer.alloc()
-        PacketRequestProfile.write(buffer, lastNonce.toInt(), name)
+
+        val packetNonce: Short = lastNonce
+        lastNonce++
+
+        PacketRequestProfile.write(buffer, packetNonce.toInt(), name)
         apiScope.launch {
-            APIClient.call(buffer, lastNonce) { type, source ->
+            APIClient.call(buffer, packetNonce) { type, source ->
                 val packet = PacketRegistry.get(type)
                 if (packet is PacketResponseProfile) {
                     PacketResponseProfile.skipStatus(source)
@@ -113,14 +120,17 @@ class SimpleAPI : GameAPI {
                 }
             }
         }
-        lastNonce++
     }
 
     override fun updateProfile(name: String, profile: Profile, block: (updated: Boolean) -> Unit) {
         val buffer = NettyPacketBuffer.alloc()
-        PacketRequestUpdateProfile.write(buffer, lastNonce.toInt(), name, profile)
+
+        val packetNonce: Short = lastNonce
+        lastNonce++
+
+        PacketRequestUpdateProfile.write(buffer, packetNonce.toInt(), name, profile)
         apiScope.launch {
-            APIClient.call(buffer, lastNonce) { type, source ->
+            APIClient.call(buffer, packetNonce) { type, source ->
                 val packet = PacketRegistry.get(type)
                 if (packet is PacketResponseUpdateProfile) {
                     val status = PacketResponseUpdateProfile.readStatus(source)
@@ -130,7 +140,6 @@ class SimpleAPI : GameAPI {
                 }
             }
         }
-        lastNonce++
     }
 
 

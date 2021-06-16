@@ -4,9 +4,12 @@ import io.netty.channel.ChannelDuplexHandler
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelPromise
 import io.netty.util.AttributeKey
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import me.ihdeveloper.humans.service.protocol.PacketRegistry
 import me.ihdeveloper.humans.service.protocol.request.PacketRequestHello
 import me.ihdeveloper.humans.service.protocol.response.PacketResponseHello
+import me.ihdeveloper.humans.simple.apiScope
 import me.ihdeveloper.humans.simple.logger
 
 internal class SafeOutputQueueProcessor : ChannelDuplexHandler() {
@@ -29,10 +32,13 @@ internal class SafeOutputQueueProcessor : ChannelDuplexHandler() {
             if (packet is PacketRequestHello) {
                 logger.debug("Caught the hello request! Freeing up all the prisoners in the queue buffer...")
                 context.channel().attr(helloKey).set(true)
-                while (buffer.isNotEmpty()) {
-                    val cached = buffer.removeFirst()
-                    context.channel().writeAndFlush(cached)
-                    cached.release()
+                apiScope.launch {
+                    delay(100L)
+                    while (buffer.isNotEmpty()) {
+                        val cached = buffer.removeFirst()
+                        context.channel().writeAndFlush(cached)
+                        cached.release()
+                    }
                 }
             }
         }

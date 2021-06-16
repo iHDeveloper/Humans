@@ -33,7 +33,6 @@ object NettyClient {
         if (future.isSuccess) {
             isActive = true
             channel = future.channel()
-            future.channel().closeFuture().sync()
         } else {
             future.cause().printStackTrace()
             workerGroup.shutdownGracefully()

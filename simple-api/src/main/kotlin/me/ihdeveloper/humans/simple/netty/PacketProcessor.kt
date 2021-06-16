@@ -45,8 +45,10 @@ internal class PacketProcessor : SimpleChannelInboundHandler<NettyPacketBuffer>(
             source.buf.resetReaderIndex()
         }
 
+        source.retain()
         apiScope.launch {
             APIClient.dispatch(source)
+            source.release()
         }
     }
 
