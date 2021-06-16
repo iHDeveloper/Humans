@@ -790,12 +790,7 @@ class LoginSystem : System("Core/Login"), Listener {
         core.integratedPart?.run {
             val profile = event.player.profile
 
-            if (profile == null) {
-                event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, "§cFailed to connect to ${core.serverName}! §7(PROFILE_NOT_FOUND_2)")
-                return
-            }
-
-            if (profile.new) {
+            if (profile?.new == true) {
                 if (allowNewPlayers) {
                     event.allow()
                 } else {
