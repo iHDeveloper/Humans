@@ -16,7 +16,8 @@ internal class NettyPacketBuffer(
     override fun readShort() = buf.readShort()
     override fun readInt() = buf.readInt()
     override fun readUTF(length: Int): String {
-        return buf.toString(buf.readerIndex(), length, Charset.forName("UTF-8"))
+        buf.skipBytes(length)
+        return buf.toString(buf.readerIndex() - length, length, Charset.forName("UTF-8"))
     }
 
     override fun skipBytes(length: Int) {
