@@ -11,14 +11,6 @@ class PacketDecoder : ByteToMessageDecoder() {
     private lateinit var buffer: NettyPacketBuffer
 
     override fun decode(ctx: ChannelHandlerContext, source: ByteBuf, out: MutableList<Any>) {
-        source.resetReaderIndex()
-        println("[Decoder] Packet Hexdump: ${ByteBufUtil.hexDump(source)}")
-        source.resetReaderIndex()
-        println("[Decoder] Packet Size: ${source.readInt()}")
-        println("[Decoder] Type: ${source.readShort()}")
-        println("[Decoder] Nonce: ${source.readShort()}")
-        source.resetReaderIndex()
-
         while (source.isReadable) {
             val currentLength = source.readableBytes()
             if (writing) {

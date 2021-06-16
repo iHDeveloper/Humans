@@ -24,7 +24,6 @@ internal class HelloHandler : SimpleChannelInboundHandler<NettyPacketBuffer>() {
                     context.channel().attr(helloKey).set(true)
                 }
                 else -> {
-                    println("[${context.channel().remoteAddress()}] First Packet: $packet")
                     println("[${context.channel().remoteAddress()}] Hasn't said hello first! Kicking...")
                     context.close()
                     return
