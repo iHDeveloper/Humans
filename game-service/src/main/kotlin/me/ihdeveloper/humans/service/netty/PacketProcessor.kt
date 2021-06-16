@@ -40,7 +40,6 @@ internal class PacketProcessor(
                 val nonce = packet.readNonce(source).toInt()
                 val buffer = NettyPacketBuffer.alloc()
                 PacketResponsePing.write(buffer, nonce)
-                println("[$nickname] Pinged! replying with pong...")
                 context.writeAndFlush(buffer)
             }
             is PacketRequestTime -> {

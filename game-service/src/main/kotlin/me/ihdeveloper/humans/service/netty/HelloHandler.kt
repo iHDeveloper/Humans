@@ -19,7 +19,7 @@ internal class HelloHandler : SimpleChannelInboundHandler<NettyPacketBuffer>() {
         val saidHello = context.channel().hasAttr(helloKey)
 
         if (!saidHello) {
-            when (val packet = PacketRegistry.get(source)) {
+            when (PacketRegistry.get(source)) {
                 is PacketResponseHello -> {
                     context.channel().attr(helloKey).set(true)
                 }
