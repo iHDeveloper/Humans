@@ -88,6 +88,7 @@ class ProfileSystem : System("Core/Profile"), Listener {
     @Suppress("UNUSED")
     fun onPreLogin(event: AsyncPlayerPreLoginEvent) {
         // TODO handle when the player is not found!
+        logger.info("$name is logging in...")
         core.api!!.getProfile(event.name) { name, profile ->
             profiles[name] = profile
             loaded.add(name)
@@ -101,8 +102,6 @@ class ProfileSystem : System("Core/Profile"), Listener {
     @Suppress("UNUSED")
     fun onLogin(event: PlayerLoginEvent) {
         event.player.run {
-            logger.info("$name is logging in...")
-
             /** This error occurs when the api failed to fetch profile */
             if (loaded.contains(name)) {
                 logger.error("§cUnable to load ${name}'s profile!")

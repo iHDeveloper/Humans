@@ -132,9 +132,11 @@ class GameCore {
             return
         }
 
+        logger.info("Loading time from game service...")
         api!!.getTime {
             isReady = true
             time = it
+            logger.info("Loaded! §7Time is $time")
             thread {
                 time.start()
             }

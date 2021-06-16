@@ -37,8 +37,9 @@ internal class PacketProcessor(
                 println("[${context.channel().remoteAddress()}] has been identified as $name")
             }
             is PacketRequestPing -> {
+                val nonce = packet.readNonce(source).toInt()
                 val buffer = NettyPacketBuffer.alloc()
-                PacketResponsePing.write(buffer, packet.readNonce(source).toInt())
+                PacketResponsePing.write(buffer, nonce)
                 println("[$nickname] Pinged! replying with pong...")
                 context.writeAndFlush(buffer)
             }
@@ -50,10 +51,11 @@ internal class PacketProcessor(
                 context.writeAndFlush(buffer)
             }
             is PacketRequestProfile -> {
+                val nonce = packet.readNonce(source).toInt()
                 val name = packet.readName(source)
                 val response = handler.getProfile(name)
                 val buffer = NettyPacketBuffer.alloc()
-                PacketResponseProfile.write(buffer, packet.readNonce(source).toInt(), response)
+                PacketResponseProfile.write(buffer, nonce, response)
                 println("[$nickname] Requested profile with name $name! replying with profile data...")
                 context.writeAndFlush(buffer)
             }

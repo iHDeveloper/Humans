@@ -1,6 +1,5 @@
 package me.ihdeveloper.humans.service.netty
 
-import io.netty.buffer.ByteBufUtil
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
 import io.netty.util.AttributeKey
@@ -17,13 +16,6 @@ internal class HelloHandler : SimpleChannelInboundHandler<NettyPacketBuffer>() {
     }
 
     override fun channelRead0(context: ChannelHandlerContext, source: NettyPacketBuffer) {
-        source.buf.resetReaderIndex()
-        println("Packet Hexdump: ${ByteBufUtil.hexDump(source.buf)}")
-        source.buf.resetReaderIndex()
-        println("Type: ${source.readShort()}")
-        println("Nonce: ${source.readShort()}")
-        source.buf.resetReaderIndex()
-
         val saidHello = context.channel().hasAttr(helloKey)
 
         if (!saidHello) {

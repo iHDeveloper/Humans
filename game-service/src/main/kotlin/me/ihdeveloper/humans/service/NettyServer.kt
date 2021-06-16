@@ -4,8 +4,6 @@ import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.ChannelOption
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.nio.NioServerSocketChannel
-import io.netty.handler.logging.LogLevel
-import io.netty.handler.logging.LoggingHandler
 import me.ihdeveloper.humans.service.netty.ServerInitializer
 import me.ihdeveloper.humans.service.protocol.PacketRegistry
 
@@ -25,7 +23,6 @@ object NettyServer {
             bootstrap.run {
                 group(bossGroup, workerGroup)
                 channel(NioServerSocketChannel::class.java)
-                handler(LoggingHandler(LogLevel.DEBUG))
                 option(ChannelOption.SO_BACKLOG, 128)
                 childHandler(ServerInitializer(handler))
                 childOption(ChannelOption.SO_KEEPALIVE, true)

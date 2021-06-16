@@ -10,7 +10,8 @@ internal class ClientInitializer : ChannelInitializer<Channel>() {
         val pipeline = channel.pipeline()
 
         pipeline.run {
-            addLast(PacketDecoder(), PacketProcessor(), SafeOutputQueueProcessor(), PacketEncoder())
+            addLast(PacketDecoder(), PacketEncoder())
+            addLast(PacketProcessor(), SafeOutputQueueProcessor())
         }
     }
 

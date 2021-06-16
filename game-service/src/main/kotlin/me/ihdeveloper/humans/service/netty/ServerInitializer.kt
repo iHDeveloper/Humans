@@ -1,7 +1,6 @@
 package me.ihdeveloper.humans.service.netty
 
 import io.netty.channel.Channel
-import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInitializer
 import io.netty.handler.timeout.IdleStateHandler
 import me.ihdeveloper.humans.service.InternalAPIHandler
@@ -17,8 +16,8 @@ internal class ServerInitializer(
         pipeline.run {
             addLast(IdleStateHandler(30, 0, 0))
             addLast(TimeoutHandler())
-            addLast(PacketDecoder(), HelloHandler(), PacketProcessor(handler), PacketEncoder())
-            addLast(PacketReleaser())
+            addLast(PacketDecoder(), PacketEncoder())
+            addLast(HelloHandler(), PacketProcessor(handler))
         }
 
         println("[${channel.remoteAddress()}] Connected!")

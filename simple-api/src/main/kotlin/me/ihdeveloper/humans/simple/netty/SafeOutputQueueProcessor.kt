@@ -59,12 +59,6 @@ internal class SafeOutputQueueProcessor : ChannelDuplexHandler() {
         super.write(context, output, promise)
     }
 
-    override fun flush(context: ChannelHandlerContext) {
-        if (context.channel().attr(helloKey).get()) {
-            super.flush(context)
-        }
-    }
-
     override fun exceptionCaught(context: ChannelHandlerContext, cause: Throwable) {
         cause.printStackTrace()
     }

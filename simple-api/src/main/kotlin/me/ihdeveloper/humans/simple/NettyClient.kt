@@ -11,6 +11,7 @@ import me.ihdeveloper.humans.service.protocol.PacketRegistry
 import me.ihdeveloper.humans.simple.netty.ClientInitializer
 
 object NettyClient {
+    internal var isActive: Boolean = false
     private lateinit var channel: Channel
     private lateinit var workerGroup: EventLoopGroup
 
@@ -24,13 +25,15 @@ object NettyClient {
         bootstrap.run {
             group(workerGroup)
             channel(NioSocketChannel::class.java)
-            option(ChannelOption.SO_KEEPALIVE, true)
+            option(ChannelOption.TCP_NODELAY, true)
             handler(ClientInitializer())
         }
 
         val future = bootstrap.connect(host, port).sync()
         if (future.isSuccess) {
+            isActive = true
             channel = future.channel()
+            future.channel().closeFuture().sync()
         } else {
             future.cause().printStackTrace()
             workerGroup.shutdownGracefully()
@@ -42,6 +45,7 @@ object NettyClient {
     fun shutdown() {
         if (channel.isActive) {
             try {
+                isActive = false
                 channel.close().sync()
             } finally {
                 workerGroup.shutdownGracefully()
