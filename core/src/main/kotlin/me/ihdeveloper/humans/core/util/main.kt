@@ -101,7 +101,10 @@ fun GameProfile.applyTexture(texture: String, signature: String) {
     properties.put("textures", Property("textures", texture, signature))
 }
 
-/**
- * Converts [Player] to [EntityPlayer]
- */
-fun Player.toNMS(): EntityPlayer = (this as CraftPlayer).handle
+operator fun GameProfile.get(name: String): Property? {
+    properties.get(name).forEach {
+        if (it.name == name)
+            return it
+    }
+    return null
+}

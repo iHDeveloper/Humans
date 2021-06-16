@@ -4,10 +4,17 @@ import me.ihdeveloper.humans.core.GameItemStack
 import me.ihdeveloper.humans.core.registry.getItemInfo
 import me.ihdeveloper.humans.core.registry.getItemInstance
 import me.ihdeveloper.humans.core.util.addGameItem
+import me.ihdeveloper.humans.core.util.applyTexture
+import me.ihdeveloper.humans.core.util.gameProfile
+import me.ihdeveloper.humans.core.util.get
 import me.ihdeveloper.humans.core.util.hasGameItem
 import me.ihdeveloper.humans.core.util.itemMeta
+import me.ihdeveloper.humans.core.util.randomGameProfile
 import me.ihdeveloper.humans.core.util.removeGameItem
+import me.ihdeveloper.humans.core.util.setGameProfile
+import me.ihdeveloper.humans.core.util.toNMS
 import me.ihdeveloper.humans.service.api.Profile
+import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -26,7 +33,12 @@ class GUIOverview(
     override fun render(): ItemStack = ItemStack(Material.SKULL_ITEM, 1, 3.toShort()).apply {
         itemMeta = itemMeta.apply {
             if (this is SkullMeta) {
-                owner = name
+                val texture = Bukkit.getPlayerExact(name).toNMS().gameProfile["textures"]
+                if (texture != null) {
+                    setGameProfile(randomGameProfile().apply {
+                        applyTexture(texture.value, texture.signature)
+                    })
+                }
             }
 
             displayName = "$prefix$name"

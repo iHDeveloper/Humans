@@ -456,7 +456,7 @@ class MenuSystem : System("Core/Menu"), Listener {
     /**
      * Remove the menu when the player quits the server
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     @Suppress("UNUSED")
     fun onQuit(event: PlayerQuitEvent) {
         event.player.inventory.setItem(8, ITEMSTACK_AIR)
