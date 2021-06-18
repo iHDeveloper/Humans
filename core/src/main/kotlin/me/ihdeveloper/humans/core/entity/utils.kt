@@ -19,6 +19,7 @@ fun fromEntityType(type: String, location: Location): Entity? = when(type) {
     "prison_guard" -> PrisonGuard(location)
     "prison_watcher" -> PrisonWatcher(location)
     "prison_witch" -> PrisonWitch(location)
+    "prison_camera" -> PrisonCamera(location)
 
     /** Hologram entities */
     "hologram" -> Hologram(location, "Text")

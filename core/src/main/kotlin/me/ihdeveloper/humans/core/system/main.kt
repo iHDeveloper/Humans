@@ -42,6 +42,7 @@ import me.ihdeveloper.humans.core.entity.CustomSkeleton
 import me.ihdeveloper.humans.core.entity.CustomWitch
 import me.ihdeveloper.humans.core.entity.Hologram
 import me.ihdeveloper.humans.core.entity.ItemHologram
+import me.ihdeveloper.humans.core.entity.PrisonCamera
 import me.ihdeveloper.humans.core.entity.PrisonGuard
 import me.ihdeveloper.humans.core.entity.PrisonWatcher
 import me.ihdeveloper.humans.core.entity.PrisonWitch
@@ -203,6 +204,7 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
         registerEntity(PrisonWatcher::class, CustomArmorStand::class, logger)
         registerEntity(PrisonWitch::class, CustomWitch::class, logger)
         registerEntity(PrisonWitch.Potion::class, CustomPotion::class, logger)
+        registerEntity(PrisonCamera::class, CustomArmorStand::class, logger)
         registerEntity(RewardItem::class, CustomArmorStand::class, logger)
     }
 
@@ -752,7 +754,7 @@ class PlayerSystem : System("Core/Player"), Listener {
 }
 
 const val SERVER_MOTD =
-"""§8» §e§lTHE HUMANS §8§l- §7§lv0.0-ALPHA
+"""§8» §e§lTHE HUMANS §8§l- §7§lv0.1-ALPHA
 §8» §c§lGAME IS UNDER HEAVY DEVELOPMENT"""
 
 /**

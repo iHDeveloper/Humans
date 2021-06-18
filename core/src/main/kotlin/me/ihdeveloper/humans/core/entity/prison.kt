@@ -1,12 +1,17 @@
 package me.ihdeveloper.humans.core.entity
 
+import kotlin.math.PI
 import kotlin.math.sqrt
 import me.ihdeveloper.humans.core.corePlugin
 import me.ihdeveloper.humans.core.scene.IntroScene
 import me.ihdeveloper.humans.core.system.SceneSystem
 import me.ihdeveloper.humans.core.util.NMSItemStack
+import me.ihdeveloper.humans.core.util.applyTexture
 import me.ihdeveloper.humans.core.util.findEntities
+import me.ihdeveloper.humans.core.util.gameProfile
+import me.ihdeveloper.humans.core.util.randomGameProfile
 import me.ihdeveloper.humans.core.util.toNMS
+import me.ihdeveloper.spigot.devtools.api.DevTools
 import net.minecraft.server.v1_8_R3.BlockPosition
 import net.minecraft.server.v1_8_R3.EntityLiving
 import net.minecraft.server.v1_8_R3.EntityPlayer
@@ -23,13 +28,16 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntity
 import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntityLiving
 import net.minecraft.server.v1_8_R3.PacketPlayOutUpdateEntityNBT
 import net.minecraft.server.v1_8_R3.PacketPlayOutWorldEvent
+import net.minecraft.server.v1_8_R3.Vector3f
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.ArmorStand
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.scheduler.BukkitTask
+import org.bukkit.util.EulerAngle
 
 private const val WATCHER_Y_RANGE = 0.5
 private const val WATCHER_Y_SPEED = 0.1
@@ -166,8 +174,8 @@ class PrisonWitch(
         private val playerName: String?,
     ) : CustomPotion(world, witch, 32696 /* Weakness Potion */) {
 
-        /** Used to detect if the projectile shot already*/
-        var isShooting = false
+        /** Used to detect if the projectile shot already -*/
+        private var isShooting = false
 
         fun onTick() = t_()
 
@@ -271,4 +279,56 @@ class PrisonWitch(
         player.connection.sendPacket(PacketPlayOutEntityDestroy(id))
     }
 
+}
+
+class PrisonCamera(
+    location: Location
+) : CustomArmorStand(location) {
+    companion object {
+        private const val TEXTURE_DATA = "ewogICJ0aW1lc3RhbXAiIDogMTYyNDAwOTEyNzUwNywKICAicHJvZmlsZUlkIiA6ICIyM2YxYTU5ZjQ2OWI0M2RkYmRiNTM3YmZlYzEwNDcxZiIsCiAgInByb2ZpbGVOYW1lIiA6ICIyODA3IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzQ3OTliYTIyN2YxZjI1YjI4N2Y3ZDc4MTRlNTI2NGRjZTJjZDY5OWU1ZDFlYmY1NjJmNWVlZDkwYjA1ODE5YTgiCiAgICB9CiAgfQp9"
+        private const val TEXTURE_SIGNATURE = "wBF3HdA/snoQ8HJGBNH6g1UYXBYPC7ziBbV/u7TUaqjfoD4WXZW6lVB1LZTEwLOqE0WLiYGduk5t8fr0yBKvDNz2RrHwO9Tayx+DoNB8NlufK3RkacfvA7Xzq4eLJTm8sw599s7/fddMHUr5QzWm7qJ/LpMyIFF1RzelHSqyGpabpXaD1nuz4mKe8DQzUw7DDqzuQyLRTfB6zXn39QjUb8Axahl7BD18RKD3bQgDYUOGRKF00aH/LTnoV0w2hYzLKSTxtbEUEI8cSAUYbjPHyUUsyVtXJ/jvsfH0xk070CWwCCzk7MPkypdqN3eapIQySxsCU80VzedCb/8JlWkdNhQRnMtQNaN/+MVv7xaLzVzQKhju0/1JMLdLaEXMx1lKNBpFw/FQ06aKf3ZO1hgMtAwhbV4FztCoQcRgbQGmLnbcZ6G/+gI7IyXl4FodOLz2YVnxIkCFzL8DCeayEyjXlRamFJgJJ+J03Ez+gBrJkfmXton7VXX8jpqO49oiSY0FGfX36LYwCj+pSuZttPA39jzUGv03F1X8GekJpQEL5oCQ8rZUmU/dg532ONuSykgTH5JEPsCi136KMcjQw0oa7vPgHIvHmel5jptL1xotnCT7aGjEknv2sTpoC2WqAlR9CP80EulEE2kLSv+tFwuU7/3eYNuUABx7PwLJCAahGPg="
+    }
+
+    init {
+        isInvisible = true
+        setGravity(false)
+        setLocation()
+
+        val textureItem = ItemStack(Material.SKULL_ITEM, 1, 3.toShort()).apply {
+            itemMeta = (itemMeta as SkullMeta).apply {
+                gameProfile = randomGameProfile().apply {
+                    applyTexture(TEXTURE_DATA, TEXTURE_SIGNATURE)
+                }
+            }
+        }
+
+        (getBukkitEntity() as ArmorStand).apply {
+            equipment.helmet = textureItem
+
+            headPose = EulerAngle(0.0, 0.0, 0.0)
+        }
+    }
+
+    private var angle = 0f
+    private var reverse = false
+    override fun t_() {
+        val rotationSpeed = 0.75f
+        if (reverse) {
+            angle -= rotationSpeed
+        } else {
+            angle += rotationSpeed
+        }
+
+        if (!reverse && angle >= 45f) {
+            angle = 45f
+            reverse = true
+        } else if (reverse && angle <= -45f) {
+            angle = -45f
+            reverse = false
+        }
+        setHeadPose(Vector3f(180f, angle, 0f))
+
+        DevTools.watch("Camera:Angle", "$angle§e degrees")
+        super.t_()
+    }
 }
