@@ -398,3 +398,11 @@ data class BossBar(
     var current: Int = 0,
     var max: Int = 100,
 )
+
+/**
+ * Represents an entity with different states aka stateful entity
+ */
+interface CustomStatefulEntity {
+    fun load(state: Map<String, Any>)
+    fun store(state: MutableMap<String, Any>)
+}

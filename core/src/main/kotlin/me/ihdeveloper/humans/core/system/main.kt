@@ -3,6 +3,7 @@ package me.ihdeveloper.humans.core.system
 import me.ihdeveloper.humans.core.Configuration
 import me.ihdeveloper.humans.core.ConfigurationDeserialize
 import me.ihdeveloper.humans.core.ConfigurationSerialize
+import me.ihdeveloper.humans.core.CustomStatefulEntity
 import me.ihdeveloper.humans.core.GameRegion
 import me.ihdeveloper.humans.core.System
 import me.ihdeveloper.humans.core.command.CrashCommand
@@ -144,18 +145,18 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
     data class EntityInfo(
         val type: String,
         val location: Location
-    ) : ConfigurationSerialize {
-        companion object: ConfigurationDeserialize<EntityInfo> {
+    ) {
+        companion object : ConfigurationDeserialize<EntityInfo> {
             override fun deserialize(data: Map<String, Any>) = EntityInfo(
                 data["type"] as String,
                 data["location"] as Location
             )
         }
 
-        override fun serialize(): Map<String, Any> = mapOf(
-            "type" to type,
-            "location" to location
-        )
+        fun serialize(data: MutableMap<String, Any>) {
+            data["type"] = type
+            data["location"] = location
+        }
     }
 
     companion object {
@@ -164,8 +165,20 @@ class CustomEntitySystem : System("Core/Custom-Entity"), Listener {
 
         fun save() {
             val entities = arrayListOf<Map<String, Any>>()
-            for (info in summonedEntitiesInfo) {
-                entities.add(info.serialize())
+
+            for (i in 0..summonedEntitiesInfo.size) {
+                val entityData = mutableMapOf<String, Any>()
+                val entity = summonedEntities[i]
+                val info = summonedEntitiesInfo[i]
+
+                if (entity is CustomStatefulEntity) {
+                    val entityState = mutableMapOf<String, Any>()
+                    entity.store(entityState)
+                    entityData["state"] = entityState
+                }
+
+                info.serialize(entityData)
+                entities.add(entityData)
             }
             config.set("entities", entities)
             config.save(logger)
