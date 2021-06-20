@@ -9,6 +9,7 @@ import me.ihdeveloper.humans.core.system.NPCSystem
 import me.ihdeveloper.humans.core.system.TEAM_NPC
 import me.ihdeveloper.humans.core.util.GameLogger
 import me.ihdeveloper.humans.core.util.NMSItemStack
+import me.ihdeveloper.humans.core.util.broadcastPacket
 import me.ihdeveloper.humans.core.util.toNMS
 import me.ihdeveloper.humans.core.util.toNMSWorld
 import me.ihdeveloper.humans.core.util.toServer
@@ -109,8 +110,8 @@ open class CustomArmorStand(protected val location: Location)
 open class CustomSkeleton(
     private val location: Location
 ) : EntitySkeleton(toNMSWorld(location.world)) {
-
     protected val nameHologram = Hologram(location.clone().apply { y += 1 }, "§cSkeleton")
+    protected var frozen = true
 
     /**
      * Updates the location of the entity in the world
@@ -158,7 +159,9 @@ open class CustomSkeleton(
      * Prevent the skeleton from moving
      */
     override fun move(d0: Double, d1: Double, d2: Double) {
-        return
+        if (frozen)
+            return
+        super.move(d0, d1, d2)
     }
 
     /**
@@ -438,7 +441,7 @@ open class CustomLightning(
 
     override fun t_() {
         when (getPrivateField<Int>(EntityLightning::class, this, "lifeTicks")) {
-            2 -> world.server.toNMS().playerList.sendPacketNearby(locX, locY, locZ, 512.0, world.toServer().dimension, PacketPlayOutSpawnEntityWeather(this))
+            2 -> world.broadcastPacket(locX, locY, locZ, 512.0, PacketPlayOutSpawnEntityWeather(this))
             0 -> setPrivateField(EntityLightning::class, this, "c", 0)
         }
 

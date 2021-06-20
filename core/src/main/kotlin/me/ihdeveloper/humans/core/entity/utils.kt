@@ -16,7 +16,9 @@ import org.bukkit.inventory.ItemStack
  */
 fun fromEntityType(type: String, location: Location): Entity? = when(type) {
     /** Prison entities */
-    "prison_guard" -> PrisonGuard(location)
+    "prison_guard" -> PrisonGuard(location, false)
+    "prison_guard_x" -> PrisonGuard(location, true, direction = false)
+    "prison_guard_z" -> PrisonGuard(location, true, direction = true)
     "prison_watcher" -> PrisonWatcher(location)
     "prison_witch" -> PrisonWitch(location)
     "prison_camera" -> PrisonCamera(location)

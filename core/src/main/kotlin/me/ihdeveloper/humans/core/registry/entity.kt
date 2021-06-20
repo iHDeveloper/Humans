@@ -71,8 +71,8 @@ fun registerEntity(customClass: KClass<out Entity>, overrideClass: KClass<out En
 /**
  * Spawns a custom entity
  */
-fun spawnEntity(entity: Entity, logger: GameLogger?): Boolean = spawnEntity(entity, true, logger)
-fun spawnEntity(entity: Entity, removeWhenFarAway: Boolean, logger: GameLogger?): Boolean {
+fun spawnEntity(entity: Entity, logger: GameLogger? = null): Boolean = spawnEntity(entity, true, logger)
+fun spawnEntity(entity: Entity, removeWhenFarAway: Boolean, logger: GameLogger? = null): Boolean {
     entity.bukkitEntity.run {
         if (this is CraftLivingEntity)
             this.removeWhenFarAway = removeWhenFarAway

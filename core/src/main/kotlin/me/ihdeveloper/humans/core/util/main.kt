@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import java.util.UUID
 import net.minecraft.server.v1_8_R3.EntityPlayer
+import net.minecraft.server.v1_8_R3.MathHelper
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Location
@@ -107,4 +108,15 @@ operator fun GameProfile.get(name: String): Property? {
             return it
     }
     return null
+}
+
+fun Float.toAngle() = (this * 256.0F) / 360.0F
+fun Float.compress() = MathHelper.d(this).toByte()
+
+infix fun Float.sequenceLimit(max: Float): Float {
+    return if (this >= max) {
+        ((this / max) - 1F)
+    } else {
+        this
+    }
 }

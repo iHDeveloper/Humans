@@ -1,15 +1,20 @@
 package me.ihdeveloper.humans.core.entity
 
-import kotlin.math.PI
 import kotlin.math.sqrt
+import me.ihdeveloper.humans.core.CustomStatefulEntity
 import me.ihdeveloper.humans.core.corePlugin
+import me.ihdeveloper.humans.core.registry.spawnEntity
 import me.ihdeveloper.humans.core.scene.IntroScene
 import me.ihdeveloper.humans.core.system.SceneSystem
 import me.ihdeveloper.humans.core.util.NMSItemStack
 import me.ihdeveloper.humans.core.util.applyTexture
+import me.ihdeveloper.humans.core.util.broadcastPacket
+import me.ihdeveloper.humans.core.util.compress
 import me.ihdeveloper.humans.core.util.findEntities
 import me.ihdeveloper.humans.core.util.gameProfile
 import me.ihdeveloper.humans.core.util.randomGameProfile
+import me.ihdeveloper.humans.core.util.sequenceLimit
+import me.ihdeveloper.humans.core.util.toAngle
 import me.ihdeveloper.humans.core.util.toNMS
 import me.ihdeveloper.spigot.devtools.api.DevTools
 import net.minecraft.server.v1_8_R3.BlockPosition
@@ -39,19 +44,36 @@ import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.util.EulerAngle
 
+private const val GUARD_MAX_STEPS = 60
+private const val GUARD_SPEED = 0.25
+private const val GUARD_ROTATE_SPEED = 1.25F
+private const val GUARD_TRACK_DISTANCE = 48.0
+private const val GUARD_STATUS_NONE = "§9"
+private const val GUARD_STATUS_LOOKING = "§eWatching!"
+private const val GUARD_STATUS_LOOKING_REVERSE = "§4§lAlways watching!"
+
 private const val WATCHER_Y_RANGE = 0.5
 private const val WATCHER_Y_SPEED = 0.1
 
 /**
  * A guard that protects the prison
  *
- * Currently it has no action to do. Instead of being a "guard"
+ * ~~Currently it has no action to do. Instead of being a "guard"~~ (not anymore lol)
  */
 class PrisonGuard(
-    location: Location
-) : CustomSkeleton(location) {
+    location: Location,
+    private var move: Boolean,
+    private var direction: Boolean = false, /* 0 = x, 1 = z */
+) : CustomSkeleton(location), CustomStatefulEntity {
+    private val statusHologram = Hologram(location.clone().apply { y += 1.25 }, GUARD_STATUS_NONE)
+    private var steps = 0
+    private var reverse = false
+    private var needToRotate = false
+    private var fakeYaw = 0F
+    private var targetYaw = 0F
 
     init {
+        frozen = false
         setLocation()
 
         clearPathfinderSelector(goalSelector)
@@ -63,8 +85,100 @@ class PrisonGuard(
 
         nameHologram.text = "§cPrison Guard"
         spawnHologram()
+
+        statusHologram.text = ""
+        statusHologram.customNameVisible = false
+        spawnEntity(statusHologram, false)
     }
 
+    override fun t_() {
+        super.t_()
+
+        if (move) {
+            think()
+            walk()
+        }
+    }
+
+    override fun load(state: Map<String, Any>) {
+        move = state["move"] as Boolean
+        direction = state["direction"] as Boolean
+    }
+
+    override fun store(state: MutableMap<String, Any>) {
+        state["move"] = move
+        state["direction"] = direction
+    }
+
+    private fun think() {
+        if (needToRotate) return
+
+        if (steps >= GUARD_MAX_STEPS) {
+            steps = 0
+            reverse = !reverse
+            needToRotate = true
+            fakeYaw = yaw + 180
+            targetYaw = fakeYaw + 180
+        }
+
+        var targetX = locX.toInt()
+        var targetZ = locZ.toInt()
+        if (!direction && !reverse) {
+            targetX += 3
+        } else if (!direction && reverse) {
+            targetX -= 3
+        } else if (direction && !reverse) {
+            targetZ += 3
+        } else if (direction && reverse) {
+            targetZ -= 3
+        }
+
+        val topBlock = super.world.world.getBlockAt(targetX, locY.toInt() + 1, targetZ).type.isSolid
+        val centerBlock = super.world.world.getBlockAt(targetX, locY.toInt(), targetZ).type.isSolid
+        val bottomBlock = super.world.world.getBlockAt(targetX, locY.toInt() - 1, targetZ).type.isSolid
+
+        if (topBlock || centerBlock || !bottomBlock) {
+            steps = 0
+            reverse = !reverse
+            needToRotate = true
+            fakeYaw = yaw + 180
+            targetYaw = fakeYaw + 180
+        }
+    }
+
+    private fun walk() {
+        if (needToRotate) {
+            if (fakeYaw >= targetYaw) {
+                needToRotate = false
+                statusHologram.customNameVisible = false
+            } else {
+                statusHologram.customNameVisible = true
+                statusHologram.text = if (reverse) GUARD_STATUS_LOOKING else GUARD_STATUS_LOOKING_REVERSE
+
+                fakeYaw += GUARD_ROTATE_SPEED
+                yaw += GUARD_ROTATE_SPEED
+                yaw = ((yaw + 180F) sequenceLimit 360F) - 180F
+                val packet = PacketPlayOutEntityHeadRotation(this, yaw.toAngle().compress())
+                world.broadcastPacket(locX, locY, locZ, GUARD_TRACK_DISTANCE, packet)
+                return
+            }
+        }
+
+        steps++
+
+        var dest = GUARD_SPEED
+        if (reverse) dest *= -1
+
+        if (!direction) {
+            super.move(dest, 0.0, 0.0)
+            nameHologram.move(dest, 0.0, 0.0)
+            statusHologram.move(dest, 0.0, 0.0)
+        } else {
+            super.move(0.0, 0.0, dest)
+            nameHologram.move(0.0, 0.0, dest)
+            statusHologram.move(0.0, 0.0, dest)
+        }
+    }
 }
 
 /**
@@ -328,7 +442,6 @@ class PrisonCamera(
         }
         setHeadPose(Vector3f(180f, angle, 0f))
 
-        DevTools.watch("Camera:Angle", "$angle§e degrees")
         super.t_()
     }
 }
